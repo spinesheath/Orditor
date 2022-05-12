@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using Orditor.Model;
+using Orditor.Orchestration;
 
 namespace Orditor.Controls;
 
@@ -11,13 +9,10 @@ namespace Orditor.Controls;
 internal class WorldDisplay : Control
 {
   public static readonly DependencyProperty WorldProperty = DependencyProperty.Register(
-    "World", typeof(World), typeof(WorldDisplay), new PropertyMetadata(default(World), OnGraphChanged));
+    nameof(World), typeof(World), typeof(WorldDisplay), new PropertyMetadata(default(World), OnGraphChanged));
 
-  //public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-  //  "Selection", typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection)));
-
-  //public static readonly DependencyProperty InputReceiverProperty = DependencyProperty.Register(
-  //  "InputReceiver", typeof(IMapInputReceiver), typeof(WorldDisplay), new PropertyMetadata(default(IMapInputReceiver)));
+  public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
+    nameof(Selection), typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection), OnGraphChanged));
 
   private Canvas? _graphCanvas;
   //private Point _panGripPosition;
@@ -35,17 +30,11 @@ internal class WorldDisplay : Control
     set => SetValue(WorldProperty, value);
   }
 
-  //public Selection Selection
-  //{
-  //  get => (Selection) GetValue(SelectionProperty);
-  //  set => SetValue(SelectionProperty, value);
-  //}
-
-  //public IMapInputReceiver InputReceiver
-  //{
-  //  get => (IMapInputReceiver) GetValue(InputReceiverProperty);
-  //  set => SetValue(InputReceiverProperty, value);
-  //}
+  public Selection? Selection
+  {
+    get => (Selection?)GetValue(SelectionProperty);
+    set => SetValue(SelectionProperty, value);
+  }
 
   public override void OnApplyTemplate()
   {
@@ -77,7 +66,7 @@ internal class WorldDisplay : Control
 
   private void AddConnectionMarkers()
   {
-    if (_graphCanvas == null || World == null)
+    if (_graphCanvas == null || World == null || Selection == null)
     {
       return;
     }
@@ -87,14 +76,14 @@ internal class WorldDisplay : Control
       var homes = World.GetConnectedHomes(home1);
       foreach (var home2 in homes)
       {
-        var connection = new Connection(World, home1, home2);
+        var connection = new Connection(World, Selection, home1, home2);
         _graphCanvas.Children.Add(connection);
       }
 
       var pickups = World.GetConnectedPickups(home1);
       foreach (var pickup in pickups)
       {
-        var connection = new Connection(World, home1, pickup);
+        var connection = new Connection(World, Selection, home1, pickup);
         _graphCanvas.Children.Add(connection);
       }
     }
@@ -102,14 +91,14 @@ internal class WorldDisplay : Control
 
   private void AddHomeMarkers()
   {
-    if (_graphCanvas == null || World == null)
+    if (_graphCanvas == null || World == null || Selection == null)
     {
       return;
     }
 
     foreach (var home in World.Homes)
     {
-      var marker = new HomeMarker(home);
+      var marker = new HomeMarker(home, Selection);
 
       //marker.MouseDown += OnHomeMouseDown;
 
@@ -193,10 +182,10 @@ internal class WorldDisplay : Control
   //  }
   //}
 
-  private bool IsPanning()
-  {
-    return IsMouseCaptured;
-  }
+  //private bool IsPanning()
+  //{
+  //  return IsMouseCaptured;
+  //}
 
   //private void StartPan(HomeMarker marker, Point p)
   //{

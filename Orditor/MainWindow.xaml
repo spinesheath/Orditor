@@ -6,10 +6,20 @@
         xmlns:v="clr-namespace:Orditor.Views"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="MainWindow" 
+        Title="Orditor" 
         Height="800" 
         Width="1200">
     <Grid>
-        <v:WorldView x:Name="WorldView"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" MinWidth="10"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="*" MinWidth="10"/>
+        </Grid.ColumnDefinitions>
+
+        <v:WorldView x:Name="WorldView"
+                     Grid.Column="0"/>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4"/>
+        <v:ConnectionEditorView x:Name="ConnectionEditorView"
+                                Grid.Column="2"/>
     </Grid>
 </Window>

@@ -1,4 +1,6 @@
-﻿using Orditor.ViewModels;
+﻿using Orditor.Model;
+using Orditor.Orchestration;
+using Orditor.ViewModels;
 
 namespace Orditor;
 
@@ -8,7 +10,11 @@ internal partial class MainWindow
   {
     InitializeComponent();
 
-    var vm = new WorldViewModel();
-    WorldView.DataContext = vm;
+    var selection = new Selection();
+    var world = new World();
+    var connectionEditor = new ConnectionEditorViewModel(world);
+    selection.Listen(connectionEditor);
+    WorldView.DataContext = new WorldViewModel(world, selection);
+    ConnectionEditorView.DataContext = connectionEditor;
   }
 }

@@ -1,18 +1,22 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Orditor.Model;
+using Orditor.Orchestration;
 
 namespace Orditor.Controls;
 
 internal class Connection : Canvas
 {
   private readonly Line _marker;
+  private readonly Action _selectionSetter;
 
-  public Connection(World world, Home location1, Home location2)
+  public Connection(World world, Selection selection, Home location1, Home location2)
   {
+    _selectionSetter = () => selection.Set(location1, location2);
     var coordinates1 = Coordinates.GameToMap(world.GetLocation(location1));
     var coordinates2 = Coordinates.GameToMap(world.GetLocation(location2));
 
@@ -20,8 +24,9 @@ internal class Connection : Canvas
     Children.Add(_marker);
   }
 
-  public Connection(World world, Home location1, Pickup location2)
+  public Connection(World world, Selection selection, Home location1, Pickup location2)
   {
+    _selectionSetter = () => selection.Set(location1, location2);
     var coordinates1 = Coordinates.GameToMap(world.GetLocation(location1));
     var coordinates2 = Coordinates.GameToMap(new Vector(location2.X, location2.Y));
 
@@ -41,10 +46,10 @@ internal class Connection : Canvas
     _marker.StrokeThickness = 3;
   }
 
-  //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-  //{
-  //  _selection.Set(_location1, _location2);
-  //}
+  protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+  {
+    _selectionSetter();
+  }
 
   private Line GetMarker(Vector location1, Vector location2)
   {

@@ -1,13 +1,17 @@
 ﻿using Orditor.Model;
+using Orditor.Orchestration;
 
 namespace Orditor.ViewModels;
 
 internal class WorldViewModel : NotificationObject
 {
-  public WorldViewModel()
+  public WorldViewModel(World world, Selection selection)
   {
-    World = new World();
+    Selection = selection;
+    World = world;
   }
+
+  public Selection Selection { get; }
 
   public World World { get; }
 }

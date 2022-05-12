@@ -1,38 +1,46 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Orditor.Model;
+using Orditor.Orchestration;
 
 namespace Orditor.Controls;
 
 internal class HomeMarker : Border
 {
-  public HomeMarker(Home home)
+  public HomeMarker(Home home, Selection selection)
   {
-    //_selection = selection;
-    Home = home;
+    _selection = selection;
+    _home = home;
 
+    Width = Radius;
+    Height = Radius;
+
+    Initialized += SetMarker;
+  }
+
+  private const int Radius = 15;
+
+  private readonly Home _home;
+
+  private readonly Selection _selection;
+
+  private void SetMarker(object? sender, EventArgs e)
+  {
     var marker = new Ellipse();
     marker.Width = Radius;
     marker.Height = Radius;
     marker.Stroke = Brushes.White;
     marker.StrokeThickness = 1;
     marker.Fill = Brushes.White;
-    marker.ToolTip = home.Name;
-
-    Width = Radius;
-    Height = Radius;
-
+    marker.ToolTip = _home.Name;
     Child = marker;
   }
 
-  public Home Home { get; }
-
-  //private readonly Selection _selection;
-  private const int Radius = 15;
-
-  //protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-  //{
-  //  _selection.Set(Home);
-  //}
+  protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+  {
+    _selection.Set(_home);
+  }
 }

@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Orditor.Controls"
-             xmlns:viewModels="clr-namespace:Orditor.ViewModels"
+             xmlns:vm="clr-namespace:Orditor.ViewModels"
              mc:Ignorable="d"
-             Background="Black" d:DataContext="{d:DesignInstance viewModels:WorldViewModel}">
-    <controls:Viewer
-        Zoom="0.2">
-        <controls:WorldDisplay World="{Binding World}"/>
+             Background="Black" 
+             d:DataContext="{d:DesignInstance Type={x:Type vm:WorldViewModel}}">
+    <controls:Viewer Zoom="0.2">
+        <controls:WorldDisplay World="{Binding World}" Selection="{Binding Selection}"/>
     </controls:Viewer>
 </UserControl>
