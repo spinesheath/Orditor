@@ -9,19 +9,7 @@ internal class PickupGraphParser
   public PickupGraphParser(string[] lines)
   {
     ReadPickups(lines);
-
-    HomeData? home = null;
-
-    foreach (var line in lines)
-    {
-      home = TryUpdate(line, home);
-      home?.AddLine(line);
-    }
-
-    if (home != null)
-    {
-      Commit(home);
-    }
+    ReadGraph(lines);
   }
 
   public PickupGraph Graph { get; } = new();
@@ -42,20 +30,30 @@ internal class PickupGraphParser
   //expert-dboost Grenade Health=6
   private static readonly Regex RequirementRegex = new(@"^\s*([-\w]+)\s+(.*)$");
 
-  private HomeData? TryUpdate(string line, HomeData? current)
+  private void ReadGraph(string[] lines)
   {
-    var match = HomeRegex.Match(line);
-    if (match.Success)
+    HomeData? home = null;
+
+    foreach (var line in lines)
     {
-      if (current != null)
+      var match = HomeRegex.Match(line);
+      if (match.Success)
       {
-        Commit(current);
+        if (home != null)
+        {
+          Commit(home);
+        }
+
+        home = new HomeData(match.Groups[1].Value);
       }
 
-      return new HomeData(match.Groups[1].Value);
+      home?.AddLine(line);
     }
 
-    return current;
+    if (home != null)
+    {
+      Commit(home);
+    }
   }
 
   private static string? GetPickup(string line)
