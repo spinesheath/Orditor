@@ -13,14 +13,12 @@ internal class PickupGraph
     _nameToPickup.Add(pickup.Name, pickup);
   }
 
-  public void AddComments(string home, IEnumerable<string> comments)
+  public void CreateHome(string home)
   {
     if (!_nameToHome.ContainsKey(home))
     {
       _nameToHome.Add(home, new Home(home));
     }
-
-    _nameToHome[home].AddComments(comments);
   }
 
   public void ConnectHome(string home, string target, Requirements requirement)

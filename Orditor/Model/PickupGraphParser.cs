@@ -78,7 +78,7 @@ internal class PickupGraphParser
 
   private void Commit(HomeData home)
   {
-    Graph.AddComments(home.Name, home.Comments);
+    Graph.CreateHome(home.Name);
 
     string? pickup = null;
     string? connection = null;
@@ -157,29 +157,18 @@ internal class PickupGraphParser
       Name = name;
     }
 
-    public IEnumerable<string> Comments => _comments;
     public IEnumerable<string> Lines => _lines;
 
     public string Name { get; }
 
     public void AddLine(string line)
     {
-      if (IsComment(line))
-      {
-        _comments.Add(line);
-      }
-      else if (!HomeRegex.IsMatch(line))
+      if (!HomeRegex.IsMatch(line))
       {
         _lines.Add(line);
       }
     }
 
-    private readonly List<string> _comments = new();
     private readonly List<string> _lines = new();
-
-    private static bool IsComment(string line)
-    {
-      return line.Trim().StartsWith("--");
-    }
   }
 }
