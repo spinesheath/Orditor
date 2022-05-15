@@ -10,12 +10,29 @@ namespace Orditor.Model;
 
 internal class World
 {
+  public World()
+  {
+    _graph = ReadFromAreasOri();
+    _annotations = ReadAnnotations();
+    CalculateHomeLocations();
+  }
+
   public IEnumerable<Home> Homes => _graph.Homes;
   public IEnumerable<Pickup> Pickups => _graph.Pickups;
 
-  public Vector GetLocation(Home home)
+  public IEnumerable<Home> GetConnectedHomes(Home home)
   {
-    var homeElement = GetHomeAnnotation(home);
+    return _graph.GetConnectedHomes(home);
+  }
+
+  public IEnumerable<Pickup> ConnectedPickups(Home home)
+  {
+    return _graph.GetPickups(home);
+  }
+
+  public Vector Location(Home home)
+  {
+    var homeElement = Annotation(home);
     var x = homeElement?.Attribute("x")?.Value;
     var y = homeElement?.Attribute("y")?.Value;
 
@@ -27,34 +44,25 @@ internal class World
     return new Vector(Convert.ToDouble(x, CultureInfo.InvariantCulture), Convert.ToDouble(y, CultureInfo.InvariantCulture));
   }
 
+  public string Raw(Home home)
+  {
+    return string.Empty;
+  }
+
+  private const string AreasOri = "areas.ori";
+  private static readonly string AnnotationsPath = GetPath("annotations.xml");
+  private readonly XElement _annotations;
+  private readonly Dictionary<Home, Vector> _calculatedLocations = new();
+  private readonly PickupGraph _graph;
+
   private Vector CalculatedLocation(Home home)
   {
     return _calculatedLocations.TryGetValue(home, out var location) ? location : new Vector(double.NaN, double.NaN);
   }
 
-  public IEnumerable<Home> GetConnectedHomes(Home home)
-  {
-    return _graph.GetConnectedHomes(home);
-  }
-
-  public IEnumerable<Pickup> GetConnectedPickups(Home home)
-  {
-    return _graph.GetPickups(home);
-  }
-
-  private XElement? GetHomeAnnotation(Home home)
+  private XElement? Annotation(Home home)
   {
     return _annotations.Elements("home").FirstOrDefault(e => e.Attribute("name")?.Value == home.Name);
-  }
-
-  public World()
-  {
-    var graph = ReadFromAreasOri();
-    _graph = graph;
-
-    _annotations = ReadAnnotations();
-
-    CalculateHomeLocations();
   }
 
   private static XElement ReadAnnotations()
@@ -85,7 +93,7 @@ internal class World
       }
     }
 
-    while(noPickups.Count > 0)
+    while (noPickups.Count > 0)
     {
       var home = noPickups.Dequeue();
       var connectedHomes = _graph.GetConnectedHomes(home).ToList();
@@ -97,7 +105,7 @@ internal class World
 
       var withLocations = connectedHomes.Where(h => _calculatedLocations.ContainsKey(h));
       var locations = withLocations.Select(h => _calculatedLocations[h]).ToList();
-        
+
       if (locations.Count == 0)
       {
         noPickups.Enqueue(home);
@@ -119,8 +127,8 @@ internal class World
   private static PickupGraph ReadFromAreasOri()
   {
     var lines = ReadAreas();
-    var parser = new PickupGraphParser();
-    return parser.Parse(lines);
+    var parser = new PickupGraphParser(lines);
+    return parser.Graph;
   }
 
   private static string[] ReadAreas()
@@ -132,17 +140,12 @@ internal class World
   private static string GetPath(string fileName)
   {
     var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-    var snitch = Path.Combine(appData, "Orditor");
-    if (!Directory.Exists(snitch))
+    var directory = Path.Combine(appData, "Orditor");
+    if (!Directory.Exists(directory))
     {
-      Directory.CreateDirectory(snitch);
+      Directory.CreateDirectory(directory);
     }
-    return Path.Combine(snitch, fileName);
-  }
 
-  private const string AreasOri = "areas.ori";
-  private readonly PickupGraph _graph;
-  private readonly Dictionary<Home, Vector> _calculatedLocations = new();
-  private static readonly string AnnotationsPath = GetPath("annotations.xml");
-  private readonly XElement _annotations;
+    return Path.Combine(directory, fileName);
+  }
 }

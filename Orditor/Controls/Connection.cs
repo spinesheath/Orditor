@@ -17,8 +17,8 @@ internal class Connection : Canvas
   public Connection(World world, Selection selection, Home location1, Home location2)
   {
     _selectionSetter = () => selection.Set(location1, location2);
-    var coordinates1 = Coordinates.GameToMap(world.GetLocation(location1));
-    var coordinates2 = Coordinates.GameToMap(world.GetLocation(location2));
+    var coordinates1 = Coordinates.GameToMap(world.Location(location1));
+    var coordinates2 = Coordinates.GameToMap(world.Location(location2));
 
     _marker = GetMarker(coordinates1, coordinates2);
     Children.Add(_marker);
@@ -27,7 +27,7 @@ internal class Connection : Canvas
   public Connection(World world, Selection selection, Home location1, Pickup location2)
   {
     _selectionSetter = () => selection.Set(location1, location2);
-    var coordinates1 = Coordinates.GameToMap(world.GetLocation(location1));
+    var coordinates1 = Coordinates.GameToMap(world.Location(location1));
     var coordinates2 = Coordinates.GameToMap(new Vector(location2.X, location2.Y));
 
     _marker = GetMarker(coordinates1, coordinates2);

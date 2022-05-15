@@ -80,7 +80,7 @@ internal class WorldDisplay : Control
         _graphCanvas.Children.Add(connection);
       }
 
-      var pickups = World.GetConnectedPickups(home1);
+      var pickups = World.ConnectedPickups(home1);
       foreach (var pickup in pickups)
       {
         var connection = new Connection(World, Selection, home1, pickup);
@@ -102,7 +102,7 @@ internal class WorldDisplay : Control
 
       //marker.MouseDown += OnHomeMouseDown;
 
-      var location = World.GetLocation(home);
+      var location = World.Location(home);
       if (double.IsNaN(location.X))
       {
         Canvas.SetTop(marker, 50 + marker.Height / 2);

@@ -28,6 +28,7 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
   public void Selected(Home home)
   {
     SelectedText = home.Name;
+    var raw = _world.Raw(home);
   }
 
   public void Selected(Pickup pickup)

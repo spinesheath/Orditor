@@ -6,7 +6,7 @@ namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
-  public PickupGraph Parse(string[] lines)
+  public PickupGraphParser(string[] lines)
   {
     ReadPickups(lines);
 
@@ -17,9 +17,9 @@ internal class PickupGraphParser
     }
 
     TryCommitHome();
-
-    return _graph;
   }
+
+  public PickupGraph Graph { get; } = new();
 
   //loc: FirstPickup 92 -227 EX15 0 Glades
   private static readonly Regex PickupDefintionRegex =
@@ -37,7 +37,6 @@ internal class PickupGraphParser
   //expert-dboost Grenade Health=6
   private static readonly Regex RequirementRegex = new(@"^\s*([-\w]+)\s+(.*)$");
 
-  private readonly PickupGraph _graph = new();
   private HomeData? _home;
 
   private void TryUpdateHome(string line)
@@ -75,7 +74,7 @@ internal class PickupGraphParser
       return;
     }
 
-    _graph.AddComments(_home.Name, _home.Comments);
+    Graph.AddComments(_home.Name, _home.Comments);
 
     string? pickup = null;
     string? connection = null;
@@ -96,7 +95,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          _graph.ConnectPickup(_home.Name, newPickup, Requirements.Free);
+          Graph.ConnectPickup(_home.Name, newPickup, Requirements.Free);
         }
 
         pickup = newPickup;
@@ -106,7 +105,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          _graph.ConnectHome(_home.Name, newConnection, Requirements.Free);
+          Graph.ConnectHome(_home.Name, newConnection, Requirements.Free);
         }
 
         connection = newConnection;
@@ -116,11 +115,11 @@ internal class PickupGraphParser
       {
         if (pickup != null)
         {
-          _graph.ConnectPickup(_home.Name, pickup, newRequirement);
+          Graph.ConnectPickup(_home.Name, pickup, newRequirement);
         }
         else if (connection != null)
         {
-          _graph.ConnectHome(_home.Name, connection, newRequirement);
+          Graph.ConnectHome(_home.Name, connection, newRequirement);
         }
       }
     }
@@ -145,7 +144,7 @@ internal class PickupGraphParser
       var difficulty = match.Groups[5].Value;
       var zone = match.Groups[6].Value;
 
-      _graph.Add(new Pickup(name, zone, x, y, vanillaContent, difficulty));
+      Graph.Add(new Pickup(name, zone, x, y, vanillaContent, difficulty));
     }
   }
 
