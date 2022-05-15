@@ -7,8 +7,12 @@
              mc:Ignorable="d" 
              x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance Type={x:Type vm:ConnectionEditorViewModel}}">
-    <Grid Background="Black">
+    <DockPanel Background="Black">
         <TextBlock Text="{Binding SelectedText}"
-                   Foreground="White"/>
-    </Grid>
+                   Foreground="White"
+                   DockPanel.Dock="Top"/>
+        <TextBlock Text="{Binding Raw}"
+                   Foreground="White"
+                   DockPanel.Dock="Top"/>
+    </DockPanel>
 </UserControl>

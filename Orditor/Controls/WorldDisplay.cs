@@ -73,7 +73,7 @@ internal class WorldDisplay : Control
 
     foreach (var home1 in World.Homes)
     {
-      var homes = World.GetConnectedHomes(home1);
+      var homes = World.ConnectedHomes(home1);
       foreach (var home2 in homes)
       {
         var connection = new Connection(World, Selection, home1, home2);

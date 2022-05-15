@@ -12,7 +12,9 @@ internal class World
 {
   public World()
   {
-    _graph = ReadFromAreasOri();
+    var parser = ParseAreas();
+    _graph = parser.Graph;
+    _file = parser.File;
     _annotations = ReadAnnotations();
     CalculateHomeLocations();
   }
@@ -20,7 +22,7 @@ internal class World
   public IEnumerable<Home> Homes => _graph.Homes;
   public IEnumerable<Pickup> Pickups => _graph.Pickups;
 
-  public IEnumerable<Home> GetConnectedHomes(Home home)
+  public IEnumerable<Home> ConnectedHomes(Home home)
   {
     return _graph.GetConnectedHomes(home);
   }
@@ -46,7 +48,7 @@ internal class World
 
   public string Raw(Home home)
   {
-    return string.Empty;
+    return _file.GetBlock(home.Name);
   }
 
   private const string AreasOri = "areas.ori";
@@ -54,6 +56,7 @@ internal class World
   private readonly XElement _annotations;
   private readonly Dictionary<Home, Vector> _calculatedLocations = new();
   private readonly PickupGraph _graph;
+  private readonly StructuredFile _file;
 
   private Vector CalculatedLocation(Home home)
   {
@@ -124,17 +127,11 @@ internal class World
     }
   }
 
-  private static PickupGraph ReadFromAreasOri()
-  {
-    var lines = ReadAreas();
-    var parser = new PickupGraphParser(lines);
-    return parser.Graph;
-  }
-
-  private static string[] ReadAreas()
+  private static PickupGraphParser ParseAreas()
   {
     var path = GetPath(AreasOri);
-    return File.Exists(path) ? File.ReadAllLines(path) : Array.Empty<string>();
+    var lines = File.Exists(path) ? File.ReadAllLines(path) : Array.Empty<string>();
+    return new PickupGraphParser(lines);
   }
 
   private static string GetPath(string fileName)

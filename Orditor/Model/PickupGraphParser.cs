@@ -14,6 +14,8 @@ internal class PickupGraphParser
 
   public PickupGraph Graph { get; } = new();
 
+  public StructuredFile File { get; } = new();
+
   //loc: FirstPickup 92 -227 EX15 0 Glades
   private static readonly Regex PickupDefintionRegex =
     new(@"^\s*loc:\s+(\w+)\s+([-\d]+)\s+([-\d]+)\s+(\w+)\s+(\d+)\s+(\w+)");
@@ -32,6 +34,9 @@ internal class PickupGraphParser
 
   private void ReadGraph(string[] lines)
   {
+    var preface = new List<string>();
+    var homeLines = new List<string>();
+
     HomeData? home = null;
 
     foreach (var line in lines)
@@ -39,15 +44,29 @@ internal class PickupGraphParser
       var match = HomeRegex.Match(line);
       if (match.Success)
       {
-        if (home != null)
+        if (home == null)
         {
+          File.AddBlock("preface", string.Join(Environment.NewLine, preface));
+        }
+        else
+        {
+          File.AddBlock(home.Name, string.Join(Environment.NewLine, homeLines));
+          homeLines.Clear();
           Commit(home);
         }
 
         home = new HomeData(match.Groups[1].Value);
       }
 
-      home?.AddLine(line);
+      if (home != null)
+      {
+        home.AddLine(line);
+        homeLines.Add(line);
+      }
+      else
+      {
+        preface.Add(line);
+      }
     }
 
     if (home != null)
@@ -81,17 +100,17 @@ internal class PickupGraphParser
     string? pickup = null;
     string? connection = null;
 
-    var todo = new Queue<string>(home.Lines);
+    var lineQueue = new Queue<string>(home.Lines);
 
-    while (todo.Count > 0)
+    while (lineQueue.Count > 0)
     {
-      var current = todo.Dequeue();
+      var line = lineQueue.Dequeue();
 
-      var newPickup = GetPickup(current);
-      var newConnection = GetConnection(current);
-      var newRequirement = GetRequirement(current);
+      var newPickup = GetPickup(line);
+      var newConnection = GetConnection(line);
+      var newRequirement = GetRequirement(line);
 
-      var nextIsNotRequirement = todo.Count == 0 || GetRequirement(todo.Peek()) == null;
+      var nextIsNotRequirement = lineQueue.Count == 0 || GetRequirement(lineQueue.Peek()) == null;
 
       if (newPickup != null)
       {
