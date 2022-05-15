@@ -10,6 +10,7 @@ internal class Editor : Decorator
   public Editor()
   {
     Initialized += SetChild;
+    _textEditor.TextChanged += OnTextChangedInternal;
   }
 
   public string Text
@@ -19,9 +20,14 @@ internal class Editor : Decorator
   }
 
   public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-    nameof(Text), typeof(string), typeof(Editor), new PropertyMetadata(default(string), OnTextChanged));
+    nameof(Text), typeof(string), typeof(Editor), TextMetadata());
 
   private readonly TextEditor _textEditor = new();
+
+  private static FrameworkPropertyMetadata TextMetadata()
+  {
+    return new FrameworkPropertyMetadata(default(string), OnTextChanged) { BindsTwoWayByDefault = true };
+  }
 
   private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
@@ -30,11 +36,19 @@ internal class Editor : Decorator
 
   private void OnTextChanged()
   {
-    _textEditor.Text = Text;
+    if (_textEditor.Text != Text)
+    {
+      _textEditor.Text = Text;
+    }
   }
 
   private void SetChild(object? sender, EventArgs e)
   {
     Child = _textEditor;
+  }
+
+  private void OnTextChangedInternal(object? sender, EventArgs e)
+  {
+    Text = _textEditor.Text;
   }
 }
