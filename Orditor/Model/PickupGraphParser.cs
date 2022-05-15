@@ -10,13 +10,18 @@ internal class PickupGraphParser
   {
     ReadPickups(lines);
 
+    HomeData? home = null;
+
     foreach (var line in lines)
     {
-      TryUpdateHome(line);
-      _home?.AddLine(line);
+      home = TryUpdate(line, home);
+      home?.AddLine(line);
     }
 
-    TryCommitHome();
+    if (home != null)
+    {
+      Commit(home);
+    }
   }
 
   public PickupGraph Graph { get; } = new();
@@ -37,16 +42,20 @@ internal class PickupGraphParser
   //expert-dboost Grenade Health=6
   private static readonly Regex RequirementRegex = new(@"^\s*([-\w]+)\s+(.*)$");
 
-  private HomeData? _home;
-
-  private void TryUpdateHome(string line)
+  private HomeData? TryUpdate(string line, HomeData? current)
   {
     var match = HomeRegex.Match(line);
     if (match.Success)
     {
-      TryCommitHome();
-      _home = new HomeData(match.Groups[1].Value);
+      if (current != null)
+      {
+        Commit(current);
+      }
+
+      return new HomeData(match.Groups[1].Value);
     }
+
+    return current;
   }
 
   private static string? GetPickup(string line)
@@ -67,19 +76,14 @@ internal class PickupGraphParser
     return match.Success ? new Requirements(match.Groups[0].Value) : null;
   }
 
-  private void TryCommitHome()
+  private void Commit(HomeData home)
   {
-    if (_home == null)
-    {
-      return;
-    }
-
-    Graph.AddComments(_home.Name, _home.Comments);
+    Graph.AddComments(home.Name, home.Comments);
 
     string? pickup = null;
     string? connection = null;
 
-    var todo = new Queue<string>(_home.Lines);
+    var todo = new Queue<string>(home.Lines);
 
     while (todo.Count > 0)
     {
@@ -95,7 +99,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          Graph.ConnectPickup(_home.Name, newPickup, Requirements.Free);
+          Graph.ConnectPickup(home.Name, newPickup, Requirements.Free);
         }
 
         pickup = newPickup;
@@ -105,7 +109,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          Graph.ConnectHome(_home.Name, newConnection, Requirements.Free);
+          Graph.ConnectHome(home.Name, newConnection, Requirements.Free);
         }
 
         connection = newConnection;
@@ -115,16 +119,14 @@ internal class PickupGraphParser
       {
         if (pickup != null)
         {
-          Graph.ConnectPickup(_home.Name, pickup, newRequirement);
+          Graph.ConnectPickup(home.Name, pickup, newRequirement);
         }
         else if (connection != null)
         {
-          Graph.ConnectHome(_home.Name, connection, newRequirement);
+          Graph.ConnectHome(home.Name, connection, newRequirement);
         }
       }
     }
-
-    _home = null;
   }
 
   private void ReadPickups(IEnumerable<string> lines)
