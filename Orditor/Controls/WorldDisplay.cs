@@ -121,14 +121,14 @@ internal class WorldDisplay : Control
 
   private void AddPickupMarkers()
   {
-    if (_graphCanvas == null || World == null)
+    if (_graphCanvas == null || World == null || Selection == null)
     {
       return;
     }
 
     foreach (var pickup in World.Pickups)
     {
-      var marker = PickupMarker(pickup);
+      var marker = PickupMarker(pickup, Selection);
       _graphCanvas.Children.Add(marker);
     }
   }
@@ -143,9 +143,9 @@ internal class WorldDisplay : Control
     _graphCanvas?.Children.Clear();
   }
 
-  private static UIElement PickupMarker(Pickup pickup)
+  private static UIElement PickupMarker(Pickup pickup, Selection selection)
   {
-    var marker = new PickupImage(pickup);
+    var marker = new PickupImage(pickup, selection);
     var p = Coordinates.GameToMap(new Vector(pickup.X, pickup.Y));
     Canvas.SetTop(marker, p.Y - marker.Height / 2);
     Canvas.SetLeft(marker, p.X - marker.Width / 2);

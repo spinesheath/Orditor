@@ -1,20 +1,32 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Orditor.Model;
+using Orditor.Orchestration;
 
 namespace Orditor.Controls;
 
 internal class PickupImage : Image
 {
-  public PickupImage(Pickup pickup)
+  public PickupImage(Pickup pickup, Selection selection)
   {
+    _pickup = pickup;
+    _selection = selection;
     var imageName = PickupImageName(pickup);
 
     Width = 30;
     Height = 30;
     Source = new BitmapImage(new Uri($"pack://application:,,,/Orditor;component/Data/{imageName}"));
     ToolTip = pickup.Name;
+  }
+
+  private readonly Pickup _pickup;
+  private readonly Selection _selection;
+
+  protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+  {
+    _selection.Set(_pickup);
   }
 
   private static string PickupImageName(Pickup pickup)
