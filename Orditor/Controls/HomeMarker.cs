@@ -17,8 +17,6 @@ internal class HomeMarker : Border
 
     Width = Radius;
     Height = Radius;
-
-    Initialized += SetMarker;
   }
 
   private const int Radius = 15;
@@ -27,7 +25,13 @@ internal class HomeMarker : Border
 
   private readonly Selection _selection;
 
-  private void SetMarker(object? sender, EventArgs e)
+  protected override void OnInitialized(EventArgs e)
+  {
+    base.OnInitialized(e);
+    SetMarker();
+  }
+
+  private void SetMarker()
   {
     var marker = new Ellipse();
     marker.Width = Radius;

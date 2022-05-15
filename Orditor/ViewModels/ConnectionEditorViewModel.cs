@@ -30,7 +30,7 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
   public string Raw
   {
     get => _raw;
-    private set
+    set
     {
       if (_raw != value)
       {
