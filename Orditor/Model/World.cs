@@ -32,6 +32,11 @@ internal class World
     return _graph.GetPickups(home);
   }
 
+  public int LineIndex(Home home)
+  {
+    return _file.LineIndex(home.Name);
+  }
+
   public Vector Location(Home home)
   {
     var homeElement = Annotation(home);
@@ -46,17 +51,17 @@ internal class World
     return new Vector(Convert.ToDouble(x, CultureInfo.InvariantCulture), Convert.ToDouble(y, CultureInfo.InvariantCulture));
   }
 
-  public string Raw(Home home)
+  public string RawText()
   {
-    return _file.GetBlock(home.Name);
+    return _file.Content;
   }
 
   private const string AreasOri = "areas.ori";
   private static readonly string AnnotationsPath = GetPath("annotations.xml");
   private readonly XElement _annotations;
   private readonly Dictionary<Home, Vector> _calculatedLocations = new();
-  private readonly PickupGraph _graph;
   private readonly StructuredFile _file;
+  private readonly PickupGraph _graph;
 
   private Vector CalculatedLocation(Home home)
   {
@@ -130,8 +135,8 @@ internal class World
   private static PickupGraphParser ParseAreas()
   {
     var path = GetPath(AreasOri);
-    var lines = File.Exists(path) ? File.ReadAllLines(path) : Array.Empty<string>();
-    return new PickupGraphParser(lines);
+    var text = File.Exists(path) ? File.ReadAllText(path) : string.Empty;
+    return new PickupGraphParser(text);
   }
 
   private static string GetPath(string fileName)

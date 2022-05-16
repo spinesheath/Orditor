@@ -13,6 +13,12 @@ internal class Editor : Decorator
     _textEditor.TextChanged += OnTextChangedInternal;
   }
 
+  public int FocusedLineIndex
+  {
+    get => (int)GetValue(FocusedLineIndexProperty);
+    set => SetValue(FocusedLineIndexProperty, value);
+  }
+
   public string Text
   {
     get => (string)GetValue(TextProperty);
@@ -22,7 +28,21 @@ internal class Editor : Decorator
   public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
     nameof(Text), typeof(string), typeof(Editor), TextMetadata());
 
+  public static readonly DependencyProperty FocusedLineIndexProperty = DependencyProperty.Register(
+    nameof(FocusedLineIndex), typeof(int), typeof(Editor), new PropertyMetadata(default(int), OnLineIndexChanged));
+
   private readonly TextEditor _textEditor = new();
+
+  private static void OnLineIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+  {
+    var editor = (Editor)d;
+    editor.OnLineIndexChanged();
+  }
+
+  private void OnLineIndexChanged()
+  {
+    _textEditor.ScrollTo(FocusedLineIndex, 0);
+  }
 
   private static FrameworkPropertyMetadata TextMetadata()
   {

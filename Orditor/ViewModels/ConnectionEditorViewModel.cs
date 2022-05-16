@@ -5,13 +5,16 @@ namespace Orditor.ViewModels;
 
 internal class ConnectionEditorViewModel : NotificationObject, ISelectionListener
 {
-  private readonly World _world;
   private string _selectedText = string.Empty;
-  private string _raw = string.Empty;
+  private string _rawText = string.Empty;
+  private Home? _selectedHome = null;
+  private readonly World _world;
+  private int _focusedLineIndex;
 
   public ConnectionEditorViewModel(World world)
   {
     _world = world;
+    RawText = world.RawText();
   }
 
   public string SelectedText
@@ -27,40 +30,64 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
     }
   }
 
-  public string Raw
+  public string RawText
   {
-    get => _raw;
+    get => _rawText;
     set
     {
-      if (_raw != value)
+      if (_rawText != value)
       {
-        _raw = value;
+        _rawText = value;
+        UpdateWorld();
         OnPropertyChanged();
       }
     }
   }
 
+  public int FocusedLineIndex
+  {
+    get => _focusedLineIndex;
+    set
+    {
+      if (_focusedLineIndex != value)
+      {
+        _focusedLineIndex = value;
+        OnPropertyChanged();
+      }
+    }
+  }
+
+  private void UpdateWorld()
+  {
+  }
+
   public void Selected(Home home)
   {
+    _selectedHome = home;
     SelectedText = home.Name;
-    Raw = _world.Raw(home);
+    DisplayTextFor(home);
+  }
+
+  private void DisplayTextFor(Home home)
+  {
+    FocusedLineIndex = _world.LineIndex(home);
   }
 
   public void Selected(Pickup pickup)
   {
     SelectedText = pickup.Name;
-    Raw = string.Empty;
+    _selectedHome = null;
   }
 
   public void Selected(Home home1, Home home2)
   {
     SelectedText = $"{home1.Name} - {home2.Name}";
-    Raw = string.Empty;
+    _selectedHome = null;
   }
 
   public void Selected(Home home1, Pickup pickup)
   {
     SelectedText = $"{home1.Name} > {pickup.Name}";
-    Raw = string.Empty;
+    _selectedHome = null;
   }
 }

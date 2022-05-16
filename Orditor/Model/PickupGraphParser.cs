@@ -6,15 +6,17 @@ namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
-  public PickupGraphParser(string[] lines)
+  public PickupGraphParser(string text)
   {
+    File = new StructuredFile(text);
+    var lines = text.Split(Environment.NewLine);
     ReadPickups(lines);
     ReadGraph(lines);
   }
 
   public PickupGraph Graph { get; } = new();
 
-  public StructuredFile File { get; } = new();
+  public StructuredFile File { get; }
 
   //loc: FirstPickup 92 -227 EX15 0 Glades
   private static readonly Regex PickupDefintionRegex =
@@ -34,39 +36,25 @@ internal class PickupGraphParser
 
   private void ReadGraph(string[] lines)
   {
-    var preface = new List<string>();
-    var homeLines = new List<string>();
-
     HomeData? home = null;
 
-    foreach (var line in lines)
+    for (var index = 0; index < lines.Length; index++)
     {
+      var line = lines[index];
       var match = HomeRegex.Match(line);
       if (match.Success)
       {
-        if (home == null)
+        if (home != null)
         {
-          File.AddBlock("preface", string.Join(Environment.NewLine, preface));
-        }
-        else
-        {
-          File.AddBlock(home.Name, string.Join(Environment.NewLine, homeLines));
-          homeLines.Clear();
           Commit(home);
         }
 
-        home = new HomeData(match.Groups[1].Value);
+        var name = match.Groups[1].Value;
+        File.AddBlock(name, index);
+        home = new HomeData(name);
       }
 
-      if (home != null)
-      {
-        home.AddLine(line);
-        homeLines.Add(line);
-      }
-      else
-      {
-        preface.Add(line);
-      }
+      home?.AddLine(line);
     }
 
     if (home != null)

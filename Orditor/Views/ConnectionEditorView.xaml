@@ -12,6 +12,7 @@
         <TextBlock Text="{Binding SelectedText}"
                    Foreground="White"
                    DockPanel.Dock="Top"/>
-        <c:Editor Text="{Binding Raw}"/>
+        <c:Editor Text="{Binding RawText}"
+                  FocusedLineIndex="{Binding FocusedLineIndex}"/>
     </DockPanel>
 </UserControl>

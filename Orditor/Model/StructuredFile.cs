@@ -4,18 +4,22 @@ namespace Orditor.Model;
 
 internal class StructuredFile
 {
-  public void AddBlock(string name, string content)
+  public StructuredFile(string content)
   {
-    _blockNameToIndex[name] = _blocks.Count;
-    _blocks.Add(content);
+    Content = content;
   }
 
-  public string GetBlock(string name)
+  public string Content { get; }
+
+  public void AddBlock(string name, int lineIndex)
   {
-    return _blocks[_blockNameToIndex[name]];
+    _blockNameToLineIndex[name] = lineIndex;
   }
 
-  private readonly Dictionary<string, int> _blockNameToIndex = new();
+  public int LineIndex(string blockName)
+  {
+    return _blockNameToLineIndex[blockName];
+  }
 
-  private readonly List<string> _blocks = new();
+  private readonly Dictionary<string, int> _blockNameToLineIndex = new();
 }
