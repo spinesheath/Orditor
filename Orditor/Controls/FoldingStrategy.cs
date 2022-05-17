@@ -12,12 +12,21 @@ internal class FoldingStrategy
     _foldingManager = foldingManager;
   }
 
-  public void FoldAllBut(string home)
+  public int FoldAllBut(string home)
   {
+    var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      folding.IsFolded = folding.Title.Contains("preface") || (folding.Title.Contains("home") && !folding.Title.Contains(home));
+      var isHome = folding.Title.Contains("home");
+      var fold = folding.Title.Contains("preface") || isHome && !folding.Title.Contains(home);
+      folding.IsFolded = fold;
+      if (isHome && !fold)
+      {
+        unfoldedStartOffset = Math.Min(unfoldedStartOffset, folding.StartOffset);
+      }
     }
+
+    return unfoldedStartOffset;
   }
 
   public void UpdateFoldings(TextDocument document)

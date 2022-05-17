@@ -15,6 +15,7 @@ internal class Editor : Decorator, ISelectionListener
   {
     Initialized += SetChild;
     _textEditor.FontFamily = new FontFamily("Consolas");
+    _textEditor.ShowLineNumbers = true;
     _textEditor.TextChanged += OnTextChangedInternal;
     var foldingManager = FoldingManager.Install(_textEditor.TextArea);
     _foldingStrategy = new FoldingStrategy(foldingManager);
@@ -87,6 +88,12 @@ internal class Editor : Decorator, ISelectionListener
 
   public void Selected(Home home)
   {
-    _foldingStrategy.FoldAllBut(home.Name);
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home.Name);
+    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
+    _textEditor.ScrollToLine(line.LineNumber);
   }
+
+  public void Selected(Pickup pickup) { }
+  public void Selected(Home home1, Home home2) { }
+  public void Selected(Home home1, Pickup pickup) { }
 }
