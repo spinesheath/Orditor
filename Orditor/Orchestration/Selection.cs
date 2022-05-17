@@ -42,5 +42,10 @@ internal class Selection
     }
   }
 
+  public void StopListening(ISelectionListener listener)
+  {
+    _listeners.Remove(listener);
+  }
+
   private readonly List<ISelectionListener> _listeners = new();
 }

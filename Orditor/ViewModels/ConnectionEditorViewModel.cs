@@ -5,29 +5,11 @@ namespace Orditor.ViewModels;
 
 internal class ConnectionEditorViewModel : NotificationObject, ISelectionListener
 {
-  private string _selectedText = string.Empty;
-  private string _rawText = string.Empty;
-  private Home? _selectedHome = null;
-  private readonly World _world;
-  private int _focusedLineIndex;
-
-  public ConnectionEditorViewModel(World world)
+  public ConnectionEditorViewModel(World world, Selection selection)
   {
+    Selection = selection;
     _world = world;
     RawText = world.RawText();
-  }
-
-  public string SelectedText
-  {
-    get => _selectedText;
-    private set
-    {
-      if (_selectedText != value)
-      {
-        _selectedText = value;
-        OnPropertyChanged();
-      }
-    }
   }
 
   public string RawText
@@ -44,50 +26,46 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
     }
   }
 
-  public int FocusedLineIndex
+  public string SelectedText
   {
-    get => _focusedLineIndex;
-    set
+    get => _selectedText;
+    private set
     {
-      if (_focusedLineIndex != value)
+      if (_selectedText != value)
       {
-        _focusedLineIndex = value;
+        _selectedText = value;
         OnPropertyChanged();
       }
     }
   }
 
-  private void UpdateWorld()
-  {
-  }
+  public Selection Selection { get; }
 
   public void Selected(Home home)
   {
-    _selectedHome = home;
     SelectedText = home.Name;
-    DisplayTextFor(home);
-  }
-
-  private void DisplayTextFor(Home home)
-  {
-    FocusedLineIndex = _world.LineIndex(home);
   }
 
   public void Selected(Pickup pickup)
   {
     SelectedText = pickup.Name;
-    _selectedHome = null;
   }
 
   public void Selected(Home home1, Home home2)
   {
     SelectedText = $"{home1.Name} - {home2.Name}";
-    _selectedHome = null;
   }
 
   public void Selected(Home home1, Pickup pickup)
   {
     SelectedText = $"{home1.Name} > {pickup.Name}";
-    _selectedHome = null;
+  }
+
+  private readonly World _world;
+  private string _rawText = string.Empty;
+  private string _selectedText = string.Empty;
+
+  private void UpdateWorld()
+  {
   }
 }

@@ -13,6 +13,6 @@
                    Foreground="White"
                    DockPanel.Dock="Top"/>
         <c:Editor Text="{Binding RawText}"
-                  FocusedLineIndex="{Binding FocusedLineIndex}"/>
+                  Selection="{Binding Selection}"/>
     </DockPanel>
 </UserControl>

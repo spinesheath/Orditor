@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
 
@@ -12,16 +12,11 @@ internal class FoldingStrategy
     _foldingManager = foldingManager;
   }
 
-  public IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)
+  public void FoldAllBut(string home)
   {
-    try
+    foreach (var folding in _foldingManager.AllFoldings)
     {
-      return CreateNewFoldings(document, out firstErrorOffset);
-    }
-    catch
-    {
-      firstErrorOffset = 0;
-      return Enumerable.Empty<NewFolding>();
+      folding.IsFolded = folding.Title.Contains("preface") || (folding.Title.Contains("home") && !folding.Title.Contains(home));
     }
   }
 
@@ -33,6 +28,19 @@ internal class FoldingStrategy
 
   private readonly FoldingManager _foldingManager;
 
+  private IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)
+  {
+    try
+    {
+      return CreateNewFoldings(document, out firstErrorOffset);
+    }
+    catch
+    {
+      firstErrorOffset = 0;
+      return Array.Empty<NewFolding>();
+    }
+  }
+
   private IEnumerable<NewFolding> CreateNewFoldings(TextDocument document, out int firstErrorOffset)
   {
     var candidates = new Stack<NewFolding>();
@@ -42,7 +50,7 @@ internal class FoldingStrategy
     if (document.Lines.Count < 2)
     {
       firstErrorOffset = -1;
-      return Enumerable.Empty<NewFolding>();
+      return Array.Empty<NewFolding>();
     }
 
     try
@@ -71,10 +79,15 @@ internal class FoldingStrategy
             PopAndAdd(candidates, result, previousLine.EndOffset);
           }
 
-          candidates.Push(new OtherFolding(line, trimmed));
+          candidates.Push(new OtherFolding(line, "    " + trimmed));
         }
 
         previousLine = line;
+      }
+
+      while (candidates.Count > 0)
+      {
+        PopAndAdd(candidates, result, previousLine.EndOffset);
       }
 
       firstErrorOffset = -1;
@@ -109,7 +122,7 @@ internal class FoldingStrategy
 
   private class HomeFolding : NewFolding
   {
-    public HomeFolding(DocumentLine line, string name)
+    public HomeFolding(ISegment line, string name)
       : base(line.Offset, line.EndOffset)
     {
       Name = name;
@@ -118,7 +131,7 @@ internal class FoldingStrategy
 
   private class OtherFolding : NewFolding
   {
-    public OtherFolding(DocumentLine line, string name)
+    public OtherFolding(ISegment line, string name)
       : base(line.Offset, line.EndOffset)
     {
       Name = name;

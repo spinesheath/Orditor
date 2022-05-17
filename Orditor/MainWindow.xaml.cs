@@ -12,7 +12,7 @@ internal partial class MainWindow
 
     var selection = new Selection();
     var world = new World();
-    var connectionEditor = new ConnectionEditorViewModel(world);
+    var connectionEditor = new ConnectionEditorViewModel(world, selection);
     selection.Listen(connectionEditor);
     WorldView.DataContext = new WorldViewModel(world, selection);
     ConnectionEditorView.DataContext = connectionEditor;
