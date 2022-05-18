@@ -20,7 +20,7 @@ internal class FoldingStrategy
     foreach (var folding in _foldingManager.AllFoldings)
     {
       var isHome = folding.Title.Contains("home");
-      var fold = folding.Title.Contains("preface") || isHome && !folding.Title.Contains(home.Name);
+      var fold = folding.Title.Contains("preface") || (isHome && !folding.Title.Contains(home.Name));
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -37,8 +37,8 @@ internal class FoldingStrategy
     foreach (var folding in _foldingManager.AllFoldings)
     {
       var isHome = folding.Title.Contains("home");
-      var fold = folding.Title.Contains("preface") || 
-                 isHome && !folding.Title.Contains(home1.Name) && !folding.Title.Contains(home2.Name);
+      var fold = folding.Title.Contains("preface") ||
+                 (isHome && !folding.Title.Contains(home1.Name) && !folding.Title.Contains(home2.Name));
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -51,29 +51,34 @@ internal class FoldingStrategy
 
   public int FoldAllBut(TextDocument document, Pickup pickup)
   {
-    var pickupOffsets = new List<int>();
-    foreach (var line in document.Lines)
-    {
-      var trimmed = document.GetText(line).Trim();
-      if (trimmed.Contains("pickup") && trimmed.Contains(pickup.Name))
-      {
-        pickupOffsets.Add(line.Offset);
-      }
-    }
+    var pickupOffsets = GetPickupOffsets(document, pickup);
 
-    pickupOffsets.Sort();
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var fold = true;
-      foreach (var offset in pickupOffsets)
-      {
-        if (offset >= folding.StartOffset && offset <= folding.EndOffset)
-        {
-          fold = false;
-        }
-      }
+      folding.IsFolded = !pickupOffsets.Any(offset => offset >= folding.StartOffset && offset <= folding.EndOffset);
+    }
 
-      folding.IsFolded = fold;
+    return pickupOffsets.FirstOrDefault();
+  }
+
+  public int FoldAllBut(TextDocument document, Home home, Pickup pickup)
+  {
+    var pickupOffsets = GetPickupOffsets(document, pickup);
+
+    foreach (var folding in _foldingManager.AllFoldings)
+    {
+      if (Is(folding, home))
+      {
+        folding.IsFolded = false;
+      }
+      else if (Is(folding, pickup) && _foldingManager.GetFoldingsContaining(folding.StartOffset).Any(f => Is(f, home)))
+      {
+        folding.IsFolded = false;
+      }
+      else
+      {
+        folding.IsFolded = true;
+      }
     }
 
     return pickupOffsets.FirstOrDefault();
@@ -86,6 +91,31 @@ internal class FoldingStrategy
   }
 
   private readonly FoldingManager _foldingManager;
+
+  private static List<int> GetPickupOffsets(TextDocument document, Pickup pickup)
+  {
+    var pickupOffsets = new List<int>();
+    foreach (var line in document.Lines)
+    {
+      var trimmed = document.GetText(line).Trim();
+      if (trimmed.Contains("pickup") && trimmed.Contains(pickup.Name))
+      {
+        pickupOffsets.Add(line.Offset);
+      }
+    }
+
+    return pickupOffsets;
+  }
+
+  private static bool Is(FoldingSection folding, Pickup pickup)
+  {
+    return folding.Title.Contains("pickup") && folding.Title.Contains(pickup.Name);
+  }
+
+  private static bool Is(FoldingSection folding, Home home)
+  {
+    return folding.Title.Contains("home") && folding.Title.Contains(home.Name);
+  }
 
   private IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)
   {

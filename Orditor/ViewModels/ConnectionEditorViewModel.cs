@@ -56,9 +56,9 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
     SelectedText = $"{home1.Name} - {home2.Name}";
   }
 
-  public void Selected(Home home1, Pickup pickup)
+  public void Selected(Home home, Pickup pickup)
   {
-    SelectedText = $"{home1.Name} > {pickup.Name}";
+    SelectedText = $"{home.Name} > {pickup.Name}";
   }
 
   private readonly World _world;

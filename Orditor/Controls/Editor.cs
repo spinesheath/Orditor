@@ -33,6 +33,30 @@ internal class Editor : Decorator, ISelectionListener
     set => SetValue(TextProperty, value);
   }
 
+  public void Selected(Home home)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home);
+    ScrollTo(unfoldedOffset);
+  }
+
+  public void Selected(Pickup pickup)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(_textEditor.Document, pickup);
+    ScrollTo(unfoldedOffset);
+  }
+
+  public void Selected(Home home1, Home home2)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home1, home2);
+    ScrollTo(unfoldedOffset);
+  }
+
+  public void Selected(Home home, Pickup pickup)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(_textEditor.Document, home, pickup);
+    ScrollTo(unfoldedOffset);
+  }
+
   public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
     nameof(Text), typeof(string), typeof(Editor), TextMetadata());
 
@@ -42,6 +66,12 @@ internal class Editor : Decorator, ISelectionListener
   private readonly FoldingStrategy _foldingStrategy;
 
   private readonly TextEditor _textEditor = new();
+
+  private void ScrollTo(int unfoldedOffset)
+  {
+    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
+    _textEditor.ScrollTo(line.LineNumber, 0);
+  }
 
   private static void OnSelectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
@@ -85,27 +115,4 @@ internal class Editor : Decorator, ISelectionListener
   {
     Text = _textEditor.Text;
   }
-
-  public void Selected(Home home)
-  {
-    var unfoldedOffset = _foldingStrategy.FoldAllBut(home);
-    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
-    _textEditor.ScrollTo(line.LineNumber, 0);
-  }
-
-  public void Selected(Pickup pickup)
-  {
-    var unfoldedOffset = _foldingStrategy.FoldAllBut(_textEditor.Document, pickup);
-    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
-    _textEditor.ScrollTo(line.LineNumber, 0);
-  }
-
-  public void Selected(Home home1, Home home2)
-  {
-    var unfoldedOffset = _foldingStrategy.FoldAllBut(home1, home2);
-    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
-    _textEditor.ScrollTo(line.LineNumber, 0);
-  }
-
-  public void Selected(Home home1, Pickup pickup) { }
 }
