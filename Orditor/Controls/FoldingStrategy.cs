@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Folding;
+using Orditor.Model;
 
 namespace Orditor.Controls;
 
@@ -12,13 +14,13 @@ internal class FoldingStrategy
     _foldingManager = foldingManager;
   }
 
-  public int FoldAllBut(string home)
+  public int FoldAllBut(Home home)
   {
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
       var isHome = folding.Title.Contains("home");
-      var fold = folding.Title.Contains("preface") || isHome && !folding.Title.Contains(home);
+      var fold = folding.Title.Contains("preface") || isHome && !folding.Title.Contains(home.Name);
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -27,6 +29,54 @@ internal class FoldingStrategy
     }
 
     return unfoldedStartOffset;
+  }
+
+  public int FoldAllBut(Home home1, Home home2)
+  {
+    var unfoldedStartOffset = int.MaxValue;
+    foreach (var folding in _foldingManager.AllFoldings)
+    {
+      var isHome = folding.Title.Contains("home");
+      var fold = folding.Title.Contains("preface") || 
+                 isHome && !folding.Title.Contains(home1.Name) && !folding.Title.Contains(home2.Name);
+      folding.IsFolded = fold;
+      if (isHome && !fold)
+      {
+        unfoldedStartOffset = Math.Min(unfoldedStartOffset, folding.StartOffset);
+      }
+    }
+
+    return unfoldedStartOffset;
+  }
+
+  public int FoldAllBut(TextDocument document, Pickup pickup)
+  {
+    var pickupOffsets = new List<int>();
+    foreach (var line in document.Lines)
+    {
+      var trimmed = document.GetText(line).Trim();
+      if (trimmed.Contains("pickup") && trimmed.Contains(pickup.Name))
+      {
+        pickupOffsets.Add(line.Offset);
+      }
+    }
+
+    pickupOffsets.Sort();
+    foreach (var folding in _foldingManager.AllFoldings)
+    {
+      var fold = true;
+      foreach (var offset in pickupOffsets)
+      {
+        if (offset >= folding.StartOffset && offset <= folding.EndOffset)
+        {
+          fold = false;
+        }
+      }
+
+      folding.IsFolded = fold;
+    }
+
+    return pickupOffsets.FirstOrDefault();
   }
 
   public void UpdateFoldings(TextDocument document)

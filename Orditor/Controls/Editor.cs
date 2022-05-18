@@ -88,12 +88,24 @@ internal class Editor : Decorator, ISelectionListener
 
   public void Selected(Home home)
   {
-    var unfoldedOffset = _foldingStrategy.FoldAllBut(home.Name);
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home);
     var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
-    _textEditor.ScrollToLine(line.LineNumber);
+    _textEditor.ScrollTo(line.LineNumber, 0);
   }
 
-  public void Selected(Pickup pickup) { }
-  public void Selected(Home home1, Home home2) { }
+  public void Selected(Pickup pickup)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(_textEditor.Document, pickup);
+    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
+    _textEditor.ScrollTo(line.LineNumber, 0);
+  }
+
+  public void Selected(Home home1, Home home2)
+  {
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home1, home2);
+    var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
+    _textEditor.ScrollTo(line.LineNumber, 0);
+  }
+
   public void Selected(Home home1, Pickup pickup) { }
 }
