@@ -5,11 +5,11 @@ namespace Orditor.Model;
 
 internal class World
 {
-  public World(string rawText, PickupGraph graph)
+  public World(string rawText, PickupGraph graph, Annotations annotations)
   {
-    _graph = graph;
     _rawText = rawText;
-    _annotations = new Annotations(_graph);
+    _graph = graph;
+    _annotations = annotations;
   }
 
   public IEnumerable<Home> Homes => _graph.Homes;

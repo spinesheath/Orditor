@@ -21,7 +21,9 @@ internal partial class MainWindow
 
     var text = file.Areas;
     var parser = new PickupGraphParser(text);
-    var world = new World(text, parser.Graph);
+    var graph = parser.Graph;
+    var annotations = new Annotations(graph);
+    var world = new World(text, graph, annotations);
 
     var selection = new Selection();
     var connectionEditor = new ConnectionEditorViewModel(world, selection);
