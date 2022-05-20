@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Orditor.Model;
 
@@ -18,22 +17,6 @@ internal class PickupGraphParser
 
   public StructuredFile File { get; }
 
-  //loc: FirstPickup 92 -227 EX15 0 Glades
-  private static readonly Regex PickupDefintionRegex =
-    new(@"^\s*loc:\s+(\w+)\s+([-\d]+)\s+([-\d]+)\s+(\w+)\s+(\d+)\s+(\w+)");
-
-  //home: SunkenGladesRunaway
-  private static readonly Regex HomeRegex = new(@"^\s*home:\s+(\w+)");
-
-  //pickup: FirstPickup
-  private static readonly Regex PickupReferenceRegex = new(@"^\s*pickup:\s+(\w+)");
-
-  //conn: GladesMain
-  private static readonly Regex ConnectionRegex = new(@"^\s*conn:\s+(\w+)");
-
-  //expert-dboost Grenade Health=6
-  private static readonly Regex RequirementRegex = new(@"^\s*([-\w]+)\s+(.*)$");
-
   private void ReadGraph(string[] lines)
   {
     HomeData? home = null;
@@ -41,44 +24,27 @@ internal class PickupGraphParser
     for (var index = 0; index < lines.Length; index++)
     {
       var line = lines[index];
-      var match = HomeRegex.Match(line);
-      if (match.Success)
+      var name = LineParser.TryHome(line);
+      if (name != null)
       {
         if (home != null)
         {
           Commit(home);
         }
 
-        var name = match.Groups[1].Value;
         File.AddBlock(name, index);
         home = new HomeData(name);
       }
-
-      home?.AddLine(line);
+      else
+      {
+        home?.AddLine(line);
+      }
     }
 
     if (home != null)
     {
       Commit(home);
     }
-  }
-
-  private static string? GetPickup(string line)
-  {
-    var match = PickupReferenceRegex.Match(line);
-    return match.Success ? match.Groups[1].Value : null;
-  }
-
-  private static string? GetConnection(string line)
-  {
-    var match = ConnectionRegex.Match(line);
-    return match.Success ? match.Groups[1].Value : null;
-  }
-
-  private static Requirements? GetRequirement(string line)
-  {
-    var match = RequirementRegex.Match(line);
-    return match.Success ? new Requirements(match.Groups[0].Value) : null;
   }
 
   private void Commit(HomeData home)
@@ -94,11 +60,11 @@ internal class PickupGraphParser
     {
       var line = lineQueue.Dequeue();
 
-      var newPickup = GetPickup(line);
-      var newConnection = GetConnection(line);
-      var newRequirement = GetRequirement(line);
+      var newPickup = LineParser.TryPickupReference(line);
+      var newConnection = LineParser.TryConnection(line);
+      var newRequirement = LineParser.TryRequirement(line);
 
-      var nextIsNotRequirement = lineQueue.Count == 0 || GetRequirement(lineQueue.Peek()) == null;
+      var nextIsNotRequirement = lineQueue.Count == 0 || LineParser.TryRequirement(lineQueue.Peek()) == null;
 
       if (newPickup != null)
       {
@@ -138,20 +104,11 @@ internal class PickupGraphParser
   {
     foreach (var line in lines)
     {
-      var match = PickupDefintionRegex.Match(line);
-      if (!match.Success)
+      var pickup = LineParser.TryPickupDefinition(line);
+      if (pickup != null)
       {
-        continue;
+        Graph.Add(pickup);
       }
-
-      var name = match.Groups[1].Value;
-      var x = Convert.ToInt32(match.Groups[2].Value);
-      var y = Convert.ToInt32(match.Groups[3].Value);
-      var vanillaContent = match.Groups[4].Value;
-      var difficulty = match.Groups[5].Value;
-      var zone = match.Groups[6].Value;
-
-      Graph.Add(new Pickup(name, zone, x, y, vanillaContent, difficulty));
     }
   }
 
@@ -168,10 +125,7 @@ internal class PickupGraphParser
 
     public void AddLine(string line)
     {
-      if (!HomeRegex.IsMatch(line))
-      {
-        _lines.Add(line);
-      }
+      _lines.Add(line);
     }
 
     private readonly List<string> _lines = new();
