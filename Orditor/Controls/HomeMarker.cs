@@ -13,15 +13,15 @@ internal class HomeMarker : Border
   public HomeMarker(Home home, Selection selection)
   {
     _selection = selection;
-    _home = home;
+    Home = home;
 
     Width = Radius;
     Height = Radius;
   }
 
-  private const int Radius = 15;
+  public Home Home { get; }
 
-  private readonly Home _home;
+  private const int Radius = 15;
 
   private readonly Selection _selection;
 
@@ -39,12 +39,12 @@ internal class HomeMarker : Border
     marker.Stroke = Brushes.White;
     marker.StrokeThickness = 1;
     marker.Fill = Brushes.White;
-    marker.ToolTip = _home.Name;
+    marker.ToolTip = Home.Name;
     Child = marker;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
   {
-    _selection.Set(_home);
+    _selection.Set(Home);
   }
 }

@@ -32,11 +32,6 @@ internal class World
     return _graph.GetPickups(home);
   }
 
-  public int LineIndex(Home home)
-  {
-    return _file.LineIndex(home.Name);
-  }
-
   public Vector Location(Home home)
   {
     var homeElement = Annotation(home);
@@ -54,6 +49,31 @@ internal class World
   public string RawText()
   {
     return _file.Content;
+  }
+
+  public void SetLocation(Home home, Vector gamePosition)
+  {
+    if (double.IsNaN(gamePosition.X) || double.IsNaN(gamePosition.Y))
+    {
+      return;
+    }
+
+    var homeElement = _annotations.Elements("home").FirstOrDefault(e => e.Attribute("name")?.Value == home.Name);
+    if (homeElement == null)
+    {
+      var name = new XAttribute("name", home.Name);
+      var x = new XAttribute("x", gamePosition.X.ToString(CultureInfo.InvariantCulture));
+      var y = new XAttribute("y", gamePosition.Y.ToString(CultureInfo.InvariantCulture));
+      var xElement = new XElement("home", name, x, y);
+      _annotations.Add(xElement);
+    }
+    else
+    {
+      homeElement.SetAttributeValue("x", gamePosition.X.ToString(CultureInfo.InvariantCulture));
+      homeElement.SetAttributeValue("y", gamePosition.Y.ToString(CultureInfo.InvariantCulture));
+    }
+
+    _annotations.Save(AnnotationsPath);
   }
 
   private const string AreasOri = "areas.ori";

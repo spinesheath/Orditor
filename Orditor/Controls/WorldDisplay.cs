@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Orditor.Model;
 using Orditor.Orchestration;
 
@@ -8,32 +10,21 @@ namespace Orditor.Controls;
 [TemplatePart(Name = "PART_GraphCanvas", Type = typeof(Canvas))]
 internal class WorldDisplay : Control
 {
-  public static readonly DependencyProperty WorldProperty = DependencyProperty.Register(
-    nameof(World), typeof(World), typeof(WorldDisplay), new PropertyMetadata(default(World), OnGraphChanged));
-
-  public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-    nameof(Selection), typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection), OnGraphChanged));
-
-  private Canvas? _graphCanvas;
-  //private Point _panGripPosition;
-  //private HomeMarker _pannedMarker;
-  //private Vector _panPreviousOffset;
-
   static WorldDisplay()
   {
     DefaultStyleKeyProperty.OverrideMetadata(typeof(WorldDisplay), new FrameworkPropertyMetadata(typeof(WorldDisplay)));
-  }
-
-  public World? World
-  {
-    get => (World?)GetValue(WorldProperty);
-    set => SetValue(WorldProperty, value);
   }
 
   public Selection? Selection
   {
     get => (Selection?)GetValue(SelectionProperty);
     set => SetValue(SelectionProperty, value);
+  }
+
+  public World? World
+  {
+    get => (World?)GetValue(WorldProperty);
+    set => SetValue(WorldProperty, value);
   }
 
   public override void OnApplyTemplate()
@@ -45,9 +36,20 @@ internal class WorldDisplay : Control
     OnGraphChanged();
   }
 
+  public static readonly DependencyProperty WorldProperty = DependencyProperty.Register(
+    nameof(World), typeof(World), typeof(WorldDisplay), new PropertyMetadata(default(World), OnGraphChanged));
+
+  public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
+    nameof(Selection), typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection), OnGraphChanged));
+
+  private Canvas? _graphCanvas;
+  private Point _panGripPosition;
+  private HomeMarker? _pannedMarker;
+  private Vector _panPreviousOffset;
+
   private static void OnGraphChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
-    var c = (WorldDisplay) d;
+    var c = (WorldDisplay)d;
     c.OnGraphChanged();
   }
 
@@ -100,7 +102,7 @@ internal class WorldDisplay : Control
     {
       var marker = new HomeMarker(home, Selection);
 
-      //marker.MouseDown += OnHomeMouseDown;
+      marker.MouseDown += OnHomeMouseDown;
 
       var location = World.Location(home);
       if (double.IsNaN(location.X))
@@ -135,12 +137,17 @@ internal class WorldDisplay : Control
 
   private void ClearMarkers()
   {
-    //foreach (var child in _graphCanvas.Children.OfType<HomeMarker>())
-    //{
-    //  child.MouseDown -= OnHomeMouseDown;
-    //}
+    if (_graphCanvas == null)
+    {
+      return;
+    }
 
-    _graphCanvas?.Children.Clear();
+    foreach (var child in _graphCanvas.Children.OfType<HomeMarker>())
+    {
+      child.MouseDown -= OnHomeMouseDown;
+    }
+
+    _graphCanvas.Children.Clear();
   }
 
   private static UIElement PickupMarker(Pickup pickup, Selection selection)
@@ -152,60 +159,63 @@ internal class WorldDisplay : Control
     return marker;
   }
 
-  //private void OnHomeMouseDown(object sender, MouseButtonEventArgs e)
-  //{
-  //  var marker = (HomeMarker) sender;
-  //  StartPan(marker, e.GetPosition(this));
-  //  e.Handled = true;
-  //}
+  private void OnHomeMouseDown(object sender, MouseButtonEventArgs e)
+  {
+    var marker = (HomeMarker)sender;
+    StartPan(marker, e.GetPosition(this));
+    e.Handled = true;
+  }
 
-  //protected override void OnMouseUp(MouseButtonEventArgs e)
-  //{
-  //  if (IsPanning())
-  //  {
-  //    e.Handled = true;
-  //    StopPan();
-  //  }
-  //}
+  protected override void OnMouseUp(MouseButtonEventArgs e)
+  {
+    if (IsPanning())
+    {
+      e.Handled = true;
+      StopPan();
+    }
+  }
 
-  //protected override void OnMouseMove(MouseEventArgs e)
-  //{
-  //  if (IsPanning())
-  //  {
-  //    var panCurrent = e.GetPosition(this);
-  //    var newOffset = panCurrent - _panGripPosition + _panPreviousOffset;
+  protected override void OnMouseMove(MouseEventArgs e)
+  {
+    if (IsPanning() && _pannedMarker != null)
+    {
+      var panCurrent = e.GetPosition(this);
+      var newOffset = panCurrent - _panGripPosition + _panPreviousOffset;
 
-  //    Canvas.SetLeft(_pannedMarker, newOffset.X);
-  //    Canvas.SetTop(_pannedMarker, newOffset.Y);
+      Canvas.SetLeft(_pannedMarker, newOffset.X);
+      Canvas.SetTop(_pannedMarker, newOffset.Y);
 
-  //    e.Handled = true;
-  //  }
-  //}
+      e.Handled = true;
+    }
+  }
 
-  //private bool IsPanning()
-  //{
-  //  return IsMouseCaptured;
-  //}
+  private bool IsPanning()
+  {
+    return IsMouseCaptured;
+  }
 
-  //private void StartPan(HomeMarker marker, Point p)
-  //{
-  //  _pannedMarker = marker;
-  //  _panGripPosition = p;
-  //  _panPreviousOffset = new Vector(Canvas.GetLeft(_pannedMarker), Canvas.GetTop(_pannedMarker));
-  //  Cursor = Cursors.Hand;
-  //  CaptureMouse();
-  //}
+  private void StartPan(HomeMarker marker, Point p)
+  {
+    _pannedMarker = marker;
+    _panGripPosition = p;
+    _panPreviousOffset = new Vector(Canvas.GetLeft(_pannedMarker), Canvas.GetTop(_pannedMarker));
+    Cursor = Cursors.Hand;
+    CaptureMouse();
+  }
 
-  //private void StopPan()
-  //{
-  //  var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
-  //  var gamePosition = Coordinates.MapToGame(mapPosition);
-  //  World.SetLocation(_pannedMarker.Home, gamePosition);
+  private void StopPan()
+  {
+    if (World != null && _pannedMarker != null)
+    {
+      var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
+      var gamePosition = Coordinates.MapToGame(mapPosition);
+      World.SetLocation(_pannedMarker.Home, gamePosition);
+    }
 
-  //  Cursor = Cursors.Arrow;
-  //  _pannedMarker = null;
-  //  ReleaseMouseCapture();
+    Cursor = Cursors.Arrow;
+    _pannedMarker = null;
+    ReleaseMouseCapture();
 
-  //  OnGraphChanged();
-  //}
+    OnGraphChanged();
+  }
 }
