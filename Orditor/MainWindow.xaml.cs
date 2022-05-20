@@ -19,7 +19,7 @@ internal partial class MainWindow
       return;
     }
 
-    var text = file.AreasText();
+    var text = file.Areas;
     var parser = new PickupGraphParser(text);
     var world = new World(text, parser.Graph);
 
