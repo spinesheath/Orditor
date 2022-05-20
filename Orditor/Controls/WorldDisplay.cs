@@ -209,7 +209,11 @@ internal class WorldDisplay : Control
     {
       var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
       var gamePosition = Coordinates.MapToGame(mapPosition);
-      World.SetLocation(_pannedMarker.Home, gamePosition);
+      var d = World.Location(_pannedMarker.Home) - gamePosition;
+      if (d.LengthSquared > 15d)
+      {
+        World.SetLocation(_pannedMarker.Home, gamePosition);
+      }
     }
 
     Cursor = Cursors.Arrow;
