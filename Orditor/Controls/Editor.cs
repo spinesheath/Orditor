@@ -53,7 +53,7 @@ internal class Editor : Decorator, ISelectionListener
 
   public void Selected(Home home, Pickup pickup)
   {
-    var unfoldedOffset = _foldingStrategy.FoldAllBut(_textEditor.Document, home, pickup);
+    var unfoldedOffset = _foldingStrategy.FoldAllBut(home, pickup);
     ScrollTo(unfoldedOffset);
   }
 

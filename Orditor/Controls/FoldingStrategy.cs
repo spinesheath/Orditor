@@ -38,12 +38,14 @@ internal class FoldingStrategy
     foreach (var folding in _foldingManager.AllFoldings)
     {
       var possibleHome = LineParser.TryHome(folding.Title);
-      var isHome = possibleHome != null;
-      var fold = IsPreface(folding) || (isHome && possibleHome != home1.Name && possibleHome != home2.Name);
-      folding.IsFolded = fold;
-      if (isHome && !fold)
+      if (possibleHome == home1.Name || possibleHome == home2.Name || Connects(folding, home1, home2))
       {
+        folding.IsFolded = false;
         unfoldedStartOffset = Math.Min(unfoldedStartOffset, folding.StartOffset);
+      }
+      else
+      {
+        folding.IsFolded = true;
       }
     }
 
@@ -62,17 +64,17 @@ internal class FoldingStrategy
     return pickupOffsets.FirstOrDefault();
   }
 
-  public int FoldAllBut(TextDocument document, Home home, Pickup pickup)
+  public int FoldAllBut(Home home, Pickup pickup)
   {
-    var pickupOffsets = GetPickupOffsets(document, pickup);
-
+    var offset = 0;
     foreach (var folding in _foldingManager.AllFoldings)
     {
       if (Is(folding, home))
       {
         folding.IsFolded = false;
+        offset = folding.StartOffset;
       }
-      else if (Is(folding, pickup) && _foldingManager.GetFoldingsContaining(folding.StartOffset).Any(f => Is(f, home)))
+      else if (Is(folding, pickup) && IsInside(folding, home))
       {
         folding.IsFolded = false;
       }
@@ -82,7 +84,7 @@ internal class FoldingStrategy
       }
     }
 
-    return pickupOffsets.FirstOrDefault();
+    return offset;
   }
 
   public void UpdateFoldings(TextDocument document)
@@ -94,6 +96,17 @@ internal class FoldingStrategy
   private const string Preface = "preface";
 
   private readonly FoldingManager _foldingManager;
+
+  private bool Connects(FoldingSection folding, Home home1, Home home2)
+  {
+    var connection = LineParser.TryConnection(folding.Title);
+    return (connection == home1.Name && IsInside(folding, home2)) || (connection == home2.Name && IsInside(folding, home1));
+  }
+
+  private bool IsInside(FoldingSection folding, Home home)
+  {
+    return _foldingManager.GetFoldingsContaining(folding.StartOffset).Any(f => Is(f, home));
+  }
 
   private static bool IsPreface(FoldingSection folding)
   {
