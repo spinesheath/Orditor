@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml.Linq;
@@ -10,9 +9,8 @@ namespace Orditor.Model;
 
 internal class Annotations
 {
-  public Annotations(string path, PickupGraph graph)
+  public Annotations(PickupGraph graph)
   {
-    _annotationsPath = path;
     _graph = graph;
     _annotations = ReadAnnotations();
     CalculateHomeLocations();
@@ -32,34 +30,8 @@ internal class Annotations
     return new Vector(Convert.ToDouble(x, CultureInfo.InvariantCulture), Convert.ToDouble(y, CultureInfo.InvariantCulture));
   }
 
-  public void SetLocation(Home home, Vector gamePosition)
-  {
-    if (double.IsNaN(gamePosition.X) || double.IsNaN(gamePosition.Y))
-    {
-      return;
-    }
-
-    var homeElement = _annotations.Elements("home").FirstOrDefault(e => e.Attribute("name")?.Value == home.Name);
-    if (homeElement == null)
-    {
-      var name = new XAttribute("name", home.Name);
-      var x = new XAttribute("x", gamePosition.X.ToString(CultureInfo.InvariantCulture));
-      var y = new XAttribute("y", gamePosition.Y.ToString(CultureInfo.InvariantCulture));
-      var xElement = new XElement("home", name, x, y);
-      _annotations.Add(xElement);
-    }
-    else
-    {
-      homeElement.SetAttributeValue("x", gamePosition.X.ToString(CultureInfo.InvariantCulture));
-      homeElement.SetAttributeValue("y", gamePosition.Y.ToString(CultureInfo.InvariantCulture));
-    }
-
-    _annotations.Save(_annotationsPath);
-  }
-
+  private const string ResourceName = "Orditor.Data.annotations.xml";
   private readonly XElement _annotations;
-
-  private readonly string _annotationsPath;
   private readonly Dictionary<Home, Vector> _calculatedLocations = new();
   private readonly PickupGraph _graph;
 
@@ -73,9 +45,11 @@ internal class Annotations
     return _annotations.Elements("home").FirstOrDefault(e => e.Attribute("name")?.Value == home.Name);
   }
 
-  private XElement ReadAnnotations()
+  private static XElement ReadAnnotations()
   {
-    return File.Exists(_annotationsPath) ? XElement.Load(_annotationsPath) : new XElement("annotations");
+    var assembly = typeof(Annotations).Assembly;
+    using var stream = assembly.GetManifestResourceStream(ResourceName);
+    return XElement.Load(stream!);
   }
 
   private void CalculateHomeLocations()

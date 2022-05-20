@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <None Remove="Data\ac.png" />
+    <None Remove="Data\annotations.xml" />
     <None Remove="Data\cleanwater.png" />
     <None Remove="Data\ec.png" />
     <None Remove="Data\gumonseal.png" />
@@ -34,6 +35,10 @@
     <None Remove="Data\windrestored.png" />
     <None Remove="Data\world.png" />
     <None Remove="Data\xp.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\annotations.xml" />
   </ItemGroup>
 
   <ItemGroup>
