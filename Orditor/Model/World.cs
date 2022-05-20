@@ -7,11 +7,10 @@ namespace Orditor.Model;
 
 internal class World
 {
-  public World()
+  public World(string rawText, PickupGraph graph)
   {
-    var parser = ParseAreas();
-    _graph = parser.Graph;
-    _file = parser.File;
+    _graph = graph;
+    _rawText = rawText;
     _annotations = new Annotations(AnnotationsPath, _graph);
   }
 
@@ -35,25 +34,18 @@ internal class World
 
   public string RawText()
   {
-    return _file.Content;
+    return _rawText;
   }
 
   public void SetLocation(Home home, Vector gamePosition)
   {
     _annotations.SetLocation(home, gamePosition);
   }
-
-  private static readonly string AreasOriPath = GetPath("areas.ori");
+  
   private static readonly string AnnotationsPath = GetPath("annotations.xml");
   private readonly Annotations _annotations;
-  private readonly StructuredFile _file;
   private readonly PickupGraph _graph;
-
-  private static PickupGraphParser ParseAreas()
-  {
-    var text = File.Exists(AreasOriPath) ? File.ReadAllText(AreasOriPath) : string.Empty;
-    return new PickupGraphParser(text);
-  }
+  private readonly string _rawText;
 
   private static string GetPath(string fileName)
   {

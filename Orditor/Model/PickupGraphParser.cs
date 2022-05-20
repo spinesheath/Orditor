@@ -7,23 +7,18 @@ internal class PickupGraphParser
 {
   public PickupGraphParser(string text)
   {
-    File = new StructuredFile(text);
     var lines = text.Split(Environment.NewLine);
     ReadPickups(lines);
     ReadGraph(lines);
   }
 
   public PickupGraph Graph { get; } = new();
-
-  public StructuredFile File { get; }
-
-  private void ReadGraph(string[] lines)
+  
+  private void ReadGraph(IEnumerable<string> lines)
   {
     HomeData? home = null;
-
-    for (var index = 0; index < lines.Length; index++)
+    foreach (var line in lines)
     {
-      var line = lines[index];
       var name = LineParser.TryHome(line);
       if (name != null)
       {
@@ -31,8 +26,7 @@ internal class PickupGraphParser
         {
           Commit(home);
         }
-
-        File.AddBlock(name, index);
+        
         home = new HomeData(name);
       }
       else
