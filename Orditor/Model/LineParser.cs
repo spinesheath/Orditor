@@ -5,6 +5,21 @@ namespace Orditor.Model;
 
 internal static class LineParser
 {
+  public static bool IsConnection(string line)
+  {
+    return ConnectionRegex.Match(line).Success;
+  }
+
+  public static bool IsHome(string line)
+  {
+    return HomeRegex.Match(line).Success;
+  }
+
+  public static bool IsPickupReference(string line)
+  {
+    return PickupReferenceRegex.Match(line).Success;
+  }
+
   public static string? TryConnection(string line)
   {
     var match = ConnectionRegex.Match(line);

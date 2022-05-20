@@ -19,8 +19,9 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var isHome = folding.Title.Contains("home");
-      var fold = folding.Title.Contains("preface") || (isHome && !folding.Title.Contains(home.Name));
+      var possibleHome = LineParser.TryHome(folding.Title);
+      var isHome = possibleHome != null;
+      var fold = IsPreface(folding) || (isHome && home.Name != possibleHome);
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -36,9 +37,9 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var isHome = folding.Title.Contains("home");
-      var fold = folding.Title.Contains("preface") ||
-                 (isHome && !folding.Title.Contains(home1.Name) && !folding.Title.Contains(home2.Name));
+      var possibleHome = LineParser.TryHome(folding.Title);
+      var isHome = possibleHome != null;
+      var fold = IsPreface(folding) || (isHome && possibleHome != home1.Name && possibleHome != home2.Name);
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -90,15 +91,22 @@ internal class FoldingStrategy
     _foldingManager.UpdateFoldings(foldings, firstErrorOffset);
   }
 
+  private const string Preface = "preface";
+
   private readonly FoldingManager _foldingManager;
+
+  private static bool IsPreface(FoldingSection folding)
+  {
+    return folding.Title == Preface;
+  }
 
   private static List<int> GetPickupOffsets(TextDocument document, Pickup pickup)
   {
     var pickupOffsets = new List<int>();
     foreach (var line in document.Lines)
     {
-      var trimmed = document.GetText(line).Trim();
-      if (trimmed.Contains("pickup") && trimmed.Contains(pickup.Name))
+      var possiblePickup = LineParser.TryPickupReference(document.GetText(line));
+      if (possiblePickup == pickup.Name)
       {
         pickupOffsets.Add(line.Offset);
       }
@@ -109,12 +117,12 @@ internal class FoldingStrategy
 
   private static bool Is(FoldingSection folding, Pickup pickup)
   {
-    return folding.Title.Contains("pickup") && folding.Title.Contains(pickup.Name);
+    return LineParser.TryPickupReference(folding.Title) == pickup.Name;
   }
 
   private static bool Is(FoldingSection folding, Home home)
   {
-    return folding.Title.Contains("home") && folding.Title.Contains(home.Name);
+    return LineParser.TryHome(folding.Title) == home.Name;
   }
 
   private IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)
@@ -146,29 +154,29 @@ internal class FoldingStrategy
     {
       var lines = document.Lines;
       var previousLine = lines[0];
-      candidates.Push(new OtherFolding(previousLine, "preface"));
+      candidates.Push(new OtherFolding(previousLine, Preface));
       for (; index < lines.Count; index++)
       {
         var line = lines[index];
-        var trimmed = document.GetText(line).Trim();
-        if (trimmed.StartsWith("home"))
+        var text = document.GetText(line);
+        if (LineParser.IsHome(text))
         {
           while (candidates.Count > 0)
           {
             PopAndAdd(candidates, result, previousLine.EndOffset);
           }
 
-          candidates.Push(new HomeFolding(line, trimmed));
+          candidates.Push(new HomeFolding(line, text));
         }
 
-        if (trimmed.StartsWith("pickup") || trimmed.StartsWith("conn"))
+        if (LineParser.IsPickupReference(text) || LineParser.IsConnection(text))
         {
           if (candidates.Peek() is OtherFolding)
           {
             PopAndAdd(candidates, result, previousLine.EndOffset);
           }
 
-          candidates.Push(new OtherFolding(line, "    " + trimmed));
+          candidates.Push(new OtherFolding(line, "    " + text.Trim()));
         }
 
         previousLine = line;
