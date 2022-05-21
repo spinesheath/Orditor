@@ -16,39 +16,39 @@ internal class PickupGraphParser
   
   private void ReadGraph(IEnumerable<string> lines)
   {
-    HomeData? home = null;
+    var linesForCurrentHome = new Queue<string>();
+    Home? home = null;
     foreach (var line in lines)
     {
-      var name = LineParser.TryHome(line);
-      if (name != null)
+      var possibleHome = LineParser.TryHome(line);
+      if (possibleHome != null)
       {
         if (home != null)
         {
-          Commit(home);
+          Commit(home, linesForCurrentHome);
         }
         
-        home = new HomeData(name);
+        home = possibleHome;
+        linesForCurrentHome.Clear();
       }
       else
       {
-        home?.AddLine(line);
+        linesForCurrentHome.Enqueue(line);
       }
     }
 
     if (home != null)
     {
-      Commit(home);
+      Commit(home, linesForCurrentHome);
     }
   }
 
-  private void Commit(HomeData home)
+  private void Commit(Home home, Queue<string> lineQueue)
   {
-    Graph.CreateHome(home.Name);
+    Graph.Add(home);
 
     string? pickup = null;
     string? connection = null;
-
-    var lineQueue = new Queue<string>(home.Lines);
 
     while (lineQueue.Count > 0)
     {
@@ -104,24 +104,5 @@ internal class PickupGraphParser
         Graph.Add(pickup);
       }
     }
-  }
-
-  private class HomeData
-  {
-    public HomeData(string name)
-    {
-      Name = name;
-    }
-
-    public IEnumerable<string> Lines => _lines;
-
-    public string Name { get; }
-
-    public void AddLine(string line)
-    {
-      _lines.Add(line);
-    }
-
-    private readonly List<string> _lines = new();
   }
 }

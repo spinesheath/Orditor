@@ -19,7 +19,7 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var possibleHome = LineParser.TryHome(folding.Title);
+      var possibleHome = LineParser.TryHome(folding.Title)?.Name;
       var isHome = possibleHome != null;
       var fold = IsPreface(folding) || (isHome && home.Name != possibleHome);
       folding.IsFolded = fold;
@@ -37,7 +37,7 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var possibleHome = LineParser.TryHome(folding.Title);
+      var possibleHome = LineParser.TryHome(folding.Title)?.Name;
       if (possibleHome == home1.Name || possibleHome == home2.Name || Connects(folding, home1, home2))
       {
         folding.IsFolded = false;
@@ -135,7 +135,7 @@ internal class FoldingStrategy
 
   private static bool Is(FoldingSection folding, Home home)
   {
-    return LineParser.TryHome(folding.Title) == home.Name;
+    return LineParser.TryHome(folding.Title)?.Name == home.Name;
   }
 
   private IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)

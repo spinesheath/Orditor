@@ -13,11 +13,11 @@ internal class PickupGraph
     _nameToPickup.Add(pickup.Name, pickup);
   }
 
-  public void CreateHome(string home)
+  public void Add(Home home)
   {
-    if (!_nameToHome.ContainsKey(home))
+    if (!_nameToHome.ContainsKey(home.Name))
     {
-      _nameToHome.Add(home, new Home(home));
+      _nameToHome.Add(home.Name, home);
     }
   }
 
@@ -48,14 +48,14 @@ internal class PickupGraph
   {
     if (!_nameToHome.ContainsKey(connection.Home))
     {
-      _nameToHome.Add(connection.Home, new Home(connection.Home));
+      _nameToHome.Add(connection.Home, new Home(connection.Home, 0, 0));
     }
 
     _nameToHome[connection.Home].Add(connection);
 
     if (!connection.IsPickup && !_nameToHome.ContainsKey(connection.Target))
     {
-      _nameToHome.Add(connection.Target, new Home(connection.Target));
+      _nameToHome.Add(connection.Target, new Home(connection.Target, 0, 0));
     }
   }
 }

@@ -23,6 +23,7 @@ internal partial class MainWindow
     var parser = new PickupGraphParser(text);
     var graph = parser.Graph;
     var annotations = new Annotations(graph);
+    // TODO annotate and write to file
     var world = new World(text, graph, annotations);
 
     var selection = new Selection();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Orditor.Model;
@@ -26,10 +27,24 @@ internal static class LineParser
     return match.Success ? match.Groups[1].Value : null;
   }
 
-  public static string? TryHome(string line)
+  public static Home? TryHome(string line)
   {
     var match = HomeRegex.Match(line);
-    return match.Success ? match.Groups[1].Value : null;
+    if (!match.Success)
+    {
+      return null;
+    }
+
+    var name = match.Groups[1].Value;
+    var x = ToInt(match.Groups[2]);
+    var y = ToInt(match.Groups[3]);
+
+    return new Home(name, x, y);
+  }
+
+  private static int ToInt(Capture capture)
+  {
+    return string.IsNullOrEmpty(capture.Value) ? 0 : Convert.ToInt32(capture.Value, CultureInfo.InvariantCulture);
   }
 
   public static Pickup? TryPickupDefinition(string line)
@@ -41,8 +56,8 @@ internal static class LineParser
     }
 
     var name = match.Groups[1].Value;
-    var x = Convert.ToInt32(match.Groups[2].Value);
-    var y = Convert.ToInt32(match.Groups[3].Value);
+    var x = ToInt(match.Groups[2]);
+    var y = ToInt(match.Groups[3]);
     var vanillaContent = match.Groups[4].Value;
     var difficulty = match.Groups[5].Value;
     var zone = match.Groups[6].Value;
@@ -66,8 +81,8 @@ internal static class LineParser
   private static readonly Regex PickupDefinitionRegex =
     new(@"^\s*loc:\s+(\w+)\s+([-\d]+)\s+([-\d]+)\s+(\w+)\s+(\d+)\s+(\w+)");
 
-  //home: SunkenGladesRunaway
-  private static readonly Regex HomeRegex = new(@"^\s*home:\s+(\w+)");
+  //home: SunkenGladesRunaway *111 111
+  private static readonly Regex HomeRegex = new(@"^\s*home:\s+(\w+)(?:\s+([-\d]+)\s+([-\d]+))?");
 
   //pickup: FirstPickup
   private static readonly Regex PickupReferenceRegex = new(@"^\s*pickup:\s+(\w+)");
