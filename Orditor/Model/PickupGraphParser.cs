@@ -5,22 +5,22 @@ namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
-  public PickupGraphParser(string text)
+  public PickupGraphParser(string text, Annotations annotations)
   {
     var lines = text.Split(Environment.NewLine);
     ReadPickups(lines);
-    ReadGraph(lines);
+    ReadGraph(lines, annotations);
   }
 
   public PickupGraph Graph { get; } = new();
   
-  private void ReadGraph(IEnumerable<string> lines)
+  private void ReadGraph(IEnumerable<string> lines, Annotations annotations)
   {
     var linesForCurrentHome = new Queue<string>();
     Home? home = null;
     foreach (var line in lines)
     {
-      var possibleHome = LineParser.TryHome(line);
+      var possibleHome = LineParser.TryHome(line, annotations);
       if (possibleHome != null)
       {
         if (home != null)

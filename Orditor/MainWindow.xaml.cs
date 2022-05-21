@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using Orditor.Model;
 using Orditor.Orchestration;
 using Orditor.Properties;
@@ -20,16 +21,36 @@ internal partial class MainWindow
     }
 
     var text = file.Areas;
-    var parser = new PickupGraphParser(text);
+    var annotations = new Annotations();
+    var parser = new PickupGraphParser(text, annotations);
     var graph = parser.Graph;
-    var annotations = new Annotations(graph);
-    // TODO annotate and write to file
-    var world = new World(text, graph, annotations);
+    SaveLocations(graph, text, file);
+
+    var world = new World(file, graph);
 
     var selection = new Selection();
     var connectionEditor = new ConnectionEditorViewModel(world, selection);
     selection.Listen(connectionEditor);
     WorldView.DataContext = new WorldViewModel(world, selection);
     ConnectionEditorView.DataContext = connectionEditor;
+  }
+
+  private static void SaveLocations(PickupGraph graph, string text, FileManager file)
+  {
+    var modified = graph.Homes.Aggregate(text, SetLocation);
+    if (modified != text)
+    {
+      file.Areas = modified;
+    }
+  }
+
+  private static string SetLocation(string current, Home home)
+  {
+    if (home.X != int.MaxValue && home.Y != int.MaxValue)
+    {
+      return LineParser.SetLocation(current, home.Name, home.X, home.Y);
+    }
+
+    return current;
   }
 }

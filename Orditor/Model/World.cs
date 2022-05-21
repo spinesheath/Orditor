@@ -1,19 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+using Orditor.Orchestration;
 
 namespace Orditor.Model;
 
 internal class World
 {
-  public World(string rawText, PickupGraph graph, Annotations annotations)
+  public World(FileManager file, PickupGraph graph)
   {
-    _rawText = rawText;
+    _file = file;
+    _rawText = _file.Areas;
     _graph = graph;
-    _annotations = annotations;
   }
 
   public IEnumerable<Home> Homes => _graph.Homes;
   public IEnumerable<Pickup> Pickups => _graph.Pickups;
+
+  public string RawText
+  {
+    get => _rawText;
+    set
+    {
+      if (_rawText != value)
+      {
+        _rawText = value;
+        _file.Areas = _rawText;
+      }
+    }
+  }
 
   public IEnumerable<Home> ConnectedHomes(Home home)
   {
@@ -27,20 +42,17 @@ internal class World
 
   public Vector Location(Home home)
   {
-    return _annotations.Location(home);
-  }
-
-  public string RawText()
-  {
-    return _rawText;
+    return new Vector(home.X, home.Y);
   }
 
   public void SetLocation(Home home, Vector gamePosition)
   {
-
+    var x = (int)Math.Round(gamePosition.X);
+    var y = (int)Math.Round(gamePosition.Y);
+    RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
   }
   
-  private readonly Annotations _annotations;
+  private readonly FileManager _file;
   private readonly PickupGraph _graph;
-  private readonly string _rawText;
+  private string _rawText;
 }

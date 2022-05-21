@@ -9,7 +9,7 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
   {
     Selection = selection;
     _world = world;
-    RawText = world.RawText();
+    RawText = world.RawText;
   }
 
   public string RawText

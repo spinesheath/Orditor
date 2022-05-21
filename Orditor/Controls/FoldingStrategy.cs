@@ -19,9 +19,8 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var possibleHome = LineParser.TryHome(folding.Title)?.Name;
-      var isHome = possibleHome != null;
-      var fold = IsPreface(folding) || (isHome && home.Name != possibleHome);
+      var isHome = IsHome(folding);
+      var fold = IsPreface(folding) || (isHome && !Is(folding, home));
       folding.IsFolded = fold;
       if (isHome && !fold)
       {
@@ -37,8 +36,7 @@ internal class FoldingStrategy
     var unfoldedStartOffset = int.MaxValue;
     foreach (var folding in _foldingManager.AllFoldings)
     {
-      var possibleHome = LineParser.TryHome(folding.Title)?.Name;
-      if (possibleHome == home1.Name || possibleHome == home2.Name || Connects(folding, home1, home2))
+      if (Is(folding, home1) || Is(folding, home2) || Connects(folding, home1, home2))
       {
         folding.IsFolded = false;
         unfoldedStartOffset = Math.Min(unfoldedStartOffset, folding.StartOffset);
@@ -97,6 +95,11 @@ internal class FoldingStrategy
 
   private readonly FoldingManager _foldingManager;
 
+  private static bool IsHome(FoldingSection folding)
+  {
+    return LineParser.IsHome(folding.Title);
+  }
+
   private bool Connects(FoldingSection folding, Home home1, Home home2)
   {
     var connection = LineParser.TryConnection(folding.Title);
@@ -135,7 +138,7 @@ internal class FoldingStrategy
 
   private static bool Is(FoldingSection folding, Home home)
   {
-    return LineParser.TryHome(folding.Title)?.Name == home.Name;
+    return LineParser.IsHome(folding.Title, home.Name);
   }
 
   private IEnumerable<NewFolding> SafeCreateNewFoldings(TextDocument document, out int firstErrorOffset)
