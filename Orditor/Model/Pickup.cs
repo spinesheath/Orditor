@@ -19,8 +19,8 @@ internal class Pickup
   public int Id { get; }
   public string Name { get; }
   public string VanillaContent { get; }
-  public double X { get; }
-  public double Y { get; }
+  public int X { get; }
+  public int Y { get; }
   public string Zone { get; }
 
   public override string ToString()

@@ -5,40 +5,14 @@ namespace Orditor.Model;
 
 public static class Coordinates
 {
-  public static Vector GameToMap(Vector gamePoint)
+  public static Vector GameToMap(int x, int y)
   {
-    var game1 = GameTopLeft;
-    var game2 = GameBottomRight;
-
-    var map1 = MapTopLeft;
-    var map2 = MapBottomRight;
-
-    var gameVec = game1 - game2;
-    var mapVec = map1 - map2;
-
-    var scaleX = mapVec.X / gameVec.X;
-    var scaleY = mapVec.Y / gameVec.Y;
-
-    var centered = gamePoint - game1;
-    return new Vector(centered.X * scaleX, centered.Y * scaleY) + map1;
+    return new Vector((x - GameTopLeft.X) * ScaleX, (y - GameTopLeft.Y) * ScaleY) + MapTopLeft;
   }
 
-  public static Vector MapToGame(Vector mapPoint)
+  public static Vector MapToGame(Vector v)
   {
-    var game1 = GameTopLeft;
-    var game2 = GameBottomRight;
-
-    var map1 = MapTopLeft;
-    var map2 = MapBottomRight;
-
-    var gameVec = game1 - game2;
-    var mapVec = map1 - map2;
-
-    var scaleX = gameVec.X / mapVec.X;
-    var scaleY = gameVec.Y / mapVec.Y;
-
-    var centered = mapPoint - map1;
-    return new Vector(centered.X * scaleX, centered.Y * scaleY) + game1;
+    return new Vector((v.X - MapTopLeft.X) / ScaleX, (v.Y - MapTopLeft.Y) / ScaleY) + GameTopLeft;
   }
 
   private static readonly Vector GameStompAreaRoofExp = new(914, -71);
@@ -72,4 +46,7 @@ public static class Coordinates
 
   private static readonly Vector MapTopLeft = new(MapVectors.Min(v => v.X), MapVectors.Min(v => v.Y));
   private static readonly Vector MapBottomRight = new(MapVectors.Max(v => v.X), MapVectors.Max(v => v.Y));
+
+  private static readonly double ScaleX = (MapTopLeft.X - MapBottomRight.X) / (GameTopLeft.X - GameBottomRight.X);
+  private static readonly double ScaleY = (MapTopLeft.Y - MapBottomRight.Y) / (GameTopLeft.Y - GameBottomRight.Y);
 }

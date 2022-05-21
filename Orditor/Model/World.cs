@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Collections.Generic;
 using Orditor.Orchestration;
 
 namespace Orditor.Model;
@@ -40,16 +38,10 @@ internal class World
     return _graph.GetPickups(home);
   }
 
-  public Vector Location(Home home)
+  public void SetLocation(Home home, int x, int y)
   {
-    return new Vector(home.X, home.Y);
-  }
-
-  public void SetLocation(Home home, Vector gamePosition)
-  {
-    var x = (int)Math.Round(gamePosition.X);
-    var y = (int)Math.Round(gamePosition.Y);
     RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
+    home.SetLocation(x, y);
   }
   
   private readonly FileManager _file;

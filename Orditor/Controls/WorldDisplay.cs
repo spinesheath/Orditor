@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -78,14 +79,14 @@ internal class WorldDisplay : Control
       var homes = World.ConnectedHomes(home1);
       foreach (var home2 in homes)
       {
-        var connection = new Connection(World, Selection, home1, home2);
+        var connection = new Connection(Selection, home1, home2);
         _graphCanvas.Children.Add(connection);
       }
 
       var pickups = World.ConnectedPickups(home1);
       foreach (var pickup in pickups)
       {
-        var connection = new Connection(World, Selection, home1, pickup);
+        var connection = new Connection(Selection, home1, pickup);
         _graphCanvas.Children.Add(connection);
       }
     }
@@ -104,15 +105,14 @@ internal class WorldDisplay : Control
 
       marker.MouseDown += OnHomeMouseDown;
 
-      var location = World.Location(home);
-      if (double.IsNaN(location.X))
+      if (home.X == int.MaxValue)
       {
         Canvas.SetTop(marker, 50 + marker.Height / 2);
         Canvas.SetLeft(marker, 50 + marker.Width / 2);
       }
       else
       {
-        var p = Coordinates.GameToMap(location);
+        var p = Coordinates.GameToMap(home.X, home.Y);
         Canvas.SetTop(marker, p.Y - marker.Height / 2);
         Canvas.SetLeft(marker, p.X - marker.Width / 2);
       }
@@ -153,7 +153,7 @@ internal class WorldDisplay : Control
   private static UIElement PickupMarker(Pickup pickup, Selection selection)
   {
     var marker = new PickupImage(pickup, selection);
-    var p = Coordinates.GameToMap(new Vector(pickup.X, pickup.Y));
+    var p = Coordinates.GameToMap(pickup.X, pickup.Y);
     Canvas.SetTop(marker, p.Y - marker.Height / 2);
     Canvas.SetLeft(marker, p.X - marker.Width / 2);
     return marker;
@@ -209,10 +209,13 @@ internal class WorldDisplay : Control
     {
       var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
       var gamePosition = Coordinates.MapToGame(mapPosition);
-      var d = World.Location(_pannedMarker.Home) - gamePosition;
+      var currentPosition = new Vector(_pannedMarker.Home.X, _pannedMarker.Home.Y);
+      var d = currentPosition - gamePosition;
       if (d.LengthSquared > 15d)
       {
-        World.SetLocation(_pannedMarker.Home, gamePosition);
+        var x = (int)Math.Round(gamePosition.X);
+        var y = (int)Math.Round(gamePosition.Y);
+        World.SetLocation(_pannedMarker.Home, x, y);
       }
     }
 

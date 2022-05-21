@@ -14,21 +14,21 @@ internal class Connection : Canvas
   private readonly Line _marker;
   private readonly Action _selectionSetter;
 
-  public Connection(World world, Selection selection, Home location1, Home location2)
+  public Connection(Selection selection, Home location1, Home location2)
   {
     _selectionSetter = () => selection.Set(location1, location2);
-    var coordinates1 = Coordinates.GameToMap(world.Location(location1));
-    var coordinates2 = Coordinates.GameToMap(world.Location(location2));
+    var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
+    var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
 
     _marker = GetMarker(coordinates1, coordinates2);
     Children.Add(_marker);
   }
 
-  public Connection(World world, Selection selection, Home location1, Pickup location2)
+  public Connection(Selection selection, Home location1, Pickup location2)
   {
     _selectionSetter = () => selection.Set(location1, location2);
-    var coordinates1 = Coordinates.GameToMap(world.Location(location1));
-    var coordinates2 = Coordinates.GameToMap(new Vector(location2.X, location2.Y));
+    var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
+    var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
 
     _marker = GetMarker(coordinates1, coordinates2);
     Children.Add(_marker);

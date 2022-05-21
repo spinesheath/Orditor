@@ -11,8 +11,14 @@ internal class Home
     X = x;
     Y = y;
   }
+
+  public void SetLocation(int x, int y)
+  {
+    X = x;
+    Y = y;
+  }
   
   public string Name { get; }
-  public int X { get; }
-  public int Y { get; }
+  public int X { get; private set; }
+  public int Y { get; private set; }
 }
