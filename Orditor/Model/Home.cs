@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Diagnostics;
 
 namespace Orditor.Model;
 
+[DebuggerDisplay("{Name} {X} {Y}")]
 internal class Home
 {
   public Home(string name, int x, int y)
@@ -10,21 +11,8 @@ internal class Home
     X = x;
     Y = y;
   }
-
-  public IEnumerable<Connection> Connections => _connections;
+  
   public string Name { get; }
   public int X { get; }
   public int Y { get; }
-
-  public void Add(Connection c)
-  {
-    _connections.Add(c);
-  }
-
-  public override string ToString()
-  {
-    return Name;
-  }
-
-  private readonly List<Connection> _connections = new();
 }

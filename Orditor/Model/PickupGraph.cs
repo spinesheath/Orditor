@@ -33,29 +33,26 @@ internal class PickupGraph
 
   public IEnumerable<Home> GetConnectedHomes(Home home)
   {
-    return home.Connections.Where(c => !c.IsPickup).Select(p => _nameToHome[p.Target]).Distinct().Where(h => h != home);
+    return _connections.Where(c => c.Home == home.Name)
+      .Where(c => _nameToHome.ContainsKey(c.Target))
+      .Select(c => _nameToHome[c.Target])
+      .Distinct();
   }
 
   public IEnumerable<Pickup> GetPickups(Home home)
   {
-    return home.Connections.Where(c => c.IsPickup).Select(p => _nameToPickup[p.Target]).Distinct();
+    return _connections.Where(c => c.Home == home.Name)
+      .Where(c => _nameToPickup.ContainsKey(c.Target))
+      .Select(c => _nameToPickup[c.Target])
+      .Distinct();
   }
 
   private readonly Dictionary<string, Home> _nameToHome = new();
   private readonly Dictionary<string, Pickup> _nameToPickup = new();
+  private readonly List<Connection> _connections = new();
 
   private void AddConnection(Connection connection)
   {
-    if (!_nameToHome.ContainsKey(connection.Home))
-    {
-      _nameToHome.Add(connection.Home, new Home(connection.Home, 0, 0));
-    }
-
-    _nameToHome[connection.Home].Add(connection);
-
-    if (!connection.IsPickup && !_nameToHome.ContainsKey(connection.Target))
-    {
-      _nameToHome.Add(connection.Target, new Home(connection.Target, 0, 0));
-    }
+    _connections.Add(connection);
   }
 }
