@@ -15,20 +15,17 @@ internal class PickupGraph
 
   public void Add(Home home)
   {
-    if (!_nameToHome.ContainsKey(home.Name))
-    {
-      _nameToHome.Add(home.Name, home);
-    }
+    _nameToHome.Add(home.Name, home);
   }
 
   public void ConnectHome(string home, string target, Requirements requirement)
   {
-    AddConnection(new Connection(home, target, requirement, false));
+    _connections.Add(new Connection(home, target, requirement, false));
   }
 
   public void ConnectPickup(string home, string pickup, Requirements requirement)
   {
-    AddConnection(new Connection(home, pickup, requirement, true));
+    _connections.Add(new Connection(home, pickup, requirement, true));
   }
 
   public IEnumerable<Home> GetConnectedHomes(Home home)
@@ -47,12 +44,8 @@ internal class PickupGraph
       .Distinct();
   }
 
-  private readonly Dictionary<string, Home> _nameToHome = new();
-  private readonly Dictionary<string, Pickup> _nameToPickup = new();
   private readonly List<Connection> _connections = new();
 
-  private void AddConnection(Connection connection)
-  {
-    _connections.Add(connection);
-  }
+  private readonly Dictionary<string, Home> _nameToHome = new();
+  private readonly Dictionary<string, Pickup> _nameToPickup = new();
 }
