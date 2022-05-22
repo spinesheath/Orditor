@@ -28,7 +28,7 @@ internal partial class MainWindow
 
     var areas = new AreasOri(file);
 
-    var selection = new Selection();
+    var selection = new Messenger();
     var connectionEditor = new ConnectionEditorViewModel(areas, selection);
     selection.Listen(connectionEditor);
     WorldView.DataContext = new WorldViewModel(graph, areas, selection);

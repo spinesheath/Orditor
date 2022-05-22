@@ -5,9 +5,9 @@ namespace Orditor.ViewModels;
 
 internal class ConnectionEditorViewModel : NotificationObject, ISelectionListener
 {
-  public ConnectionEditorViewModel(AreasOri areas, Selection selection)
+  public ConnectionEditorViewModel(AreasOri areas, Messenger messenger)
   {
-    Selection = selection;
+    Messenger = messenger;
     _areas = areas;
     RawText = areas.RawText;
   }
@@ -39,7 +39,7 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
     }
   }
 
-  public Selection Selection { get; }
+  public Messenger Messenger { get; }
 
   public void Selected(Home home)
   {

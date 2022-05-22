@@ -11,6 +11,6 @@
     <controls:Viewer Zoom="0.2">
         <controls:WorldDisplay Graph="{Binding Graph}"
                                Areas="{Binding Areas}"
-                               Selection="{Binding Selection}"/>
+                               Selection="{Binding Messenger}"/>
     </controls:Viewer>
 </UserControl>

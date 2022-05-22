@@ -9,10 +9,10 @@ namespace Orditor.Controls;
 
 internal class PickupImage : Image
 {
-  public PickupImage(Pickup pickup, Selection selection)
+  public PickupImage(Pickup pickup, Messenger messenger)
   {
     _pickup = pickup;
-    _selection = selection;
+    _messenger = messenger;
     var imageName = PickupImageName(pickup);
 
     Width = 30;
@@ -22,11 +22,11 @@ internal class PickupImage : Image
   }
 
   private readonly Pickup _pickup;
-  private readonly Selection _selection;
+  private readonly Messenger _messenger;
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
   {
-    _selection.Set(_pickup);
+    _messenger.Select(_pickup);
   }
 
   private static string PickupImageName(Pickup pickup)

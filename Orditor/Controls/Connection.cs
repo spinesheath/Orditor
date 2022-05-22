@@ -14,9 +14,9 @@ internal class Connection : Canvas
   private readonly Line _marker;
   private readonly Action _selectionSetter;
 
-  public Connection(Selection selection, Home location1, Home location2)
+  public Connection(Messenger messenger, Home location1, Home location2)
   {
-    _selectionSetter = () => selection.Set(location1, location2);
+    _selectionSetter = () => messenger.Select(location1, location2);
     var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
     var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
 
@@ -24,9 +24,9 @@ internal class Connection : Canvas
     Children.Add(_marker);
   }
 
-  public Connection(Selection selection, Home location1, Pickup location2)
+  public Connection(Messenger messenger, Home location1, Pickup location2)
   {
-    _selectionSetter = () => selection.Set(location1, location2);
+    _selectionSetter = () => messenger.Select(location1, location2);
     var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
     var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
 

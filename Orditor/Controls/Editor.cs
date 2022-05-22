@@ -21,10 +21,10 @@ internal class Editor : Decorator, ISelectionListener
     _foldingStrategy = new FoldingStrategy(foldingManager);
   }
 
-  public Selection Selection
+  public Messenger Messenger
   {
-    get => (Selection)GetValue(SelectionProperty);
-    set => SetValue(SelectionProperty, value);
+    get => (Messenger)GetValue(MessengerProperty);
+    set => SetValue(MessengerProperty, value);
   }
 
   public string Text
@@ -60,8 +60,8 @@ internal class Editor : Decorator, ISelectionListener
   public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
     nameof(Text), typeof(string), typeof(Editor), TextMetadata());
 
-  public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-    nameof(Selection), typeof(Selection), typeof(Editor), new PropertyMetadata(default(Selection), OnSelectionChanged));
+  public static readonly DependencyProperty MessengerProperty = DependencyProperty.Register(
+    nameof(Messenger), typeof(Messenger), typeof(Editor), new PropertyMetadata(default(Messenger), OnSelectionChanged));
 
   private readonly FoldingStrategy _foldingStrategy;
 
@@ -76,12 +76,12 @@ internal class Editor : Decorator, ISelectionListener
   private static void OnSelectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
     var editor = (Editor)d;
-    if (e.OldValue is Selection oldSelection)
+    if (e.OldValue is Messenger oldSelection)
     {
       oldSelection.StopListening(editor);
     }
 
-    if (e.NewValue is Selection newSelection)
+    if (e.NewValue is Messenger newSelection)
     {
       newSelection.Listen(editor);
     }

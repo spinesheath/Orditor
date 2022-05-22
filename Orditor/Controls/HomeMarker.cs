@@ -10,9 +10,9 @@ namespace Orditor.Controls;
 
 internal class HomeMarker : Border
 {
-  public HomeMarker(Home home, Selection selection)
+  public HomeMarker(Home home, Messenger messenger)
   {
-    _selection = selection;
+    _messenger = messenger;
     Home = home;
 
     Width = Radius;
@@ -23,7 +23,7 @@ internal class HomeMarker : Border
 
   private const int Radius = 15;
 
-  private readonly Selection _selection;
+  private readonly Messenger _messenger;
 
   protected override void OnInitialized(EventArgs e)
   {
@@ -45,6 +45,6 @@ internal class HomeMarker : Border
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
   {
-    _selection.Set(Home);
+    _messenger.Select(Home);
   }
 }

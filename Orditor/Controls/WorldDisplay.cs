@@ -16,9 +16,9 @@ internal class WorldDisplay : Control
     DefaultStyleKeyProperty.OverrideMetadata(typeof(WorldDisplay), new FrameworkPropertyMetadata(typeof(WorldDisplay)));
   }
 
-  public Selection? Selection
+  public Messenger? Selection
   {
-    get => (Selection?)GetValue(SelectionProperty);
+    get => (Messenger?)GetValue(SelectionProperty);
     set => SetValue(SelectionProperty, value);
   }
 
@@ -41,7 +41,7 @@ internal class WorldDisplay : Control
     nameof(Graph), typeof(PickupGraph), typeof(WorldDisplay), new PropertyMetadata(default(PickupGraph), OnGraphChanged));
 
   public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-    nameof(Selection), typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection), OnGraphChanged));
+    nameof(Selection), typeof(Messenger), typeof(WorldDisplay), new PropertyMetadata(default(Messenger), OnGraphChanged));
 
   public static readonly DependencyProperty AreasProperty = DependencyProperty.Register(
     nameof(Areas), typeof(AreasOri), typeof(WorldDisplay), new PropertyMetadata(default(AreasOri)));
@@ -159,9 +159,9 @@ internal class WorldDisplay : Control
     _graphCanvas.Children.Clear();
   }
 
-  private static UIElement PickupMarker(Pickup pickup, Selection selection)
+  private static UIElement PickupMarker(Pickup pickup, Messenger messenger)
   {
-    var marker = new PickupImage(pickup, selection);
+    var marker = new PickupImage(pickup, messenger);
     var p = Coordinates.GameToMap(pickup.X, pickup.Y);
     Canvas.SetTop(marker, p.Y - marker.Height / 2);
     Canvas.SetLeft(marker, p.X - marker.Width / 2);

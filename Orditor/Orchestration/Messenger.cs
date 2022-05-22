@@ -3,14 +3,14 @@ using Orditor.Model;
 
 namespace Orditor.Orchestration;
 
-internal class Selection
+internal class Messenger
 {
   public void Listen(ISelectionListener listener)
   {
     _listeners.Add(listener);
   }
 
-  public void Set(Pickup pickup)
+  public void Select(Pickup pickup)
   {
     foreach (var listener in _listeners)
     {
@@ -18,7 +18,7 @@ internal class Selection
     }
   }
 
-  public void Set(Home home)
+  public void Select(Home home)
   {
     foreach (var listener in _listeners)
     {
@@ -26,7 +26,7 @@ internal class Selection
     }
   }
 
-  public void Set(Home home1, Home home2)
+  public void Select(Home home1, Home home2)
   {
     foreach (var listener in _listeners)
     {
@@ -34,7 +34,7 @@ internal class Selection
     }
   }
 
-  public void Set(Home home, Pickup pickup)
+  public void Select(Home home, Pickup pickup)
   {
     foreach (var listener in _listeners)
     {

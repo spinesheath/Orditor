@@ -13,6 +13,6 @@
                    Foreground="White"
                    DockPanel.Dock="Top"/>
         <c:Editor Text="{Binding RawText}"
-                  Selection="{Binding Selection}"/>
+                  Messenger="{Binding Messenger}"/>
     </DockPanel>
 </UserControl>
