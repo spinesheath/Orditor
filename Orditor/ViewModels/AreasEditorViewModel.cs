@@ -9,12 +9,12 @@ internal class AreasEditorViewModel : NotificationObject, IChangeListener
   {
     Messenger = messenger;
     _areas = areas;
-    RawText = areas.Text;
+    Text = areas.Text;
   }
 
   public Messenger Messenger { get; }
 
-  public string RawText
+  public string Text
   {
     get => _areas.Text;
     set => _areas.Text = value;
@@ -22,7 +22,7 @@ internal class AreasEditorViewModel : NotificationObject, IChangeListener
 
   public void Changed()
   {
-    OnPropertyChanged(nameof(RawText));
+    OnPropertyChanged(nameof(Text));
   }
 
   private readonly AreasOri _areas;

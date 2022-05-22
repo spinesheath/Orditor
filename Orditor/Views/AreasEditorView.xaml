@@ -8,5 +8,5 @@
              mc:Ignorable="d" 
              x:ClassModifier="internal"
              d:DataContext="{d:DesignInstance Type={x:Type vm:AreasEditorViewModel}}">
-    <c:Editor Text="{Binding RawText}" Messenger="{Binding Messenger}"/>
+    <c:Editor Text="{Binding Text, Delay=300}" Messenger="{Binding Messenger}"/>
 </UserControl>
