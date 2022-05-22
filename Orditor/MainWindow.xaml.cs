@@ -26,13 +26,12 @@ internal partial class MainWindow
     var graph = parser.Graph;
     SaveLocations(graph, text, file);
 
-    var areas = new AreasOri(file);
-
-    var selection = new Messenger();
-    var connectionEditor = new ConnectionEditorViewModel(areas, selection);
-    selection.Listen(connectionEditor);
-    WorldView.DataContext = new WorldViewModel(graph, areas, selection);
-    ConnectionEditorView.DataContext = connectionEditor;
+    var messenger = new Messenger();
+    var areas = new AreasOri(file, messenger);
+    var areasEditor = new AreasEditorViewModel(areas, messenger);
+    messenger.ListenForAreas(areasEditor);
+    WorldView.DataContext = new WorldViewModel(graph, areas, messenger);
+    AreasEditorView.DataContext = areasEditor;
   }
 
   private static void SaveLocations(PickupGraph graph, string text, FileManager file)

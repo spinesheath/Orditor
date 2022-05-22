@@ -16,10 +16,8 @@
             <ColumnDefinition Width="*" MinWidth="10"/>
         </Grid.ColumnDefinitions>
 
-        <v:WorldView x:Name="WorldView"
-                     Grid.Column="0"/>
+        <v:WorldView x:Name="WorldView" Grid.Column="0"/>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4"/>
-        <v:ConnectionEditorView x:Name="ConnectionEditorView"
-                                Grid.Column="2"/>
+        <v:AreasEditorView x:Name="AreasEditorView" Grid.Column="2"/>
     </Grid>
 </Window>

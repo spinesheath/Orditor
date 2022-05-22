@@ -5,14 +5,27 @@ namespace Orditor.Orchestration;
 
 internal class Messenger
 {
+  public void ChangeAreas()
+  {
+    foreach (var listener in _areasChangeListeners)
+    {
+      listener.Changed();
+    }
+  }
+
   public void Listen(ISelectionListener listener)
   {
-    _listeners.Add(listener);
+    _selectionListeners.Add(listener);
+  }
+
+  public void ListenForAreas(IChangeListener listener)
+  {
+    _areasChangeListeners.Add(listener);
   }
 
   public void Select(Pickup pickup)
   {
-    foreach (var listener in _listeners)
+    foreach (var listener in _selectionListeners)
     {
       listener.Selected(pickup);
     }
@@ -20,7 +33,7 @@ internal class Messenger
 
   public void Select(Home home)
   {
-    foreach (var listener in _listeners)
+    foreach (var listener in _selectionListeners)
     {
       listener.Selected(home);
     }
@@ -28,7 +41,7 @@ internal class Messenger
 
   public void Select(Home home1, Home home2)
   {
-    foreach (var listener in _listeners)
+    foreach (var listener in _selectionListeners)
     {
       listener.Selected(home1, home2);
     }
@@ -36,7 +49,7 @@ internal class Messenger
 
   public void Select(Home home, Pickup pickup)
   {
-    foreach (var listener in _listeners)
+    foreach (var listener in _selectionListeners)
     {
       listener.Selected(home, pickup);
     }
@@ -44,8 +57,15 @@ internal class Messenger
 
   public void StopListening(ISelectionListener listener)
   {
-    _listeners.Remove(listener);
+    _selectionListeners.Remove(listener);
   }
 
-  private readonly List<ISelectionListener> _listeners = new();
+  public void StopListeningForAreas(IChangeListener listener)
+  {
+    _areasChangeListeners.Remove(listener);
+  }
+
+  private readonly List<IChangeListener> _areasChangeListeners = new();
+
+  private readonly List<ISelectionListener> _selectionListeners = new();
 }

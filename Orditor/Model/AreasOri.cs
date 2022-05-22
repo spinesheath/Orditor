@@ -4,9 +4,10 @@ namespace Orditor.Model;
 
 internal class AreasOri
 {
-  public AreasOri(FileManager file)
+  public AreasOri(FileManager file, Messenger messenger)
   {
     _file = file;
+    _messenger = messenger;
     _rawText = _file.Areas;
   }
 
@@ -27,8 +28,10 @@ internal class AreasOri
   {
     RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
     home.SetLocation(x, y);
+    _messenger.ChangeAreas();
   }
   
   private readonly FileManager _file;
+  private readonly Messenger _messenger;
   private string _rawText;
 }

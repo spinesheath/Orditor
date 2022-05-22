@@ -214,7 +214,7 @@ internal class WorldDisplay : Control
 
   private void StopPan()
   {
-    if (Graph != null && _pannedMarker != null && Areas != null)
+    if (_pannedMarker != null && Areas != null)
     {
       var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
       var gamePosition = Coordinates.MapToGame(mapPosition);
@@ -225,6 +225,7 @@ internal class WorldDisplay : Control
         var x = (int)Math.Round(gamePosition.X);
         var y = (int)Math.Round(gamePosition.Y);
         Areas.SetLocation(_pannedMarker.Home, x, y);
+        Selection?.Select(_pannedMarker.Home);
       }
     }
 
