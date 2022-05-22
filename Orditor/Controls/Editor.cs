@@ -25,17 +25,6 @@ internal class Editor : Decorator, ISelectionListener
     _textEditor.SyntaxHighlighting = LoadHighlighting();
   }
 
-  private const string SyntaxResourceName = "Orditor.Data.areasSyntax.xml";
-
-  private static IHighlightingDefinition LoadHighlighting()
-  {
-    var assembly = typeof(Annotations).Assembly;
-    using var stream = assembly.GetManifestResourceStream(SyntaxResourceName);
-    using var reader = new XmlTextReader(stream!);
-    var resolver = new HighlightingManager();
-    return HighlightingLoader.Load(reader, resolver);
-  }
-
   public Messenger Messenger
   {
     get => (Messenger)GetValue(MessengerProperty);
@@ -72,6 +61,8 @@ internal class Editor : Decorator, ISelectionListener
     ScrollTo(unfoldedOffset);
   }
 
+  private const string SyntaxResourceName = "Orditor.Data.areasSyntax.xml";
+
   public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
     nameof(Text), typeof(string), typeof(Editor), TextMetadata());
 
@@ -81,6 +72,15 @@ internal class Editor : Decorator, ISelectionListener
   private readonly FoldingStrategy _foldingStrategy;
 
   private readonly TextEditor _textEditor = new();
+
+  private static IHighlightingDefinition LoadHighlighting()
+  {
+    var assembly = typeof(Annotations).Assembly;
+    using var stream = assembly.GetManifestResourceStream(SyntaxResourceName);
+    using var reader = new XmlTextReader(stream!);
+    var resolver = new HighlightingManager();
+    return HighlightingLoader.Load(reader, resolver);
+  }
 
   private void ScrollTo(int unfoldedOffset)
   {
