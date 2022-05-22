@@ -9,15 +9,15 @@ internal class AreasEditorViewModel : NotificationObject, IChangeListener
   {
     Messenger = messenger;
     _areas = areas;
-    RawText = areas.RawText;
+    RawText = areas.Text;
   }
 
   public Messenger Messenger { get; }
 
   public string RawText
   {
-    get => _areas.RawText;
-    set => _areas.RawText = value;
+    get => _areas.Text;
+    set => _areas.Text = value;
   }
 
   public void Changed()

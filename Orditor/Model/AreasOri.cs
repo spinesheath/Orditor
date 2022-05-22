@@ -8,18 +8,18 @@ internal class AreasOri
   {
     _file = file;
     _messenger = messenger;
-    _rawText = _file.Areas;
+    _text = _file.Areas;
   }
 
-  public string RawText
+  public string Text
   {
-    get => _rawText;
+    get => _text;
     set
     {
-      if (_rawText != value)
+      if (_text != value)
       {
-        _rawText = value;
-        _file.Areas = _rawText;
+        _text = value;
+        _file.Areas = _text;
         _messenger.ChangeAreas();
       }
     }
@@ -28,10 +28,10 @@ internal class AreasOri
   public void SetLocation(Home home, int x, int y)
   {
     home.SetLocation(x, y);
-    RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
+    Text = LineParser.SetLocation(_text, home.Name, x, y);
   }
   
   private readonly FileManager _file;
   private readonly Messenger _messenger;
-  private string _rawText;
+  private string _text;
 }
