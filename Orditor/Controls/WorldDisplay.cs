@@ -22,10 +22,10 @@ internal class WorldDisplay : Control
     set => SetValue(SelectionProperty, value);
   }
 
-  public World? World
+  public PickupGraph? Graph
   {
-    get => (World?)GetValue(WorldProperty);
-    set => SetValue(WorldProperty, value);
+    get => (PickupGraph?)GetValue(GraphProperty);
+    set => SetValue(GraphProperty, value);
   }
 
   public override void OnApplyTemplate()
@@ -37,11 +37,20 @@ internal class WorldDisplay : Control
     OnGraphChanged();
   }
 
-  public static readonly DependencyProperty WorldProperty = DependencyProperty.Register(
-    nameof(World), typeof(World), typeof(WorldDisplay), new PropertyMetadata(default(World), OnGraphChanged));
+  public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
+    nameof(Graph), typeof(PickupGraph), typeof(WorldDisplay), new PropertyMetadata(default(PickupGraph), OnGraphChanged));
 
   public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
     nameof(Selection), typeof(Selection), typeof(WorldDisplay), new PropertyMetadata(default(Selection), OnGraphChanged));
+
+  public static readonly DependencyProperty AreasProperty = DependencyProperty.Register(
+    nameof(Areas), typeof(AreasOri), typeof(WorldDisplay), new PropertyMetadata(default(AreasOri)));
+
+  public AreasOri? Areas
+  {
+    get => (AreasOri?)GetValue(AreasProperty);
+    set => SetValue(AreasProperty, value);
+  }
 
   private Canvas? _graphCanvas;
   private Point _panGripPosition;
@@ -56,7 +65,7 @@ internal class WorldDisplay : Control
 
   private void OnGraphChanged()
   {
-    if (_graphCanvas == null || World == null)
+    if (_graphCanvas == null || Graph == null)
     {
       return;
     }
@@ -69,21 +78,21 @@ internal class WorldDisplay : Control
 
   private void AddConnectionMarkers()
   {
-    if (_graphCanvas == null || World == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Selection == null)
     {
       return;
     }
 
-    foreach (var home1 in World.Homes)
+    foreach (var home1 in Graph.Homes)
     {
-      var homes = World.ConnectedHomes(home1);
+      var homes = Graph.GetConnectedHomes(home1);
       foreach (var home2 in homes)
       {
         var connection = new Connection(Selection, home1, home2);
         _graphCanvas.Children.Add(connection);
       }
 
-      var pickups = World.ConnectedPickups(home1);
+      var pickups = Graph.GetPickups(home1);
       foreach (var pickup in pickups)
       {
         var connection = new Connection(Selection, home1, pickup);
@@ -94,12 +103,12 @@ internal class WorldDisplay : Control
 
   private void AddHomeMarkers()
   {
-    if (_graphCanvas == null || World == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Selection == null)
     {
       return;
     }
 
-    foreach (var home in World.Homes)
+    foreach (var home in Graph.Homes)
     {
       var marker = new HomeMarker(home, Selection);
 
@@ -123,12 +132,12 @@ internal class WorldDisplay : Control
 
   private void AddPickupMarkers()
   {
-    if (_graphCanvas == null || World == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Selection == null)
     {
       return;
     }
 
-    foreach (var pickup in World.Pickups)
+    foreach (var pickup in Graph.Pickups)
     {
       var marker = PickupMarker(pickup, Selection);
       _graphCanvas.Children.Add(marker);
@@ -205,7 +214,7 @@ internal class WorldDisplay : Control
 
   private void StopPan()
   {
-    if (World != null && _pannedMarker != null)
+    if (Graph != null && _pannedMarker != null && Areas != null)
     {
       var mapPosition = new Vector(Canvas.GetLeft(_pannedMarker) + _pannedMarker.Width / 2, Canvas.GetTop(_pannedMarker) + _pannedMarker.Height / 2);
       var gamePosition = Coordinates.MapToGame(mapPosition);
@@ -215,7 +224,7 @@ internal class WorldDisplay : Control
       {
         var x = (int)Math.Round(gamePosition.X);
         var y = (int)Math.Round(gamePosition.Y);
-        World.SetLocation(_pannedMarker.Home, x, y);
+        Areas.SetLocation(_pannedMarker.Home, x, y);
       }
     }
 

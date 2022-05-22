@@ -9,6 +9,8 @@
              Background="Black" 
              d:DataContext="{d:DesignInstance Type={x:Type vm:WorldViewModel}}">
     <controls:Viewer Zoom="0.2">
-        <controls:WorldDisplay World="{Binding World}" Selection="{Binding Selection}"/>
+        <controls:WorldDisplay Graph="{Binding Graph}"
+                               Areas="{Binding Areas}"
+                               Selection="{Binding Selection}"/>
     </controls:Viewer>
 </UserControl>

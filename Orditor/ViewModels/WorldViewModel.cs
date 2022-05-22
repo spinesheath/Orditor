@@ -5,13 +5,14 @@ namespace Orditor.ViewModels;
 
 internal class WorldViewModel : NotificationObject
 {
-  public WorldViewModel(World world, Selection selection)
+  public WorldViewModel(PickupGraph graph, AreasOri areas, Selection selection)
   {
+    Graph = graph;
     Selection = selection;
-    World = world;
+    Areas = areas;
   }
 
+  public AreasOri Areas { get; }
+  public PickupGraph Graph { get; }
   public Selection Selection { get; }
-
-  public World World { get; }
 }

@@ -5,11 +5,11 @@ namespace Orditor.ViewModels;
 
 internal class ConnectionEditorViewModel : NotificationObject, ISelectionListener
 {
-  public ConnectionEditorViewModel(World world, Selection selection)
+  public ConnectionEditorViewModel(AreasOri areas, Selection selection)
   {
     Selection = selection;
-    _world = world;
-    RawText = world.RawText;
+    _areas = areas;
+    RawText = areas.RawText;
   }
 
   public string RawText
@@ -61,7 +61,7 @@ internal class ConnectionEditorViewModel : NotificationObject, ISelectionListene
     SelectedText = $"{home.Name} > {pickup.Name}";
   }
 
-  private readonly World _world;
+  private readonly AreasOri _areas;
   private string _rawText = string.Empty;
   private string _selectedText = string.Empty;
 

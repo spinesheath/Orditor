@@ -26,12 +26,12 @@ internal partial class MainWindow
     var graph = parser.Graph;
     SaveLocations(graph, text, file);
 
-    var world = new World(file, graph);
+    var areas = new AreasOri(file);
 
     var selection = new Selection();
-    var connectionEditor = new ConnectionEditorViewModel(world, selection);
+    var connectionEditor = new ConnectionEditorViewModel(areas, selection);
     selection.Listen(connectionEditor);
-    WorldView.DataContext = new WorldViewModel(world, selection);
+    WorldView.DataContext = new WorldViewModel(graph, areas, selection);
     ConnectionEditorView.DataContext = connectionEditor;
   }
 
