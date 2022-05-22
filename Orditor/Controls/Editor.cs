@@ -23,7 +23,7 @@ internal class Editor : Decorator, ISelectionListener
     var foldingManager = FoldingManager.Install(_textEditor.TextArea);
     _foldingStrategy = new FoldingStrategy(foldingManager);
     _textEditor.SyntaxHighlighting = LoadHighlighting();
-    _ = new CodeCompletion(_textEditor);
+    _ = new CodeCompletion(_textEditor, foldingManager);
   }
 
   public Messenger Messenger

@@ -90,9 +90,7 @@ internal class FoldingStrategy
     var foldings = SafeCreateNewFoldings(document, out var firstErrorOffset);
     _foldingManager.UpdateFoldings(foldings, firstErrorOffset);
   }
-
-  private const string Preface = "preface";
-
+  
   private readonly FoldingManager _foldingManager;
 
   private static bool IsHome(FoldingSection folding)
@@ -113,7 +111,7 @@ internal class FoldingStrategy
 
   private static bool IsPreface(FoldingSection folding)
   {
-    return folding.Title == Preface;
+    return folding.Tag is PrefaceFolding;
   }
 
   private static List<int> GetPickupOffsets(TextDocument document, Pickup pickup)
@@ -170,7 +168,7 @@ internal class FoldingStrategy
     {
       var lines = document.Lines;
       var previousLine = lines[0];
-      candidates.Push(new OtherFolding(previousLine, Preface));
+      candidates.Push(new PrefaceFolding(previousLine));
       for (; index < lines.Count; index++)
       {
         var line = lines[index];
@@ -185,14 +183,23 @@ internal class FoldingStrategy
           candidates.Push(new HomeFolding(line, text));
         }
 
-        if (LineParser.IsPickupReference(text) || LineParser.IsConnection(text))
+        var isPickupReference = LineParser.IsPickupReference(text);
+        var isConnection = LineParser.IsConnection(text);
+        if (isPickupReference || isConnection)
         {
-          if (candidates.Peek() is OtherFolding)
+          if (candidates.Peek() is not HomeFolding)
           {
             PopAndAdd(candidates, result, previousLine.EndOffset);
           }
 
-          candidates.Push(new OtherFolding(line, "    " + text.Trim()));
+          if (isPickupReference)
+          {
+            candidates.Push(new PickupFolding(line, "    " + text.Trim()));
+          }
+          else if (isConnection)
+          {
+            candidates.Push(new ConnectionFolding(line, "    " + text.Trim()));
+          }
         }
 
         previousLine = line;
@@ -231,23 +238,5 @@ internal class FoldingStrategy
 
     previous.EndOffset = endOffset;
     foldings.Add(previous);
-  }
-
-  private class HomeFolding : NewFolding
-  {
-    public HomeFolding(ISegment line, string name)
-      : base(line.Offset, line.EndOffset)
-    {
-      Name = name;
-    }
-  }
-
-  private class OtherFolding : NewFolding
-  {
-    public OtherFolding(ISegment line, string name)
-      : base(line.Offset, line.EndOffset)
-    {
-      Name = name;
-    }
   }
 }
