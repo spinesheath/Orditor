@@ -2,8 +2,11 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Orditor.Model;
 using Orditor.Orchestration;
 
@@ -19,6 +22,18 @@ internal class Editor : Decorator, ISelectionListener
     _textEditor.TextChanged += OnTextChangedInternal;
     var foldingManager = FoldingManager.Install(_textEditor.TextArea);
     _foldingStrategy = new FoldingStrategy(foldingManager);
+    _textEditor.SyntaxHighlighting = LoadHighlighting();
+  }
+
+  private const string SyntaxResourceName = "Orditor.Data.areasSyntax.xml";
+
+  private static IHighlightingDefinition LoadHighlighting()
+  {
+    var assembly = typeof(Annotations).Assembly;
+    using var stream = assembly.GetManifestResourceStream(SyntaxResourceName);
+    using var reader = new XmlTextReader(stream!);
+    var resolver = new HighlightingManager();
+    return HighlightingLoader.Load(reader, resolver);
   }
 
   public Messenger Messenger
