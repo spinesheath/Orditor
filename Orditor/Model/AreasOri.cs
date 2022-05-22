@@ -20,15 +20,15 @@ internal class AreasOri
       {
         _rawText = value;
         _file.Areas = _rawText;
+        _messenger.ChangeAreas();
       }
     }
   }
 
   public void SetLocation(Home home, int x, int y)
   {
-    RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
     home.SetLocation(x, y);
-    _messenger.ChangeAreas();
+    RawText = LineParser.SetLocation(_rawText, home.Name, x, y);
   }
   
   private readonly FileManager _file;

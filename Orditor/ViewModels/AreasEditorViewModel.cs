@@ -16,22 +16,14 @@ internal class AreasEditorViewModel : NotificationObject, IChangeListener
 
   public string RawText
   {
-    get => _rawText;
-    set
-    {
-      if (_rawText != value)
-      {
-        _rawText = value;
-        OnPropertyChanged();
-      }
-    }
+    get => _areas.RawText;
+    set => _areas.RawText = value;
   }
 
   public void Changed()
   {
-    RawText = _areas.RawText;
+    OnPropertyChanged(nameof(RawText));
   }
 
   private readonly AreasOri _areas;
-  private string _rawText = string.Empty;
 }
