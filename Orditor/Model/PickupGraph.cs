@@ -18,6 +18,14 @@ internal class PickupGraph
     _nameToHome.Add(home.Name, home);
   }
 
+  public void Add(IEnumerable<Pickup> pickups)
+  {
+    foreach (var pickup in pickups)
+    {
+      Add(pickup);
+    }
+  }
+
   public void ConnectHome(string home, string target, Requirements requirement)
   {
     _connections.Add(new Connection(home, target, requirement, false));
@@ -45,7 +53,6 @@ internal class PickupGraph
   }
 
   private readonly List<Connection> _connections = new();
-
   private readonly Dictionary<string, Home> _nameToHome = new();
   private readonly Dictionary<string, Pickup> _nameToPickup = new();
 }

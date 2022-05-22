@@ -20,7 +20,7 @@ internal class AreasOri
       {
         _text = value;
         _file.Areas = _text;
-        _messenger.ChangeAreas();
+        _messenger.AreasChanged();
       }
     }
   }

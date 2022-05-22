@@ -9,23 +9,29 @@ using Orditor.Orchestration;
 namespace Orditor.Controls;
 
 [TemplatePart(Name = "PART_GraphCanvas", Type = typeof(Canvas))]
-internal class WorldDisplay : Control
+internal class WorldDisplay : Control, IChangeListener
 {
   static WorldDisplay()
   {
     DefaultStyleKeyProperty.OverrideMetadata(typeof(WorldDisplay), new FrameworkPropertyMetadata(typeof(WorldDisplay)));
   }
 
-  public Messenger? Selection
+  public AreasOri? Areas
   {
-    get => (Messenger?)GetValue(SelectionProperty);
-    set => SetValue(SelectionProperty, value);
+    get => (AreasOri?)GetValue(AreasProperty);
+    set => SetValue(AreasProperty, value);
   }
 
   public PickupGraph? Graph
   {
     get => (PickupGraph?)GetValue(GraphProperty);
     set => SetValue(GraphProperty, value);
+  }
+
+  public Messenger? Messenger
+  {
+    get => (Messenger?)GetValue(MessengerProperty);
+    set => SetValue(MessengerProperty, value);
   }
 
   public override void OnApplyTemplate()
@@ -37,30 +43,35 @@ internal class WorldDisplay : Control
     OnGraphChanged();
   }
 
+  public void Changed()
+  {
+    OnGraphChanged();
+  }
+
   public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
     nameof(Graph), typeof(PickupGraph), typeof(WorldDisplay), new PropertyMetadata(default(PickupGraph), OnGraphChanged));
 
-  public static readonly DependencyProperty SelectionProperty = DependencyProperty.Register(
-    nameof(Selection), typeof(Messenger), typeof(WorldDisplay), new PropertyMetadata(default(Messenger), OnGraphChanged));
+  public static readonly DependencyProperty MessengerProperty = DependencyProperty.Register(
+    nameof(Messenger), typeof(Messenger), typeof(WorldDisplay), new PropertyMetadata(default(Messenger), OnMessengerChanged));
 
   public static readonly DependencyProperty AreasProperty = DependencyProperty.Register(
     nameof(Areas), typeof(AreasOri), typeof(WorldDisplay), new PropertyMetadata(default(AreasOri)));
-
-  public AreasOri? Areas
-  {
-    get => (AreasOri?)GetValue(AreasProperty);
-    set => SetValue(AreasProperty, value);
-  }
 
   private Canvas? _graphCanvas;
   private Point _panGripPosition;
   private HomeMarker? _pannedMarker;
   private Vector _panPreviousOffset;
 
+  private static void OnMessengerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+  {
+    var display = (WorldDisplay)d;
+    display.OnGraphChanged();
+  }
+
   private static void OnGraphChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
-    var c = (WorldDisplay)d;
-    c.OnGraphChanged();
+    var display = (WorldDisplay)d;
+    display.OnGraphChanged();
   }
 
   private void OnGraphChanged()
@@ -78,7 +89,7 @@ internal class WorldDisplay : Control
 
   private void AddConnectionMarkers()
   {
-    if (_graphCanvas == null || Graph == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Messenger == null)
     {
       return;
     }
@@ -88,14 +99,14 @@ internal class WorldDisplay : Control
       var homes = Graph.GetConnectedHomes(home1);
       foreach (var home2 in homes)
       {
-        var connection = new Connection(Selection, home1, home2);
+        var connection = new Connection(Messenger, home1, home2);
         _graphCanvas.Children.Add(connection);
       }
 
       var pickups = Graph.GetPickups(home1);
       foreach (var pickup in pickups)
       {
-        var connection = new Connection(Selection, home1, pickup);
+        var connection = new Connection(Messenger, home1, pickup);
         _graphCanvas.Children.Add(connection);
       }
     }
@@ -103,14 +114,14 @@ internal class WorldDisplay : Control
 
   private void AddHomeMarkers()
   {
-    if (_graphCanvas == null || Graph == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Messenger == null)
     {
       return;
     }
 
     foreach (var home in Graph.Homes)
     {
-      var marker = new HomeMarker(home, Selection);
+      var marker = new HomeMarker(home, Messenger);
 
       marker.MouseDown += OnHomeMouseDown;
 
@@ -132,14 +143,14 @@ internal class WorldDisplay : Control
 
   private void AddPickupMarkers()
   {
-    if (_graphCanvas == null || Graph == null || Selection == null)
+    if (_graphCanvas == null || Graph == null || Messenger == null)
     {
       return;
     }
 
     foreach (var pickup in Graph.Pickups)
     {
-      var marker = PickupMarker(pickup, Selection);
+      var marker = PickupMarker(pickup, Messenger);
       _graphCanvas.Children.Add(marker);
     }
   }
@@ -225,7 +236,7 @@ internal class WorldDisplay : Control
         var x = (int)Math.Round(gamePosition.X);
         var y = (int)Math.Round(gamePosition.Y);
         Areas.SetLocation(_pannedMarker.Home, x, y);
-        Selection?.Select(_pannedMarker.Home);
+        Messenger?.Select(_pannedMarker.Home);
       }
     }
 

@@ -5,7 +5,7 @@ namespace Orditor.Orchestration;
 
 internal class Messenger
 {
-  public void ChangeAreas()
+  public void AreasChanged()
   {
     foreach (var listener in _areasChangeListeners)
     {
@@ -60,12 +60,6 @@ internal class Messenger
     _selectionListeners.Remove(listener);
   }
 
-  public void StopListeningForAreas(IChangeListener listener)
-  {
-    _areasChangeListeners.Remove(listener);
-  }
-
   private readonly List<IChangeListener> _areasChangeListeners = new();
-
   private readonly List<ISelectionListener> _selectionListeners = new();
 }

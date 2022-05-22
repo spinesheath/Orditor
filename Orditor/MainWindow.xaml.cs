@@ -22,15 +22,18 @@ internal partial class MainWindow
 
     var text = file.Areas;
     var annotations = new Annotations();
-    var parser = new PickupGraphParser(text, annotations);
-    var graph = parser.Graph;
+    var parser = new PickupGraphParser(annotations);
+    var graph = parser.Parse(text);
     SaveLocations(graph, text, file);
 
     var messenger = new Messenger();
     var areas = new AreasOri(file, messenger);
     var areasEditor = new AreasEditorViewModel(areas, messenger);
     messenger.ListenForAreas(areasEditor);
-    WorldView.DataContext = new WorldViewModel(graph, areas, messenger);
+    var world = new WorldViewModel(graph, areas, messenger, parser);
+    messenger.ListenForAreas(world);
+
+    WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
   }
 

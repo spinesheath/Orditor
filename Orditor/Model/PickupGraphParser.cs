@@ -5,29 +5,36 @@ namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
-  public PickupGraphParser(string text, Annotations annotations)
+  public PickupGraphParser(Annotations annotations)
   {
-    var lines = text.Split(Environment.NewLine);
-    ReadPickups(lines);
-    ReadGraph(lines, annotations);
+    _annotations = annotations;
   }
 
-  public PickupGraph Graph { get; } = new();
-  
-  private void ReadGraph(IEnumerable<string> lines, Annotations annotations)
+  public PickupGraph Parse(string text)
+  {
+    var lines = text.Split(Environment.NewLine);
+    var graph = new PickupGraph();
+    graph.Add(ReadPickups(lines));
+    ReadGraph(lines, graph);
+    return graph;
+  }
+
+  private readonly Annotations _annotations;
+
+  private void ReadGraph(IEnumerable<string> lines, PickupGraph graph)
   {
     var linesForCurrentHome = new Queue<string>();
     Home? home = null;
     foreach (var line in lines)
     {
-      var possibleHome = LineParser.TryHome(line, annotations);
+      var possibleHome = LineParser.TryHome(line, _annotations);
       if (possibleHome != null)
       {
         if (home != null)
         {
-          Commit(home, linesForCurrentHome);
+          Commit(home, linesForCurrentHome, graph);
         }
-        
+
         home = possibleHome;
         linesForCurrentHome.Clear();
       }
@@ -39,13 +46,13 @@ internal class PickupGraphParser
 
     if (home != null)
     {
-      Commit(home, linesForCurrentHome);
+      Commit(home, linesForCurrentHome, graph);
     }
   }
 
-  private void Commit(Home home, Queue<string> lineQueue)
+  private static void Commit(Home home, Queue<string> lineQueue, PickupGraph graph)
   {
-    Graph.Add(home);
+    graph.Add(home);
 
     string? pickup = null;
     string? connection = null;
@@ -64,7 +71,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          Graph.ConnectPickup(home.Name, newPickup, Requirements.Free);
+          graph.ConnectPickup(home.Name, newPickup, Requirements.Free);
         }
 
         pickup = newPickup;
@@ -74,7 +81,7 @@ internal class PickupGraphParser
       {
         if (nextIsNotRequirement)
         {
-          Graph.ConnectHome(home.Name, newConnection, Requirements.Free);
+          graph.ConnectHome(home.Name, newConnection, Requirements.Free);
         }
 
         connection = newConnection;
@@ -84,24 +91,24 @@ internal class PickupGraphParser
       {
         if (pickup != null)
         {
-          Graph.ConnectPickup(home.Name, pickup, newRequirement);
+          graph.ConnectPickup(home.Name, pickup, newRequirement);
         }
         else if (connection != null)
         {
-          Graph.ConnectHome(home.Name, connection, newRequirement);
+          graph.ConnectHome(home.Name, connection, newRequirement);
         }
       }
     }
   }
 
-  private void ReadPickups(IEnumerable<string> lines)
+  private static IEnumerable<Pickup> ReadPickups(IEnumerable<string> lines)
   {
     foreach (var line in lines)
     {
       var pickup = LineParser.TryPickupDefinition(line);
       if (pickup != null)
       {
-        Graph.Add(pickup);
+        yield return pickup;
       }
     }
   }
