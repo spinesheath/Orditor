@@ -108,7 +108,8 @@ internal class CodeCompletion
     }
 
     var leadingTabs = -1;
-    var previousWhitespace = -1;
+    var previousWhitespaceIndex = -1;
+    var segmentIndex = 0;
     for (var i = 0; i < indexInLine; i++)
     {
       var c = text[i];
@@ -119,17 +120,21 @@ internal class CodeCompletion
 
       if (char.IsWhiteSpace(c))
       {
-        previousWhitespace = i;
+        previousWhitespaceIndex = i;
+      }
+      else if (previousWhitespaceIndex + 1 == i)
+      {
+        segmentIndex += 1;
       }
     }
 
-    var partialText = text.Substring(previousWhitespace + 1, indexInLine - previousWhitespace - 1);
+    var partialText = text.Substring(previousWhitespaceIndex + 1, indexInLine - previousWhitespaceIndex - 1);
     
-    if (leadingTabs == 1)
+    if (leadingTabs == 1 && segmentIndex == 1)
     {
       Show(ConnectionSuggestions, partialText);
     }
-    else if (leadingTabs == 2)
+    else if (leadingTabs == 2 && segmentIndex == 1)
     {
       Show(LogicSuggestions, partialText);
     }
