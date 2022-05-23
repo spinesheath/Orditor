@@ -71,7 +71,7 @@ internal class CodeCompletion
     "master-core",
     "master-dboost",
     "master-lure",
-    "expert-abilities",
+    "master-abilities",
     "gjump",
     "glitched",
     "timed-level",
