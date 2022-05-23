@@ -13,6 +13,7 @@ internal class HomeMarker : Border
   public HomeMarker(Home home, Messenger messenger)
   {
     _messenger = messenger;
+    _marker = CreateMarker(home.Name);
     Home = home;
 
     Width = Radius;
@@ -24,14 +25,29 @@ internal class HomeMarker : Border
   private const int Radius = 15;
 
   private readonly Messenger _messenger;
+  private readonly Ellipse _marker;
 
   protected override void OnInitialized(EventArgs e)
   {
     base.OnInitialized(e);
-    SetMarker();
+    Child = _marker;
   }
 
-  private void SetMarker()
+  protected override void OnMouseEnter(MouseEventArgs e)
+  {
+    base.OnMouseEnter(e);
+    _marker.Stroke = Brushes.CadetBlue;
+    _marker.Fill = Brushes.CadetBlue;
+  }
+
+  protected override void OnMouseLeave(MouseEventArgs e)
+  {
+    base.OnMouseLeave(e);
+    _marker.Stroke = Brushes.White;
+    _marker.Fill = Brushes.White;
+  }
+
+  private static Ellipse CreateMarker(string home)
   {
     var marker = new Ellipse();
     marker.Width = Radius;
@@ -39,8 +55,8 @@ internal class HomeMarker : Border
     marker.Stroke = Brushes.White;
     marker.StrokeThickness = 1;
     marker.Fill = Brushes.White;
-    marker.ToolTip = Home.Name;
-    Child = marker;
+    marker.ToolTip = home;
+    return marker;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

@@ -55,13 +55,13 @@ internal class Connection : Canvas
   protected override void OnMouseEnter(MouseEventArgs e)
   {
     base.OnMouseEnter(e);
-    _marker.StrokeThickness = 6;
+    _marker.Stroke = Brushes.CadetBlue;
   }
 
   protected override void OnMouseLeave(MouseEventArgs e)
   {
     base.OnMouseLeave(e);
-    _marker.StrokeThickness = 3;
+    _marker.Stroke = Brushes.White;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

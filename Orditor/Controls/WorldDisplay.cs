@@ -83,9 +83,9 @@ internal class WorldDisplay : Control, IChangeListener
     }
 
     ClearMarkers();
-    AddPickupMarkers();
     AddConnectionMarkers();
     AddHomeMarkers();
+    AddPickupMarkers();
   }
 
   private void AddConnectionMarkers()
