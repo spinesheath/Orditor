@@ -13,7 +13,7 @@ internal class CompletionData : NotificationObject, ICompletionData
   {
     _partialText = partialText;
     Text = text;
-    Priority = MatchLength(text, partialText);
+    Priority = CalculatePriority(text, partialText);
   }
 
   public ImageSource? Image => null;
@@ -33,8 +33,9 @@ internal class CompletionData : NotificationObject, ICompletionData
 
   private readonly string _partialText;
 
-  private static int MatchLength(string text, string partialText)
+  private static int CalculatePriority(string text, string partialText)
   {
+    // TODO if partial="dj" then prioritize DoubleJump etc.
     var i = 0;
     for (; i < text.Length && i < partialText.Length && text[i] == partialText[i]; i++) { }
     return i;
