@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,20 +95,32 @@ internal class WorldDisplay : Control, IChangeListener
       return;
     }
 
+    var handled = new HashSet<Home>();
     foreach (var home1 in Graph.Homes)
     {
+      handled.Add(home1);
+      
       var homes = Graph.GetConnectedHomes(home1);
       foreach (var home2 in homes)
       {
-        var connection = new Connection(Messenger, home1, home2);
-        _graphCanvas.Children.Add(connection);
+        var isConnectedBack = Graph.GetConnectedHomes(home2).Contains(home1);
+        if (isConnectedBack)
+        {
+          if (!handled.Contains(home2))
+          {
+            _graphCanvas.Children.Add(Connection.Good(Messenger, home1, home2));
+          }
+        }
+        else
+        {
+          _graphCanvas.Children.Add(Connection.Bad(Messenger, home1, home2));
+        }
       }
 
       var pickups = Graph.GetPickups(home1);
       foreach (var pickup in pickups)
       {
-        var connection = new Connection(Messenger, home1, pickup);
-        _graphCanvas.Children.Add(connection);
+        _graphCanvas.Children.Add(Connection.Good(Messenger, home1, pickup));
       }
     }
   }
