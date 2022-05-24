@@ -6,8 +6,8 @@
              xmlns:vm="clr-namespace:Orditor.ViewModels"
              mc:Ignorable="d" 
              x:ClassModifier="internal" d:DataContext="{d:DesignInstance Type={x:Type vm:InventoryViewModel}}">
-    <Grid>
-        <ItemsControl ItemsSource="{Binding Skills}">
+    <DockPanel LastChildFill="False">
+        <ItemsControl ItemsSource="{Binding Skills}" DockPanel.Dock="Top">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
@@ -22,5 +22,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-    </Grid>
+
+        <Button DockPanel.Dock="Top" Content="Show" Command="{Binding ShowReachable}"/>
+    </DockPanel>
 </UserControl>

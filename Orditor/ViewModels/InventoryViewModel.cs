@@ -23,6 +23,12 @@ internal class InventoryViewModel : NotificationObject
     inventory.StandardLure = true;
 
     Skills = new(SkillNames.Select(n => new BooleanInventoryItemViewModel(inventory, n)));
+    ShowReachable = new DelegateCommand(ExecuteShowReachable);
+  }
+
+  private void ExecuteShowReachable()
+  {
+    
   }
 
   private static readonly List<string> SkillNames = new()
@@ -40,4 +46,6 @@ internal class InventoryViewModel : NotificationObject
   };
 
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
+
+  public DelegateCommand ShowReachable { get; }
 }
