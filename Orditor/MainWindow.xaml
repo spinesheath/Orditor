@@ -8,7 +8,9 @@
         x:ClassModifier="internal"
         Title="Orditor" 
         Height="800" 
-        Width="1200">
+        Width="1200"
+        MinHeight="600"
+        MinWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" MinWidth="10"/>
@@ -19,5 +21,12 @@
         <v:WorldView x:Name="WorldView" Grid.Column="0"/>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4"/>
         <v:AreasEditorView x:Name="AreasEditorView" Grid.Column="2"/>
+
+        <v:InventoryView x:Name="InventoryView" 
+                         Grid.Column="0" 
+                         Width="200" 
+                         Height="200" 
+                         VerticalAlignment="Top" 
+                         HorizontalAlignment="Left"/>
     </Grid>
 </Window>

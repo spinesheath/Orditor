@@ -33,8 +33,11 @@ internal partial class MainWindow
     var world = new WorldViewModel(graph, areas, messenger, parser);
     messenger.ListenForAreas(world);
 
+    var inventory = new InventoryViewModel();
+
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
+    InventoryView.DataContext = inventory;
   }
 
   private static void SaveLocations(PickupGraph graph, string text, FileManager file)
