@@ -11,30 +11,15 @@ internal class RestrictedGraph : IChangeListener
     _areas = areas;
     _parser = parser;
     _graph = parser.Parse(areas.Text);
-    Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
-    ReachableHomes = _graph.Homes.ToList();
+    Origin = _graph.Homes.First();
+    ReachableHomes = Enumerable.Empty<Home>();
     UnreachableHomes = Enumerable.Empty<Home>();
-    ReachablePickups = _graph.Pickups.ToList();
+    ReachablePickups = Enumerable.Empty<Pickup>();
     UnreachablePickups = Enumerable.Empty<Pickup>();
-
-    var connections = new List<RestrictedConnection>();
-    foreach (var home in _graph.Homes)
-    {
-      var connectedHomes = _graph.GetConnectedHomes(home);
-      foreach (var target in connectedHomes)
-      {
-        var bidirectional = _graph.GetConnectedHomes(target).Contains(home);
-        connections.Add(new RestrictedConnection(home, target, bidirectional));
-      }
-
-      foreach (var pickup in _graph.GetPickups(home))
-      {
-        connections.Add(new RestrictedConnection(home, pickup, false));
-      }
-    }
-
-    ReachableConnections = connections;
+    ReachableConnections = Enumerable.Empty<RestrictedConnection>();
     UnreachableConnections = Enumerable.Empty<RestrictedConnection>();
+
+    Changed();
   }
 
   public Home Origin { get; private set; }
