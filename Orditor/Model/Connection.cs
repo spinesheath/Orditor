@@ -2,16 +2,14 @@
 
 internal class Connection
 {
-  public Connection(string home, string target, Requirements requirement, bool isPickup)
+  public Connection(string home, string target, Requirements requirement)
   {
     Home = home;
     Target = target;
     Requirement = requirement;
-    IsPickup = isPickup;
   }
 
   public string Home { get; }
-  public bool IsPickup { get; }
   public Requirements Requirement { get; }
   public string Target { get; }
 

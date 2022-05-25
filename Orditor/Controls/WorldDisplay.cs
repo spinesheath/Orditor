@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,9 +22,9 @@ internal class WorldDisplay : Control, IChangeListener
     set => SetValue(AreasProperty, value);
   }
 
-  public PickupGraph? Graph
+  public RestrictedGraph? Graph
   {
-    get => (PickupGraph?)GetValue(GraphProperty);
+    get => (RestrictedGraph?)GetValue(GraphProperty);
     set => SetValue(GraphProperty, value);
   }
 
@@ -50,7 +49,7 @@ internal class WorldDisplay : Control, IChangeListener
   }
 
   public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
-    nameof(Graph), typeof(PickupGraph), typeof(WorldDisplay), new PropertyMetadata(default(PickupGraph), OnGraphChanged));
+    nameof(Graph), typeof(RestrictedGraph), typeof(WorldDisplay), new PropertyMetadata(default(RestrictedGraph), OnGraphChanged));
 
   public static readonly DependencyProperty MessengerProperty = DependencyProperty.Register(
     nameof(Messenger), typeof(Messenger), typeof(WorldDisplay), new PropertyMetadata(default(Messenger), OnMessengerChanged));
@@ -94,33 +93,16 @@ internal class WorldDisplay : Control, IChangeListener
     {
       return;
     }
-
-    var handled = new HashSet<Home>();
-    foreach (var home1 in Graph.Homes)
+    
+    foreach (var connection in Graph.ReachableConnections)
     {
-      handled.Add(home1);
-      
-      var homes = Graph.GetConnectedHomes(home1);
-      foreach (var home2 in homes)
+      if (connection.Bidirectional)
       {
-        var isConnectedBack = Graph.GetConnectedHomes(home2).Contains(home1);
-        if (isConnectedBack)
-        {
-          if (!handled.Contains(home2))
-          {
-            _graphCanvas.Children.Add(Connection.Good(Messenger, home1, home2));
-          }
-        }
-        else
-        {
-          _graphCanvas.Children.Add(Connection.Bad(Messenger, home1, home2));
-        }
+        _graphCanvas.Children.Add(Connection.Good(Messenger, connection));
       }
-
-      var pickups = Graph.GetPickups(home1);
-      foreach (var pickup in pickups)
+      else
       {
-        _graphCanvas.Children.Add(Connection.Good(Messenger, home1, pickup));
+        _graphCanvas.Children.Add(Connection.Bad(Messenger, connection));
       }
     }
   }
@@ -132,7 +114,7 @@ internal class WorldDisplay : Control, IChangeListener
       return;
     }
 
-    foreach (var home in Graph.Homes)
+    foreach (var home in Graph.ReachableHomes)
     {
       var marker = new HomeMarker(home, Messenger);
 
@@ -161,7 +143,7 @@ internal class WorldDisplay : Control, IChangeListener
       return;
     }
 
-    foreach (var pickup in Graph.Pickups)
+    foreach (var pickup in Graph.ReachablePickups)
     {
       var marker = PickupMarker(pickup, Messenger);
       _graphCanvas.Children.Add(marker);

@@ -2,25 +2,20 @@
 
 namespace Orditor.Model;
 
-internal class Pickup
+internal class Pickup : Location
 {
   public Pickup(string name, string zone, int x, int y, string vanillaContent, string difficulty)
+    : base(name, x, y)
   {
     Id = ToMultipleOfFour(x) * 10000 + ToMultipleOfFour(y);
-    Name = name;
     Zone = zone;
     VanillaContent = vanillaContent;
     Difficulty = difficulty;
-    X = x;
-    Y = y;
   }
 
   public string Difficulty { get; }
   public int Id { get; }
-  public string Name { get; }
   public string VanillaContent { get; }
-  public int X { get; }
-  public int Y { get; }
   public string Zone { get; }
 
   public override string ToString()

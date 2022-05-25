@@ -19,25 +19,32 @@ internal partial class MainWindow
       Application.Current.Shutdown();
       return;
     }
-
-    var text = file.Areas;
+    
     var annotations = new Annotations();
     var parser = new PickupGraphParser(annotations);
-    var graph = parser.Parse(text);
-    SaveLocations(graph, text, file);
+    InitializeLocations(parser, file);
 
     var messenger = new Messenger();
     var areas = new AreasOri(file, messenger);
     var areasEditor = new AreasEditorViewModel(areas, messenger);
     messenger.ListenForAreas(areasEditor);
-    var world = new WorldViewModel(graph, areas, messenger, parser);
-    messenger.ListenForAreas(world);
+
+    var graph = new RestrictedGraph(areas, parser);
+    messenger.ListenForAreas(graph);
+    var world = new WorldViewModel(graph, messenger, areas);
 
     var inventory = new InventoryViewModel();
 
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
     InventoryView.DataContext = inventory;
+  }
+
+  private static void InitializeLocations(PickupGraphParser parser, FileManager file)
+  {
+    var text = file.Areas;
+    var graph = parser.Parse(text);
+    SaveLocations(graph, text, file);
   }
 
   private static void SaveLocations(PickupGraph graph, string text, FileManager file)

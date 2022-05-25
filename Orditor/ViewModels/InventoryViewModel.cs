@@ -22,14 +22,13 @@ internal class InventoryViewModel : NotificationObject
     inventory.StandardAbilities = true;
     inventory.StandardLure = true;
 
-    Skills = new(SkillNames.Select(n => new BooleanInventoryItemViewModel(inventory, n)));
+    Skills = new ObservableCollection<BooleanInventoryItemViewModel>(SkillNames.Select(n => new BooleanInventoryItemViewModel(inventory, n)));
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
 
-  private void ExecuteShowReachable()
-  {
-    
-  }
+  public DelegateCommand ShowReachable { get; }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
 
   private static readonly List<string> SkillNames = new()
   {
@@ -45,7 +44,7 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.Grenade)
   };
 
-  public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
-
-  public DelegateCommand ShowReachable { get; }
+  private void ExecuteShowReachable()
+  {
+  }
 }

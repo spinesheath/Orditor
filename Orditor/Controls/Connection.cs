@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -11,46 +10,36 @@ namespace Orditor.Controls;
 
 internal class Connection : Canvas
 {
-  private Connection(Messenger messenger, Home location1, Home location2)
+  private readonly Messenger _messenger;
+  private readonly Location _location1;
+  private readonly Location _location2;
+
+  private Connection(Messenger messenger, Location location1, Location location2)
   {
-    _selectionSetter = () => messenger.Select(location1, location2);
+    _messenger = messenger;
+    _location1 = location1;
+    _location2 = location2;
+
     var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
     var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
-
     _marker = GetMarker(coordinates1, coordinates2);
     Children.Add(_marker);
   }
 
-  private Connection(Messenger messenger, Home location1, Pickup location2)
+  public static Connection Bad(Messenger messenger, RestrictedConnection connection)
   {
-    _selectionSetter = () => messenger.Select(location1, location2);
-    var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
-    var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
-
-    _marker = GetMarker(coordinates1, coordinates2);
-    Children.Add(_marker);
+    var c = new Connection(messenger, connection.Location1, connection.Location2);
+    c._marker.StrokeDashArray = DashArray;
+    return c;
   }
-
-  public static Connection Bad(Messenger messenger, Home home, Home target)
+  
+  public static UIElement Good(Messenger messenger, RestrictedConnection connection)
   {
-    var connection = new Connection(messenger, home, target);
-    connection._marker.StrokeDashArray = DashArray;
-    return connection;
-  }
-
-  public static Connection Good(Messenger messenger, Home home, Home target)
-  {
-    return new Connection(messenger, home, target);
-  }
-
-  public static Connection Good(Messenger messenger, Home home, Pickup target)
-  {
-    return new Connection(messenger, home, target);
+    return new Connection(messenger, connection.Location1, connection.Location2);
   }
 
   private static readonly DoubleCollection DashArray = new() { 5, 2 };
   private readonly Line _marker;
-  private readonly Action _selectionSetter;
 
   protected override void OnMouseEnter(MouseEventArgs e)
   {
@@ -66,7 +55,18 @@ internal class Connection : Canvas
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
   {
-    _selectionSetter();
+    if (_location1 is Pickup p1 && _location2 is Home h2)
+    {
+      _messenger.Select(h2, p1);
+    }
+    else if (_location1 is Home h1 && _location2 is Pickup p2)
+    {
+      _messenger.Select(h1, p2);
+    }
+    else if (_location1 is Home h3 && _location2 is Home h4)
+    {
+      _messenger.Select(h3, h4);
+    }
   }
 
   private Line GetMarker(Vector location1, Vector location2)
