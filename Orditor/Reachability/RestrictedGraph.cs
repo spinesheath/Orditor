@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Orditor.Model;
 using Orditor.Orchestration;
 
-namespace Orditor.Model;
+namespace Orditor.Reachability;
 
 internal class RestrictedGraph : IChangeListener
 {

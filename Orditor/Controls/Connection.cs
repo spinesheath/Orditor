@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Orditor.Model;
 using Orditor.Orchestration;
+using Orditor.Reachability;
 
 namespace Orditor.Controls;
 

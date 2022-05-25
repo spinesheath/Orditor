@@ -1,4 +1,6 @@
-﻿namespace Orditor.Model;
+﻿using Orditor.Model;
+
+namespace Orditor.Reachability;
 
 internal class RestrictedConnection
 {
