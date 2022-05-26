@@ -55,4 +55,9 @@ internal class Inventory
   public bool Glitched { get; set; }
   public bool TimedLevel { get; set; }
   public bool Insane { get; set; }
+
+  public bool Fulfills(Requirements requirement)
+  {
+    return true;
+  }
 }

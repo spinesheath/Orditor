@@ -39,7 +39,7 @@ internal static class LineParser
     return match.Success ? match.Groups[1].Value : null;
   }
 
-  public static Home? TryHome(string line, Annotations annotations)
+  public static Home? TryHome(string line, Annotations annotations, IdGenerator homeIdGenerator)
   {
     var match = HomeRegex.Match(line);
     if (!match.Success)
@@ -52,10 +52,16 @@ internal static class LineParser
     var x = ToInt(match.Groups[2], ax);
     var y = ToInt(match.Groups[3], ay);
 
-    return new Home(name, x, y);
+    return new Home(name, homeIdGenerator.Next(), x, y);
   }
 
-  public static Pickup? TryPickupDefinition(string line)
+  public static string? TryHomeName(string line)
+  {
+    var match = HomeRegex.Match(line);
+    return match.Success ? match.Groups[1].Value : null;
+  }
+
+  public static Pickup? TryPickupDefinition(string line, IdGenerator idGenerator)
   {
     var match = PickupDefinitionRegex.Match(line);
     if (!match.Success)
@@ -70,7 +76,7 @@ internal static class LineParser
     var difficulty = match.Groups[5].Value;
     var zone = match.Groups[6].Value;
 
-    return new Pickup(name, zone, x, y, vanillaContent, difficulty);
+    return new Pickup(name, idGenerator.Next(), zone, x, y, vanillaContent, difficulty);
   }
 
   public static string? TryPickupReference(string line)

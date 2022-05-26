@@ -5,66 +5,53 @@ namespace Orditor.Model;
 
 internal class PickupGraph
 {
-  public IEnumerable<Connection> Connections => _connections;
-  public IEnumerable<Home> Homes => _nameToHome.Values;
-  public int NodeCount => _nameToPickup.Count + _nameToHome.Count;
-  public IEnumerable<Pickup> Pickups => _nameToPickup.Values;
-
-  public void Add(Pickup pickup)
+  public PickupGraph(List<Home> homes, List<Pickup> pickups, List<Connection> connections)
   {
-    _nameToPickup.Add(pickup.Name, pickup);
-  }
+    Homes = homes.ToList();
+    Pickups = pickups.ToList();
+    LocationCount = homes.Count + pickups.Count;
 
-  public void Add(Home home)
-  {
-    _nameToHome.Add(home.Name, home);
-  }
-
-  public void Add(IEnumerable<Pickup> pickups)
-  {
-    foreach (var pickup in pickups)
+    var tempConnections = new List<Connection>[homes.Count];
+    for (var i = 0; i < homes.Count; i++)
     {
-      Add(pickup);
+      tempConnections[i] = new List<Connection>();
+    }
+
+    foreach (var connection in connections)
+    {
+      tempConnections[connection.Home.Id].Add(connection);
+    }
+
+    _outgoingConnections = new Connection[homes.Count][];
+    for (var i = 0; i < homes.Count; i++)
+    {
+      _outgoingConnections[i] = tempConnections[i].ToArray();
     }
   }
 
-  public void ConnectHome(string home, string target, Requirements requirement)
+  public Connection[] Outgoing(Home home)
   {
-    _connections.Add(new Connection(home, target, requirement));
+    return _outgoingConnections[home.Id];
   }
 
-  public void ConnectPickup(string home, string pickup, Requirements requirement)
+  public int LocationCount { get; }
+  public IEnumerable<Home> Homes { get; }
+  public IEnumerable<Pickup> Pickups { get; }
+
+  public Home? Home(string name)
   {
-    _connections.Add(new Connection(home, pickup, requirement));
+    return Homes.FirstOrDefault(x => x.Name == name);
   }
 
   public IEnumerable<Home> GetConnectedHomes(Home home)
   {
-    return _connections.Where(c => c.Home == home.Name)
-      .Where(c => _nameToHome.ContainsKey(c.Target))
-      .Select(c => _nameToHome[c.Target])
-      .Distinct();
+    return Outgoing(home).Select(c => c.Target).OfType<Home>().Distinct();
   }
 
   public IEnumerable<Pickup> GetPickups(Home home)
   {
-    return _connections.Where(c => c.Home == home.Name)
-      .Where(c => _nameToPickup.ContainsKey(c.Target))
-      .Select(c => _nameToPickup[c.Target])
-      .Distinct();
+    return Outgoing(home).Select(c => c.Target).OfType<Pickup>().Distinct();
   }
-
-  public Home? Home(string name)
-  {
-    return _nameToHome.TryGetValue(name, out var home) ? home : null;
-  }
-
-  public Pickup? Pickup(string name)
-  {
-    return _nameToPickup.TryGetValue(name, out var pickup) ? pickup : null;
-  }
-
-  private readonly List<Connection> _connections = new();
-  private readonly Dictionary<string, Home> _nameToHome = new();
-  private readonly Dictionary<string, Pickup> _nameToPickup = new();
+  
+  private readonly Connection[][] _outgoingConnections;
 }

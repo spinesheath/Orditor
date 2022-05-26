@@ -9,7 +9,7 @@ internal class Requirements
 {
   public Requirements(string raw)
   {
-    var parts = raw.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+    var parts = raw.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
     Logic = parts[0];
 
     var skills = new List<Skill>();

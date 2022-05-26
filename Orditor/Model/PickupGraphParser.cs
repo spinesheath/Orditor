@@ -1,10 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
+  private class Accumulator
+  {
+    public void ReadDefinitions(string[] lines, Annotations annotations)
+    {
+      var idGenerator = new IdGenerator();
+
+      foreach (var line in lines)
+      {
+        Add(LineParser.TryHome(line, annotations, idGenerator));
+      }
+
+      foreach (var line in lines)
+      {
+        Add(LineParser.TryPickupDefinition(line, idGenerator));
+      }
+    }
+
+    private void Add(Pickup? pickup)
+    {
+      if (pickup != null)
+      {
+        Pickups.Add(pickup);
+      }
+    }
+
+    private void Add(Home? home)
+    {
+      if (home != null)
+      {
+        Homes.Add(home);
+      }
+    }
+
+    public Home? Home(string? name)
+    {
+      return name == null ? null : Homes.FirstOrDefault(p => p.Name == name);
+    }
+
+    public Pickup? Pickup(string? name)
+    {
+      return name == null ? null : Pickups.FirstOrDefault(p => p.Name == name);
+    }
+
+    public List<Pickup> Pickups { get; } = new();
+    public List<Home> Homes { get; } = new();
+  }
+
   public PickupGraphParser(Annotations annotations)
   {
     _annotations = annotations;
@@ -13,28 +61,30 @@ internal class PickupGraphParser
   public PickupGraph Parse(string text)
   {
     var lines = text.Split(Environment.NewLine);
-    var graph = new PickupGraph();
-    graph.Add(ReadPickups(lines));
-    ReadGraph(lines, graph);
-    return graph;
+    return ReadGraph(lines);
   }
 
   private readonly Annotations _annotations;
 
-  private void ReadGraph(IEnumerable<string> lines, PickupGraph graph)
+  private PickupGraph ReadGraph(string[] lines)
   {
+    var accumulator = new Accumulator();
+    accumulator.ReadDefinitions(lines, _annotations);
+
+    var connections = new List<Connection>();
     var linesForCurrentHome = new Queue<string>();
     Home? home = null;
+
     foreach (var line in lines)
     {
-      var possibleHome = LineParser.TryHome(line, _annotations);
+      var possibleHome = accumulator.Home(LineParser.TryHomeName(line));
       if (possibleHome != null)
       {
         if (home != null)
         {
-          Commit(home, linesForCurrentHome, graph);
+          connections.AddRange(ParseRequirements(home, linesForCurrentHome, accumulator));
         }
-
+        
         home = possibleHome;
         linesForCurrentHome.Clear();
       }
@@ -46,69 +96,39 @@ internal class PickupGraphParser
 
     if (home != null)
     {
-      Commit(home, linesForCurrentHome, graph);
+      connections.AddRange(ParseRequirements(home, linesForCurrentHome, accumulator));
     }
+
+    return new PickupGraph(accumulator.Homes, accumulator.Pickups, connections);
   }
 
-  private static void Commit(Home home, Queue<string> lineQueue, PickupGraph graph)
+  private static IEnumerable<Connection> ParseRequirements(Home home, Queue<string> lineQueue, Accumulator accumulator)
   {
-    graph.Add(home);
-
-    string? pickup = null;
-    string? connection = null;
+    Location? currentTarget = null;
 
     while (lineQueue.Count > 0)
     {
       var line = lineQueue.Dequeue();
 
-      var newPickup = LineParser.TryPickupReference(line);
-      var newConnection = LineParser.TryConnection(line);
+      var newPickup = accumulator.Pickup(LineParser.TryPickupReference(line));
+      var newConnection = accumulator.Home(LineParser.TryConnection(line));
+      var newTarget = (Location?)newPickup ?? newConnection;
       var newRequirement = LineParser.TryRequirement(line);
 
       var nextIsNotRequirement = lineQueue.Count == 0 || LineParser.TryRequirement(lineQueue.Peek()) == null;
 
-      if (newPickup != null)
+      if (newTarget != null)
       {
         if (nextIsNotRequirement)
         {
-          graph.ConnectPickup(home.Name, newPickup, Requirements.Free);
+          yield return new Connection(home, newTarget, Requirements.Free);
         }
 
-        pickup = newPickup;
-        connection = null;
+        currentTarget = newTarget;
       }
-      else if (newConnection != null)
+      else if (newRequirement != null && currentTarget != null)
       {
-        if (nextIsNotRequirement)
-        {
-          graph.ConnectHome(home.Name, newConnection, Requirements.Free);
-        }
-
-        connection = newConnection;
-        pickup = null;
-      }
-      else if (newRequirement != null)
-      {
-        if (pickup != null)
-        {
-          graph.ConnectPickup(home.Name, pickup, newRequirement);
-        }
-        else if (connection != null)
-        {
-          graph.ConnectHome(home.Name, connection, newRequirement);
-        }
-      }
-    }
-  }
-
-  private static IEnumerable<Pickup> ReadPickups(IEnumerable<string> lines)
-  {
-    foreach (var line in lines)
-    {
-      var pickup = LineParser.TryPickupDefinition(line);
-      if (pickup != null)
-      {
-        yield return pickup;
+        yield return new Connection(home, currentTarget, newRequirement);
       }
     }
   }
