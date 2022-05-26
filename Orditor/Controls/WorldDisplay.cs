@@ -117,24 +117,36 @@ internal class WorldDisplay : Control, IChangeListener
 
     foreach (var home in Graph.ReachableHomes)
     {
-      var marker = new HomeMarker(home, Messenger);
-
-      marker.MouseDown += OnHomeMouseDown;
-
-      if (home.X == int.MaxValue)
-      {
-        Canvas.SetTop(marker, 50 + marker.Height / 2);
-        Canvas.SetLeft(marker, 50 + marker.Width / 2);
-      }
-      else
-      {
-        var p = Coordinates.GameToMap(home.X, home.Y);
-        Canvas.SetTop(marker, p.Y - marker.Height / 2);
-        Canvas.SetLeft(marker, p.X - marker.Width / 2);
-      }
-
+      var marker = CreateHomeMarker(home, Messenger, true);
       _graphCanvas.Children.Add(marker);
     }
+
+    foreach (var home in Graph.UnreachableHomes)
+    {
+      var marker = CreateHomeMarker(home, Messenger, false);
+      _graphCanvas.Children.Add(marker);
+    }
+  }
+
+  private HomeMarker CreateHomeMarker(Home home, Messenger messenger, bool reachable)
+  {
+    var marker = new HomeMarker(home, messenger, reachable);
+
+    marker.MouseDown += OnHomeMouseDown;
+
+    if (home.X == int.MaxValue)
+    {
+      Canvas.SetTop(marker, 50 + marker.Height / 2);
+      Canvas.SetLeft(marker, 50 + marker.Width / 2);
+    }
+    else
+    {
+      var p = Coordinates.GameToMap(home.X, home.Y);
+      Canvas.SetTop(marker, p.Y - marker.Height / 2);
+      Canvas.SetLeft(marker, p.X - marker.Width / 2);
+    }
+
+    return marker;
   }
 
   private void AddPickupMarkers()
@@ -144,7 +156,7 @@ internal class WorldDisplay : Control, IChangeListener
       return;
     }
 
-    foreach (var pickup in Graph.ReachablePickups)
+    foreach (var pickup in Graph.ReachablePickups.Concat(Graph.UnreachablePickups))
     {
       var marker = PickupMarker(pickup, Messenger);
       _graphCanvas.Children.Add(marker);

@@ -41,11 +41,13 @@ internal class RestrictedGraph : IChangeListener
   {
     _graph = _parser.Parse(_areas.Text);
 
+    var reachableLocations = new OriReachable(_graph, false).Reachable(new Inventory(), "SunkenGladesRunaway").ToHashSet();
+
     Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
-    ReachableHomes = _graph.Homes.ToList();
-    UnreachableHomes = Enumerable.Empty<Home>();
-    ReachablePickups = _graph.Pickups.ToList();
-    UnreachablePickups = Enumerable.Empty<Pickup>();
+    ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h.Name)).ToList();
+    UnreachableHomes = _graph.Homes.Except(ReachableHomes);
+    ReachablePickups = _graph.Pickups.Where(p => reachableLocations.Contains(p.Name)).ToList();
+    UnreachablePickups = _graph.Pickups.Except(ReachablePickups);
 
     var connections = new List<RestrictedConnection>();
     foreach (var home in _graph.Homes)
