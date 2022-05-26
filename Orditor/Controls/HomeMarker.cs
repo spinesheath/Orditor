@@ -70,8 +70,8 @@ internal class HomeMarker : Border
       }
       else
       {
-        _marker.Stroke = Brushes.OrangeRed;
-        _marker.Fill = Brushes.OrangeRed;
+        _marker.Stroke = Brushes.Orange;
+        _marker.Fill = Brushes.Orange;
       }
     }
     else
@@ -83,8 +83,8 @@ internal class HomeMarker : Border
       }
       else
       {
-        _marker.Stroke = Brushes.Orange;
-        _marker.Fill = Brushes.Orange;
+        _marker.Stroke = Brushes.OrangeRed;
+        _marker.Fill = Brushes.OrangeRed;
       }
     }
   }
