@@ -143,7 +143,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
   {
     var marker = new HomeMarker(home, messenger, reachable);
 
-    marker.MouseDown += OnHomeMouseDown;
+    marker.MouseLeftButtonDown += OnHomeMouseDown;
 
     if (home.X == int.MaxValue)
     {
@@ -183,7 +183,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
 
     foreach (var child in _graphCanvas.Children.OfType<HomeMarker>())
     {
-      child.MouseDown -= OnHomeMouseDown;
+      child.MouseLeftButtonDown -= OnHomeMouseDown;
     }
 
     _graphCanvas.Children.Clear();
