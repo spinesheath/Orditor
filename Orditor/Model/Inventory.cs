@@ -1,4 +1,7 @@
-﻿namespace Orditor.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Orditor.Model;
 
 internal class Inventory
 {
@@ -58,6 +61,28 @@ internal class Inventory
 
   public bool Fulfills(Requirements requirement)
   {
+    foreach (var skill in requirement.Skills)
+    {
+      if (!_fulfills[skill](this))
+      {
+        return false;
+      }
+    }
+
     return true;
   }
+
+  private readonly Dictionary<Skill, Func<Inventory, bool>> _fulfills = new()
+  {
+    {Skill.WallJump, i => i.WallJump},
+    {Skill.ChargeFlame, i => i.ChargeFlame},
+    {Skill.DoubleJump, i => i.DoubleJump},
+    {Skill.Bash, i => i.Bash},
+    {Skill.Stomp, i => i.Stomp},
+    {Skill.Glide, i => i.Glide},
+    {Skill.Climb, i => i.Climb},
+    {Skill.ChargeJump, i => i.ChargeJump},
+    {Skill.Dash, i => i.Dash},
+    {Skill.Grenade, i => i.Grenade}
+  };
 }

@@ -5,12 +5,13 @@ using Orditor.Orchestration;
 
 namespace Orditor.Reachability;
 
-internal class RestrictedGraph : IChangeListener
+internal class RestrictedGraph : IAreaListener, IInventoryListener
 {
-  public RestrictedGraph(AreasOri areas, PickupGraphParser parser)
+  public RestrictedGraph(AreasOri areas, PickupGraphParser parser, Messenger messenger)
   {
     _areas = areas;
     _parser = parser;
+    _messenger = messenger;
     _graph = parser.Parse(areas.Text);
     Origin = _graph.Homes.First();
     ReachableHomes = Enumerable.Empty<Home>();
@@ -39,11 +40,32 @@ internal class RestrictedGraph : IChangeListener
 
   public void Changed()
   {
+    Update();
+    _messenger.RestrictedGraphChanged();
+  }
+
+  public void Changed(Inventory inventory)
+  {
+    _inventory = inventory;
+    Update();
+    _messenger.RestrictedGraphChanged();
+  }
+
+  private readonly AreasOri _areas;
+  private readonly PickupGraphParser _parser;
+  private readonly Messenger _messenger;
+  private PickupGraph _graph;
+  private Inventory _inventory = new();
+
+  private void Update()
+  {
     _graph = _parser.Parse(_areas.Text);
 
-    var reachableLocations = new OriReachable(_graph, false).Reachable(new Inventory(), "SunkenGladesRunaway").ToHashSet();
-
     Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
+    var openWorld = _inventory.OpenWorld;
+
+    var reachableLocations = new OriReachable(_graph, openWorld).Reachable(_inventory, Origin.Name).ToHashSet();
+
     ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h.Name)).ToList();
     UnreachableHomes = _graph.Homes.Except(ReachableHomes);
     ReachablePickups = _graph.Pickups.Where(p => reachableLocations.Contains(p.Name)).ToList();
@@ -68,8 +90,4 @@ internal class RestrictedGraph : IChangeListener
     ReachableConnections = connections;
     UnreachableConnections = Enumerable.Empty<RestrictedConnection>();
   }
-
-  private readonly AreasOri _areas;
-  private readonly PickupGraphParser _parser;
-  private PickupGraph _graph;
 }

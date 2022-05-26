@@ -10,7 +10,7 @@ using Orditor.Reachability;
 namespace Orditor.Controls;
 
 [TemplatePart(Name = "PART_GraphCanvas", Type = typeof(Canvas))]
-internal class WorldDisplay : Control, IChangeListener
+internal class WorldDisplay : Control, IRestrictedGraphListener
 {
   static WorldDisplay()
   {
@@ -66,6 +66,17 @@ internal class WorldDisplay : Control, IChangeListener
   private static void OnMessengerChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
     var display = (WorldDisplay)d;
+
+    if (e.OldValue is Messenger oldMessenger)
+    {
+      oldMessenger.StopListening(display);
+    }
+
+    if (e.NewValue is Messenger newMessenger)
+    {
+      newMessenger.Listen(display);
+    }
+
     display.OnGraphChanged();
   }
 
@@ -251,7 +262,5 @@ internal class WorldDisplay : Control, IChangeListener
     Cursor = Cursors.Arrow;
     _pannedMarker = null;
     ReleaseMouseCapture();
-
-    OnGraphChanged();
   }
 }

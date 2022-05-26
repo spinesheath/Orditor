@@ -28,13 +28,15 @@ internal partial class MainWindow
     var messenger = new Messenger();
     var areas = new AreasOri(file, messenger);
     var areasEditor = new AreasEditorViewModel(areas, messenger);
-    messenger.ListenForAreas(areasEditor);
+    messenger.Listen(areasEditor);
 
-    var graph = new RestrictedGraph(areas, parser);
-    messenger.ListenForAreas(graph);
+    var graph = new RestrictedGraph(areas, parser, messenger);
+    messenger.Listen((IAreaListener)graph);
+    messenger.Listen((IInventoryListener)graph);
+
     var world = new WorldViewModel(graph, messenger, areas);
 
-    var inventory = new InventoryViewModel();
+    var inventory = new InventoryViewModel(messenger);
 
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;

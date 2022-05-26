@@ -13,14 +13,40 @@ internal class Messenger
     }
   }
 
+  public void InventoryChanged(Inventory inventory)
+  {
+    foreach (var listener in _inventoryListeners)
+    {
+      listener.Changed(inventory);
+    }
+  }
+
+  public void Listen(IInventoryListener listener)
+  {
+    _inventoryListeners.Add(listener);
+  }
+
+  public void Listen(IRestrictedGraphListener listener)
+  {
+    _restrictedGraphListeners.Add(listener);
+  }
+
   public void Listen(ISelectionListener listener)
   {
     _selectionListeners.Add(listener);
   }
 
-  public void ListenForAreas(IChangeListener listener)
+  public void Listen(IAreaListener listener)
   {
     _areasChangeListeners.Add(listener);
+  }
+
+  public void RestrictedGraphChanged()
+  {
+    foreach (var listener in _restrictedGraphListeners)
+    {
+      listener.Changed();
+    }
   }
 
   public void Select(Pickup pickup)
@@ -60,6 +86,13 @@ internal class Messenger
     _selectionListeners.Remove(listener);
   }
 
-  private readonly List<IChangeListener> _areasChangeListeners = new();
+  public void StopListening(IRestrictedGraphListener listener)
+  {
+    _restrictedGraphListeners.Remove(listener);
+  }
+
+  private readonly List<IAreaListener> _areasChangeListeners = new();
+  private readonly List<IInventoryListener> _inventoryListeners = new();
+  private readonly List<IRestrictedGraphListener> _restrictedGraphListeners = new();
   private readonly List<ISelectionListener> _selectionListeners = new();
 }

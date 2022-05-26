@@ -1,6 +1,6 @@
 ﻿namespace Orditor.Orchestration;
 
-internal interface IChangeListener
+internal interface IAreaListener
 {
   void Changed();
 }
