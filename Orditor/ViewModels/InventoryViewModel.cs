@@ -15,11 +15,7 @@ internal class InventoryViewModel : NotificationObject
 
     Skills = Observable(SkillNames.Select(Boolean));
     LogicSets = Observable(LogicSetNames.Select(Boolean));
-
-    foreach (var skill in Skills)
-    {
-      skill.Value = true;
-    }
+    Teleporters = Observable(TpNames.Select(Boolean));
 
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
@@ -29,6 +25,24 @@ internal class InventoryViewModel : NotificationObject
   public DelegateCommand ShowReachable { get; }
 
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
+
+  private static readonly List<string> TpNames = new()
+  {
+    nameof(Inventory.TpGlades),
+    nameof(Inventory.TpGrove),
+    nameof(Inventory.TpSwamp),
+    nameof(Inventory.TpGrotto),
+    nameof(Inventory.TpGinso),
+    nameof(Inventory.TpValley),
+    nameof(Inventory.TpForlorn),
+    nameof(Inventory.TpSorrow),
+    nameof(Inventory.TpHoruFields),
+    nameof(Inventory.TpHoru),
+    nameof(Inventory.TpBlackroot),
+    nameof(Inventory.TpLostGrove)
+  };
 
   private static readonly List<string> SkillNames = new()
   {

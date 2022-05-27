@@ -56,7 +56,6 @@ internal class Inventory
   public bool TpSorrow { get; set; }
   public bool TpSwamp { get; set; }
   public bool TpValley { get; set; }
-
   public bool WallJump { get; set; }
   public bool WindRestored { get; set; }
 
@@ -103,7 +102,17 @@ internal class Inventory
       }
     }
 
-    return HasLogic(requirement);
+    if (!HasLogic(requirement))
+    {
+      return false;
+    }
+
+    if (!HasTp(requirement))
+    {
+      return false;
+    }
+
+    return true;
   }
 
   private readonly Dictionary<Skill, Func<Inventory, bool>> _fulfills = new()
@@ -119,6 +128,42 @@ internal class Inventory
     { Skill.Dash, i => i.Dash },
     { Skill.Grenade, i => i.Grenade }
   };
+
+  private bool HasTp(Requirements requirement)
+  {
+    foreach (var key in requirement.Other)
+    {
+      switch (key)
+      {
+        case "TPSorrow":
+          return TpSorrow;
+        case "TPGrotto":
+          return TpGrotto;
+        case "TPSwamp":
+          return TpSwamp;
+        case "TPValley":
+          return TpValley;
+        case "TPGrove":
+          return TpGrove;
+        case "TPGinso":
+          return TpGinso;
+        case "TPForlorn":
+          return TpForlorn;
+        case "TPHoru":
+          return TpHoru;
+        case "TPHoruFields":
+          return TpHoruFields;
+        case "TPGlades":
+          return TpGlades;
+        case "TPBlackroot":
+          return TpBlackroot;
+        case "TPLostGrove":
+          return TpLostGrove;
+      }
+    }
+
+    return true;
+  }
 
   private bool HasLogic(Requirements requirement)
   {
