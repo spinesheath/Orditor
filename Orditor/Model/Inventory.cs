@@ -107,7 +107,7 @@ internal class Inventory
       return false;
     }
 
-    if (!HasTp(requirement))
+    if (!HasOther(requirement))
     {
       return false;
     }
@@ -129,7 +129,7 @@ internal class Inventory
     { Skill.Grenade, i => i.Grenade }
   };
 
-  private bool HasTp(Requirements requirement)
+  private bool HasOther(Requirements requirement)
   {
     foreach (var key in requirement.Other)
     {
@@ -159,6 +159,16 @@ internal class Inventory
           return TpBlackroot;
         case "TPLostGrove":
           return TpLostGrove;
+        case "GinsoKey":
+          return GinsoKey;
+        case "Water":
+          return CleanWater;
+        case "ForlornKey":
+          return ForlornKey;
+        case "Wind":
+          return WindRestored;
+        case "HoruKey":
+          return HoruKey;
       }
     }
 

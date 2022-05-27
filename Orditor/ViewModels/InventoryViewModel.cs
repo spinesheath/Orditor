@@ -16,6 +16,7 @@ internal class InventoryViewModel : NotificationObject
     Skills = Observable(SkillNames.Select(Boolean));
     LogicSets = Observable(LogicSetNames.Select(Boolean));
     Teleporters = Observable(TpNames.Select(Boolean));
+    WorldEvents = Observable(WorldEventNames.Select(Boolean));
 
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
@@ -27,6 +28,8 @@ internal class InventoryViewModel : NotificationObject
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
 
   public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> WorldEvents { get; }
 
   private static readonly List<string> TpNames = new()
   {
@@ -56,6 +59,15 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.ChargeJump),
     nameof(Inventory.Dash),
     nameof(Inventory.Grenade)
+  };
+
+  private static readonly List<string> WorldEventNames = new()
+  {
+    nameof(Inventory.GinsoKey),
+    nameof(Inventory.CleanWater),
+    nameof(Inventory.ForlornKey),
+    nameof(Inventory.WindRestored),
+    nameof(Inventory.HoruKey)
   };
 
   private static readonly List<string> LogicSetNames = new()

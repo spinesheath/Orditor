@@ -6,53 +6,6 @@ namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
-  private class Accumulator
-  {
-    public void ReadDefinitions(string[] lines, Annotations annotations)
-    {
-      var idGenerator = new IdGenerator();
-
-      foreach (var line in lines)
-      {
-        Add(LineParser.TryHome(line, annotations, idGenerator));
-      }
-
-      foreach (var line in lines)
-      {
-        Add(LineParser.TryPickupDefinition(line, idGenerator));
-      }
-    }
-
-    private void Add(Pickup? pickup)
-    {
-      if (pickup != null)
-      {
-        Pickups.Add(pickup);
-      }
-    }
-
-    private void Add(Home? home)
-    {
-      if (home != null)
-      {
-        Homes.Add(home);
-      }
-    }
-
-    public Home? Home(string? name)
-    {
-      return name == null ? null : Homes.FirstOrDefault(p => p.Name == name);
-    }
-
-    public Pickup? Pickup(string? name)
-    {
-      return name == null ? null : Pickups.FirstOrDefault(p => p.Name == name);
-    }
-
-    public List<Pickup> Pickups { get; } = new();
-    public List<Home> Homes { get; } = new();
-  }
-
   public PickupGraphParser(Annotations annotations)
   {
     _annotations = annotations;
@@ -60,13 +13,20 @@ internal class PickupGraphParser
 
   public PickupGraph Parse(string text)
   {
-    var lines = text.Split(Environment.NewLine);
+    var lines = text.Split(Environment.NewLine).Select(RemoveCommentAndTrim).ToList();
     return ReadGraph(lines);
   }
 
   private readonly Annotations _annotations;
 
-  private PickupGraph ReadGraph(string[] lines)
+  private static string RemoveCommentAndTrim(string line)
+  {
+    var commentIndex = line.IndexOf("--", StringComparison.Ordinal);
+    var withoutComment = commentIndex >= 0 ? line[..commentIndex] : line;
+    return withoutComment.Trim();
+  }
+
+  private PickupGraph ReadGraph(List<string> lines)
   {
     var accumulator = new Accumulator();
     accumulator.ReadDefinitions(lines, _annotations);
@@ -84,7 +44,7 @@ internal class PickupGraphParser
         {
           connections.AddRange(ParseRequirements(home, linesForCurrentHome, accumulator));
         }
-        
+
         home = possibleHome;
         linesForCurrentHome.Clear();
       }
@@ -129,6 +89,54 @@ internal class PickupGraphParser
       else if (newRequirement != null && currentTarget != null)
       {
         yield return new Connection(home, currentTarget, newRequirement);
+      }
+    }
+  }
+
+  private class Accumulator
+  {
+    public List<Home> Homes { get; } = new();
+
+    public List<Pickup> Pickups { get; } = new();
+
+    public Home? Home(string? name)
+    {
+      return name == null ? null : Homes.FirstOrDefault(p => p.Name == name);
+    }
+
+    public Pickup? Pickup(string? name)
+    {
+      return name == null ? null : Pickups.FirstOrDefault(p => p.Name == name);
+    }
+
+    public void ReadDefinitions(List<string> lines, Annotations annotations)
+    {
+      var idGenerator = new IdGenerator();
+
+      foreach (var line in lines)
+      {
+        Add(LineParser.TryHome(line, annotations, idGenerator));
+      }
+
+      foreach (var line in lines)
+      {
+        Add(LineParser.TryPickupDefinition(line, idGenerator));
+      }
+    }
+
+    private void Add(Pickup? pickup)
+    {
+      if (pickup != null)
+      {
+        Pickups.Add(pickup);
+      }
+    }
+
+    private void Add(Home? home)
+    {
+      if (home != null)
+      {
+        Homes.Add(home);
       }
     }
   }
