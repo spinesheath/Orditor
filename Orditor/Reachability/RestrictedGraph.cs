@@ -55,7 +55,7 @@ internal class RestrictedGraph : IAreaListener, IInventoryListener
   private readonly PickupGraphParser _parser;
   private readonly Messenger _messenger;
   private PickupGraph _graph;
-  private Inventory _inventory = new();
+  private Inventory _inventory = Inventory.Default();
 
   private void Update()
   {

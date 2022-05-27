@@ -11,20 +11,10 @@ internal class InventoryViewModel : NotificationObject
   public InventoryViewModel(Messenger messenger)
   {
     _messenger = messenger;
-    _inventory = new Inventory();
-    _inventory.Keystones = 100;
-    _inventory.AbilityCells = 100;
-    _inventory.MapFragments = 100;
-    _inventory.Health = 15;
-    _inventory.Energy = 15;
-    _inventory.CasualCore = true;
-    _inventory.CasualDboost = true;
-    _inventory.StandardCore = true;
-    _inventory.StandardDboost = true;
-    _inventory.StandardAbilities = true;
-    _inventory.StandardLure = true;
+    _inventory = Inventory.Default();
 
     Skills = Observable(SkillNames.Select(Boolean));
+    LogicSets = Observable(LogicSetNames.Select(Boolean));
 
     foreach (var skill in Skills)
     {
@@ -33,6 +23,8 @@ internal class InventoryViewModel : NotificationObject
 
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
 
   public DelegateCommand ShowReachable { get; }
 
@@ -50,6 +42,29 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.ChargeJump),
     nameof(Inventory.Dash),
     nameof(Inventory.Grenade)
+  };
+
+  private static readonly List<string> LogicSetNames = new()
+  {
+    nameof(Inventory.CasualCore),
+    nameof(Inventory.CasualDboost),
+    nameof(Inventory.StandardCore),
+    nameof(Inventory.StandardDboost),
+    nameof(Inventory.StandardLure),
+    nameof(Inventory.StandardAbilities),
+    nameof(Inventory.ExpertCore),
+    nameof(Inventory.ExpertDboost),
+    nameof(Inventory.ExpertLure),
+    nameof(Inventory.ExpertAbilities),
+    nameof(Inventory.Dbash),
+    nameof(Inventory.MasterCore),
+    nameof(Inventory.MasterDboost),
+    nameof(Inventory.MasterLure),
+    nameof(Inventory.MasterAbilities),
+    nameof(Inventory.Gjump),
+    nameof(Inventory.Glitched),
+    nameof(Inventory.TimedLevel),
+    nameof(Inventory.Insane)
   };
 
   private readonly Inventory _inventory;

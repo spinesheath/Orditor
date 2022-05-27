@@ -25,7 +25,6 @@
         <v:InventoryView x:Name="InventoryView" 
                          Grid.Column="0" 
                          Width="200" 
-                         Height="200" 
                          VerticalAlignment="Top" 
                          HorizontalAlignment="Left"/>
     </Grid>
