@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Orditor.Model;
 
@@ -107,7 +108,7 @@ internal class Inventory
       return false;
     }
 
-    if (!HasOther(requirement))
+    if (!requirement.Other.All(HasOther))
     {
       return false;
     }
@@ -129,47 +130,48 @@ internal class Inventory
     { Skill.Grenade, i => i.Grenade }
   };
 
-  private bool HasOther(Requirements requirement)
+  private bool HasOther(string key)
   {
-    foreach (var key in requirement.Other)
+    switch (key.ToLowerInvariant())
     {
-      switch (key)
-      {
-        case "TPSorrow":
-          return TpSorrow;
-        case "TPGrotto":
-          return TpGrotto;
-        case "TPSwamp":
-          return TpSwamp;
-        case "TPValley":
-          return TpValley;
-        case "TPGrove":
-          return TpGrove;
-        case "TPGinso":
-          return TpGinso;
-        case "TPForlorn":
-          return TpForlorn;
-        case "TPHoru":
-          return TpHoru;
-        case "TPHoruFields":
-          return TpHoruFields;
-        case "TPGlades":
-          return TpGlades;
-        case "TPBlackroot":
-          return TpBlackroot;
-        case "TPLostGrove":
-          return TpLostGrove;
-        case "GinsoKey":
-          return GinsoKey;
-        case "Water":
-          return CleanWater;
-        case "ForlornKey":
-          return ForlornKey;
-        case "Wind":
-          return WindRestored;
-        case "HoruKey":
-          return HoruKey;
-      }
+      case "tpsorrow":
+        return TpSorrow;
+      case "tpgrotto":
+        return TpGrotto;
+      case "tpswamp":
+        return TpSwamp;
+      case "tpvalley":
+        return TpValley;
+      case "tpgrove":
+        return TpGrove;
+      case "tpginso":
+        return TpGinso;
+      case "tpforlorn":
+        return TpForlorn;
+      case "tphoru":
+        return TpHoru;
+      case "tphorufields":
+        return TpHoruFields;
+      case "tpglades":
+        return TpGlades;
+      case "tpblackroot":
+        return TpBlackroot;
+      case "tplostgrove":
+        return TpLostGrove;
+      case "ginsokey":
+        return GinsoKey;
+      case "water":
+        return CleanWater;
+      case "forlornkey":
+        return ForlornKey;
+      case "wind":
+        return WindRestored;
+      case "horukey":
+        return HoruKey;
+      case "open":
+        return OpenDungeons;
+      case "openworld":
+        return OpenWorld;
     }
 
     return true;

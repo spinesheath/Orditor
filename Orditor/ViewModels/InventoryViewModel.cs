@@ -17,11 +17,14 @@ internal class InventoryViewModel : NotificationObject
     LogicSets = Observable(LogicSetNames.Select(Boolean));
     Teleporters = Observable(TpNames.Select(Boolean));
     WorldEvents = Observable(WorldEventNames.Select(Boolean));
+    Modifiers = Observable(ModifierNames.Select(Boolean));
 
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
 
   public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
 
   public DelegateCommand ShowReachable { get; }
 
@@ -68,6 +71,12 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.ForlornKey),
     nameof(Inventory.WindRestored),
     nameof(Inventory.HoruKey)
+  };
+
+  private static readonly List<string> ModifierNames = new()
+  {
+    nameof(Inventory.OpenWorld),
+    nameof(Inventory.OpenDungeons)
   };
 
   private static readonly List<string> LogicSetNames = new()
