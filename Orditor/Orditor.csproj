@@ -21,16 +21,27 @@
     <None Remove="Data\ac.png" />
     <None Remove="Data\annotations.xml" />
     <None Remove="Data\areasSyntax.xml" />
+    <None Remove="Data\bash.png" />
+    <None Remove="Data\chargeflame.png" />
+    <None Remove="Data\chargejump.png" />
     <None Remove="Data\cleanwater.png" />
+    <None Remove="Data\climb.png" />
+    <None Remove="Data\dash.png" />
+    <None Remove="Data\doublejump.png" />
     <None Remove="Data\ec.png" />
+    <None Remove="Data\glide.png" />
+    <None Remove="Data\grenade.png" />
     <None Remove="Data\gumonseal.png" />
     <None Remove="Data\hc.png" />
     <None Remove="Data\ks.png" />
     <None Remove="Data\ms.png" />
     <None Remove="Data\pedestal.png" />
     <None Remove="Data\plant.png" />
+    <None Remove="Data\spiritflame.png" />
+    <None Remove="Data\stomp.png" />
     <None Remove="Data\sunstone.png" />
     <None Remove="Data\tree.png" />
+    <None Remove="Data\walljump.png" />
     <None Remove="Data\warmth.png" />
     <None Remove="Data\watervein.png" />
     <None Remove="Data\windrestored.png" />
@@ -52,10 +63,34 @@
     <Resource Include="Data\ac.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Data\bash.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\chargeflame.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\chargejump.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Data\cleanwater.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Data\climb.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\dash.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\doublejump.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Data\ec.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\glide.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\grenade.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Data\gumonseal.png">
@@ -76,10 +111,19 @@
     <Resource Include="Data\plant.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Data\spiritflame.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\stomp.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Data\sunstone.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Data\tree.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Data\walljump.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Data\warmth.png">

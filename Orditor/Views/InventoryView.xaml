@@ -3,25 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:c="clr-namespace:Orditor.Controls"
              xmlns:vm="clr-namespace:Orditor.ViewModels"
              xmlns:num="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
              mc:Ignorable="d" 
              x:ClassModifier="internal" d:DataContext="{d:DesignInstance Type={x:Type vm:InventoryViewModel}}">
+    <UserControl.Resources>
+        <c:InventoryItemNameToImagePathConverter x:Key="ImageConverter"/>
+
+        <DataTemplate x:Key="SkillCheckBoxTemplate"
+                      DataType="{x:Type vm:BooleanInventoryItemViewModel}">
+            <CheckBox ToolTip="{Binding Name}" 
+                      IsChecked="{Binding Value}"
+                      Foreground="LightGray"
+                      Margin="0,0,10,0">
+                <CheckBox.Template>
+                    <ControlTemplate>
+                        <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
+                               Height="32" 
+                               Stretch="Uniform"/>
+                    </ControlTemplate>
+                </CheckBox.Template>
+            </CheckBox>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <DockPanel LastChildFill="False">
-        <ItemsControl ItemsSource="{Binding Skills}" DockPanel.Dock="Top">
+        <ItemsControl ItemsSource="{Binding Skills}" 
+                      DockPanel.Dock="Top"
+                      ItemTemplate="{StaticResource SkillCheckBoxTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
+                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:BooleanInventoryItemViewModel}">
-                    <CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <ItemsControl ItemsSource="{Binding LogicSets}" DockPanel.Dock="Top">
