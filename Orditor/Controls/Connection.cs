@@ -11,7 +11,7 @@ namespace Orditor.Controls;
 
 internal class Connection : Canvas
 {
-  private Connection(Messenger messenger, Location location1, Location location2)
+  private Connection(Messenger messenger, Location location1, Location location2, bool arrow)
   {
     _messenger = messenger;
     _location1 = location1;
@@ -20,9 +20,12 @@ internal class Connection : Canvas
     var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
     var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
     _line = CreateLine(coordinates1, coordinates2);
-    _arrowHeads = CreateArrowHeads(coordinates1, coordinates2);
     Children.Add(_line);
-    Children.Add(_arrowHeads);
+    if (arrow)
+    {
+      _arrowHead = CreateArrowHeads(coordinates1, coordinates2);
+      Children.Add(_arrowHead);
+    }
   }
 
   private static Arrow CreateArrowHeads(Vector coordinates1, Vector coordinates2)
@@ -36,38 +39,43 @@ internal class Connection : Canvas
 
   public static Connection Bad(Messenger messenger, RestrictedConnection connection)
   {
-    var c = new Connection(messenger, connection.Location1, connection.Location2);
+    var c = new Connection(messenger, connection.Location1, connection.Location2, true);
     c._line.StrokeDashArray = DashArray;
     return c;
   }
 
   public static UIElement Good(Messenger messenger, RestrictedConnection connection)
   {
-    return new Connection(messenger, connection.Location1, connection.Location2);
+    return new Connection(messenger, connection.Location1, connection.Location2, false);
   }
 
   private static readonly DoubleCollection DashArray = new() { 5, 2 };
   private readonly Line _line;
   private readonly Location _location1;
   private readonly Location _location2;
-
   private readonly Messenger _messenger;
-  private readonly Arrow _arrowHeads;
+  private readonly Arrow? _arrowHead;
 
   protected override void OnMouseEnter(MouseEventArgs e)
   {
     base.OnMouseEnter(e);
     _line.Stroke = Brushes.CadetBlue;
-    _arrowHeads.Stroke = Brushes.CadetBlue;
-    _arrowHeads.Fill = Brushes.CadetBlue;
+    if (_arrowHead != null)
+    {
+      _arrowHead.Stroke = Brushes.CadetBlue;
+      _arrowHead.Fill = Brushes.CadetBlue;
+    }
   }
 
   protected override void OnMouseLeave(MouseEventArgs e)
   {
     base.OnMouseLeave(e);
     _line.Stroke = Brushes.White;
-    _arrowHeads.Stroke = Brushes.White;
-    _arrowHeads.Fill = Brushes.White;
+    if (_arrowHead != null)
+    {
+      _arrowHead.Stroke = Brushes.White;
+      _arrowHead.Fill = Brushes.White;
+    }
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -107,16 +115,15 @@ internal class Connection : Canvas
     static Arrow()
     {
       Rotate1 = new Matrix();
-      Rotate1.Rotate(15.0);
+      Rotate1.Rotate(20.0);
       Rotate2 = new Matrix();
-      Rotate2.Rotate(-15.0);
+      Rotate2.Rotate(-20.0);
     }
 
     public Arrow(Point origin, Point target)
     {
       _geometry = new PathGeometry();
       _geometry.Figures.Add(ArrowHead(origin, target));
-      _geometry.Figures.Add(ArrowHead(target, origin));
       _geometry.Freeze();
     }
 
@@ -128,17 +135,19 @@ internal class Connection : Canvas
 
     private static PathFigure ArrowHead(Point origin, Point target)
     {
-      var difference = origin - target;
-      difference.Normalize();
-      difference *= 10;
+      var direction = origin - target;
+      direction.Normalize();
+
+      var arrowLength = direction * 7;
+      var startPoint = target + direction * 10;
 
       var head = new PathFigure();
       head.IsClosed = true;
-      head.StartPoint = target + difference * Rotate1;
+      head.StartPoint = startPoint + arrowLength * Rotate1;
 
       var segment = new PolyLineSegment();
-      segment.Points.Add(target);
-      segment.Points.Add(target + difference * Rotate2);
+      segment.Points.Add(startPoint);
+      segment.Points.Add(startPoint + arrowLength * Rotate2);
       segment.Freeze();
       head.Segments.Add(segment);
       head.Freeze();
