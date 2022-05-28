@@ -8,11 +8,12 @@ namespace Orditor.ViewModels;
 
 internal class InventoryViewModel : NotificationObject
 {
-  public InventoryViewModel(Messenger messenger)
+  public InventoryViewModel(Messenger messenger, OriginSelectorViewModel originSelector)
   {
     _messenger = messenger;
     _inventory = Inventory.Default();
 
+    OriginSelector = originSelector;
     Skills = Observable(SkillNames.Select(Boolean));
     LogicSets = Observable(LogicSetNames.Select(Boolean));
     Teleporters = Observable(TpNames.Select(Boolean));
@@ -23,15 +24,11 @@ internal class InventoryViewModel : NotificationObject
   }
 
   public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
-
   public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
-
+  public OriginSelectorViewModel OriginSelector { get; }
   public DelegateCommand ShowReachable { get; }
-
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
-
   public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
-
   public ObservableCollection<BooleanInventoryItemViewModel> WorldEvents { get; }
 
   private static readonly List<string> TpNames = new()
@@ -110,13 +107,8 @@ internal class InventoryViewModel : NotificationObject
     return new BooleanInventoryItemViewModel(_inventory, n);
   }
 
-  private static ObservableCollection<BooleanInventoryItemViewModel> Observable(IEnumerable<BooleanInventoryItemViewModel> items)
-  {
-    return new ObservableCollection<BooleanInventoryItemViewModel>(items);
-  }
-
   private void ExecuteShowReachable()
   {
-    _messenger.InventoryChanged(_inventory);
+    _messenger.InventoryChanged(_inventory, OriginSelector.Origin);
   }
 }

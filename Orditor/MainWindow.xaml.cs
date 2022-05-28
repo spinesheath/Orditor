@@ -31,12 +31,16 @@ internal partial class MainWindow
     messenger.Listen(areasEditor);
 
     var graph = new RestrictedGraph(areas, parser, messenger);
-    messenger.Listen((IAreaListener)graph);
+    messenger.Listen((IAreasListener)graph);
     messenger.Listen((IInventoryListener)graph);
 
     var world = new WorldViewModel(graph, messenger, areas);
 
-    var inventory = new InventoryViewModel(messenger);
+    var originSelector = new OriginSelectorViewModel(parser, areas);
+    messenger.Listen((ISelectionListener)originSelector);
+    messenger.Listen((IAreasListener)originSelector);
+
+    var inventory = new InventoryViewModel(messenger, originSelector);
 
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;

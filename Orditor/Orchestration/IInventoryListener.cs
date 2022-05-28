@@ -4,5 +4,5 @@ namespace Orditor.Orchestration;
 
 internal interface IInventoryListener
 {
-  void Changed(Inventory inventory);
+  void Changed(Inventory inventory, string origin);
 }

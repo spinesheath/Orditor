@@ -5,7 +5,7 @@ using Orditor.Orchestration;
 
 namespace Orditor.Reachability;
 
-internal class RestrictedGraph : IAreaListener, IInventoryListener
+internal class RestrictedGraph : IAreasListener, IInventoryListener
 {
   public RestrictedGraph(AreasOri areas, PickupGraphParser parser, Messenger messenger)
   {
@@ -13,7 +13,7 @@ internal class RestrictedGraph : IAreaListener, IInventoryListener
     _parser = parser;
     _messenger = messenger;
     _graph = parser.Parse(areas.Text);
-    Origin = _graph.Homes.First();
+    Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
     ReachableHomes = Enumerable.Empty<Home>();
     UnreachableHomes = Enumerable.Empty<Home>();
     ReachablePickups = Enumerable.Empty<Pickup>();
@@ -21,7 +21,7 @@ internal class RestrictedGraph : IAreaListener, IInventoryListener
     ReachableConnections = Enumerable.Empty<RestrictedConnection>();
     UnreachableConnections = Enumerable.Empty<RestrictedConnection>();
 
-    Changed();
+    Update();
   }
 
   public Home Origin { get; private set; }
@@ -38,16 +38,16 @@ internal class RestrictedGraph : IAreaListener, IInventoryListener
 
   public IEnumerable<Pickup> UnreachablePickups { get; private set; }
 
-  public void Changed()
+  public void AreasChanged()
   {
     Update();
     _messenger.RestrictedGraphChanged();
   }
 
-  public void Changed(Inventory inventory)
+  public void Changed(Inventory inventory, string origin)
   {
     _inventory = inventory;
-    Update();
+    Update(origin);
     _messenger.RestrictedGraphChanged();
   }
 
@@ -57,11 +57,15 @@ internal class RestrictedGraph : IAreaListener, IInventoryListener
   private PickupGraph _graph;
   private Inventory _inventory = Inventory.Default();
 
-  private void Update()
+  private void Update(string? origin = null)
   {
     _graph = _parser.Parse(_areas.Text);
 
-    Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
+    if (origin != null)
+    {
+      Origin = _graph.Homes.First(h => h.Name == origin);
+    }
+
     var openWorld = _inventory.OpenWorld;
 
     var reachableLocations = new OriReachable(_graph, openWorld).Reachable(_inventory, Origin.Name).ToHashSet();

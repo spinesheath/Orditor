@@ -3,7 +3,7 @@ using Orditor.Orchestration;
 
 namespace Orditor.ViewModels;
 
-internal class AreasEditorViewModel : NotificationObject, IAreaListener
+internal class AreasEditorViewModel : NotificationObject, IAreasListener
 {
   public AreasEditorViewModel(AreasOri areas, Messenger messenger)
   {
@@ -20,7 +20,7 @@ internal class AreasEditorViewModel : NotificationObject, IAreaListener
     set => _areas.Text = value;
   }
 
-  public void Changed()
+  public void AreasChanged()
   {
     OnPropertyChanged(nameof(Text));
   }

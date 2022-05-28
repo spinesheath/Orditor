@@ -9,15 +9,15 @@ internal class Messenger
   {
     foreach (var listener in _areasChangeListeners)
     {
-      listener.Changed();
+      listener.AreasChanged();
     }
   }
 
-  public void InventoryChanged(Inventory inventory)
+  public void InventoryChanged(Inventory inventory, string origin)
   {
     foreach (var listener in _inventoryListeners)
     {
-      listener.Changed(inventory);
+      listener.Changed(inventory, origin);
     }
   }
 
@@ -36,7 +36,7 @@ internal class Messenger
     _selectionListeners.Add(listener);
   }
 
-  public void Listen(IAreaListener listener)
+  public void Listen(IAreasListener listener)
   {
     _areasChangeListeners.Add(listener);
   }
@@ -91,7 +91,7 @@ internal class Messenger
     _restrictedGraphListeners.Remove(listener);
   }
 
-  private readonly List<IAreaListener> _areasChangeListeners = new();
+  private readonly List<IAreasListener> _areasChangeListeners = new();
   private readonly List<IInventoryListener> _inventoryListeners = new();
   private readonly List<IRestrictedGraphListener> _restrictedGraphListeners = new();
   private readonly List<ISelectionListener> _selectionListeners = new();
