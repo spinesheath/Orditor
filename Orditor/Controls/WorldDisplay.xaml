@@ -6,7 +6,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WorldDisplay}">
                     <Grid>
-                        <Image Source="/Data/world.png"/>
+                        <Image>
+                            <Image.Source>
+                                <FormatConvertedBitmap Source="/Data/world.png" DestinationFormat="Gray8"/>
+                            </Image.Source>
+                        </Image>
                         <Canvas x:Name="PART_GraphCanvas"/>
                     </Grid>
                 </ControlTemplate>
