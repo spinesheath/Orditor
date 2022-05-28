@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Orditor.ViewModels"
+             xmlns:num="clr-namespace:NumericUpDownLib;assembly=NumericUpDownLib"
              mc:Ignorable="d" 
              x:ClassModifier="internal" d:DataContext="{d:DesignInstance Type={x:Type vm:InventoryViewModel}}">
     <DockPanel LastChildFill="False">
@@ -95,10 +96,21 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:IntegerInventoryItemViewModel}">
-                    <!--<CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>-->
+                    <DockPanel>
+                        <num:NumericUpDown
+                            DockPanel.Dock="Left"
+                            DisplayLength="2"
+                            IsDisplayLengthFixed="True"
+                            IsReadOnly="False"
+                            MaxValue="99"
+                            MinValue="0"
+                            Foreground="LightGray"
+                            IsMouseDragEnabled="False"
+                            StepSize="1"
+                            LargeStepSize="10"
+                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Foreground="LightGray"/>
+                    </DockPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

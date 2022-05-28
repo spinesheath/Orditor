@@ -113,6 +113,11 @@ internal class Inventory
       return false;
     }
 
+    if (requirement.Health > Health || requirement.Energy > Energy || requirement.Ability > AbilityCells)
+    {
+      return false;
+    }
+
     return true;
   }
 
