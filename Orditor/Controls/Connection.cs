@@ -11,10 +11,6 @@ namespace Orditor.Controls;
 
 internal class Connection : Canvas
 {
-  private readonly Messenger _messenger;
-  private readonly Location _location1;
-  private readonly Location _location2;
-
   private Connection(Messenger messenger, Location location1, Location location2)
   {
     _messenger = messenger;
@@ -23,35 +19,55 @@ internal class Connection : Canvas
 
     var coordinates1 = Coordinates.GameToMap(location1.X, location1.Y);
     var coordinates2 = Coordinates.GameToMap(location2.X, location2.Y);
-    _marker = GetMarker(coordinates1, coordinates2);
-    Children.Add(_marker);
+    _line = CreateLine(coordinates1, coordinates2);
+    _arrowHeads = CreateArrowHeads(coordinates1, coordinates2);
+    Children.Add(_line);
+    Children.Add(_arrowHeads);
+  }
+
+  private static Arrow CreateArrowHeads(Vector coordinates1, Vector coordinates2)
+  {
+    var arrow = new Arrow(new Point(coordinates1.X, coordinates1.Y), new Point(coordinates2.X, coordinates2.Y));
+    arrow.Fill = Brushes.White;
+    arrow.Stroke = Brushes.White;
+    arrow.StrokeThickness = 3;
+    return arrow;
   }
 
   public static Connection Bad(Messenger messenger, RestrictedConnection connection)
   {
     var c = new Connection(messenger, connection.Location1, connection.Location2);
-    c._marker.StrokeDashArray = DashArray;
+    c._line.StrokeDashArray = DashArray;
     return c;
   }
-  
+
   public static UIElement Good(Messenger messenger, RestrictedConnection connection)
   {
     return new Connection(messenger, connection.Location1, connection.Location2);
   }
 
   private static readonly DoubleCollection DashArray = new() { 5, 2 };
-  private readonly Line _marker;
+  private readonly Line _line;
+  private readonly Location _location1;
+  private readonly Location _location2;
+
+  private readonly Messenger _messenger;
+  private readonly Arrow _arrowHeads;
 
   protected override void OnMouseEnter(MouseEventArgs e)
   {
     base.OnMouseEnter(e);
-    _marker.Stroke = Brushes.CadetBlue;
+    _line.Stroke = Brushes.CadetBlue;
+    _arrowHeads.Stroke = Brushes.CadetBlue;
+    _arrowHeads.Fill = Brushes.CadetBlue;
   }
 
   protected override void OnMouseLeave(MouseEventArgs e)
   {
     base.OnMouseLeave(e);
-    _marker.Stroke = Brushes.White;
+    _line.Stroke = Brushes.White;
+    _arrowHeads.Stroke = Brushes.White;
+    _arrowHeads.Fill = Brushes.White;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -70,7 +86,7 @@ internal class Connection : Canvas
     }
   }
 
-  private Line GetMarker(Vector location1, Vector location2)
+  private Line CreateLine(Vector location1, Vector location2)
   {
     var connection = new Line
     {
@@ -84,5 +100,49 @@ internal class Connection : Canvas
     };
 
     return connection;
+  }
+
+  private class Arrow : Shape
+  {
+    static Arrow()
+    {
+      Rotate1 = new Matrix();
+      Rotate1.Rotate(15.0);
+      Rotate2 = new Matrix();
+      Rotate2.Rotate(-15.0);
+    }
+
+    public Arrow(Point origin, Point target)
+    {
+      _geometry = new PathGeometry();
+      _geometry.Figures.Add(ArrowHead(origin, target));
+      _geometry.Figures.Add(ArrowHead(target, origin));
+      _geometry.Freeze();
+    }
+
+    protected override Geometry DefiningGeometry => _geometry;
+
+    private static readonly Matrix Rotate1;
+    private static readonly Matrix Rotate2;
+    private readonly PathGeometry _geometry;
+
+    private static PathFigure ArrowHead(Point origin, Point target)
+    {
+      var difference = origin - target;
+      difference.Normalize();
+      difference *= 10;
+
+      var head = new PathFigure();
+      head.IsClosed = true;
+      head.StartPoint = target + difference * Rotate1;
+
+      var segment = new PolyLineSegment();
+      segment.Points.Add(target);
+      segment.Points.Add(target + difference * Rotate2);
+      segment.Freeze();
+      head.Segments.Add(segment);
+      head.Freeze();
+      return head;
+    }
   }
 }
