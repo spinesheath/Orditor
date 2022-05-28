@@ -15,7 +15,6 @@
                       DataType="{x:Type vm:BooleanInventoryItemViewModel}">
             <CheckBox ToolTip="{Binding Name}" 
                       IsChecked="{Binding Value}"
-                      Foreground="LightGray"
                       Margin="2">
                 <CheckBox.Template>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
@@ -87,20 +86,14 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <ItemsControl ItemsSource="{Binding WorldEvents}" DockPanel.Dock="Top">
+        <ItemsControl ItemsSource="{Binding WorldEvents}" 
+                      DockPanel.Dock="Top"
+                      ItemTemplate="{StaticResource BooleanItemTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
+                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:BooleanInventoryItemViewModel}">
-                    <CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <ItemsControl ItemsSource="{Binding Modifiers}" DockPanel.Dock="Top">

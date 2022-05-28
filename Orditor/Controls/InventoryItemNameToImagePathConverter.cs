@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -9,16 +10,23 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
 {
   public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
   {
-    if (value is string s)
+    if (value is not string s)
     {
-      return $"/Data/{s.ToLowerInvariant()}.png";
+      return DependencyProperty.UnsetValue;
     }
 
-    return DependencyProperty.UnsetValue;
+    return Mapping.TryGetValue(s, out var path) ? path : $"/Data/{s.ToLowerInvariant()}.png";
   }
 
   public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
   {
     return DependencyProperty.UnsetValue;
   }
+
+  private static readonly Dictionary<string, string> Mapping = new()
+  {
+    { "GinsoKey", "/Data/watervein.png" },
+    { "ForlornKey", "/Data/gumonseal.png" },
+    { "HoruKey", "/Data/sunstone.png" }
+  };
 }
