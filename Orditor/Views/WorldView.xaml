@@ -8,9 +8,44 @@
              mc:Ignorable="d"
              Background="Black" 
              d:DataContext="{d:DesignInstance Type={x:Type vm:WorldViewModel}}">
-    <controls:Viewer Zoom="0.2">
-        <controls:WorldDisplay Graph="{Binding Graph}"
-                               Areas="{Binding Areas}"
-                               Messenger="{Binding Messenger}"/>
-    </controls:Viewer>
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="RainbowBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="Red" Offset="0.0"/>
+            <GradientStop Color="Red" Offset="0.2"/>
+            <GradientStop Color="Orange" Offset="0.3"/>
+            <GradientStop Color="Yellow" Offset="0.4"/>
+            <GradientStop Color="Green" Offset="0.5"/>
+            <GradientStop Color="Blue" Offset="0.6"/>
+            <GradientStop Color="Indigo" Offset="0.7"/>
+            <GradientStop Color="Violet" Offset="0.8"/>
+            <GradientStop Color="Violet" Offset="1.0"/>
+        </LinearGradientBrush>
+    </UserControl.Resources>
+
+    <Grid>
+        <controls:Viewer Zoom="0.2">
+            <controls:WorldDisplay Graph="{Binding Graph}"
+                                   Areas="{Binding Areas}"
+                                   Messenger="{Binding Messenger}"
+                                   Greyscale="{Binding ElementName=GreyscaleCheckBox, Path=IsChecked}"/>
+        </controls:Viewer>
+        <CheckBox x:Name="GreyscaleCheckBox" 
+                  HorizontalAlignment="Right" 
+                  VerticalAlignment="Bottom"
+                  Margin="4">
+            <CheckBox.Template>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Ellipse Width="18" Height="18" x:Name="Circle"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Circle" Property="Fill" Value="Gray"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Circle" Property="Fill" Value="{StaticResource RainbowBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </CheckBox.Template>
+        </CheckBox>
+    </Grid>
 </UserControl>

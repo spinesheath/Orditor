@@ -6,13 +6,21 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WorldDisplay}">
                     <Grid>
-                        <Image>
-                            <Image.Source>
-                                <FormatConvertedBitmap Source="/Data/world.png" DestinationFormat="Gray8"/>
-                            </Image.Source>
-                        </Image>
-                        <Canvas x:Name="PART_GraphCanvas"/>
+                        <Image x:Name="PART_WorldImage"/>
+                        <Canvas x:Name="PART_GraphCanvas" />
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Greyscale" Value="False">
+                            <Setter TargetName="PART_WorldImage" Property="Source" Value="/Data/world.png" />
+                        </Trigger>
+                        <Trigger Property="Greyscale" Value="True">
+                            <Setter TargetName="PART_WorldImage" Property="Source">
+                                <Setter.Value>
+                                    <FormatConvertedBitmap Source="/Data/world.png" DestinationFormat="Gray8" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

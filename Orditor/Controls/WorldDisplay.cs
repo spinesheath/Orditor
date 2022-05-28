@@ -29,6 +29,12 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     set => SetValue(GraphProperty, value);
   }
 
+  public bool Greyscale
+  {
+    get => (bool)GetValue(GreyscaleProperty);
+    set => SetValue(GreyscaleProperty, value);
+  }
+
   public Messenger? Messenger
   {
     get => (Messenger?)GetValue(MessengerProperty);
@@ -48,6 +54,9 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
   {
     OnGraphChanged();
   }
+
+  public static readonly DependencyProperty GreyscaleProperty = DependencyProperty.Register(
+    nameof(Greyscale), typeof(bool), typeof(WorldDisplay), new PropertyMetadata(default(bool)));
 
   public static readonly DependencyProperty GraphProperty = DependencyProperty.Register(
     nameof(Graph), typeof(RestrictedGraph), typeof(WorldDisplay), new PropertyMetadata(default(RestrictedGraph), OnGraphChanged));
@@ -105,7 +114,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     {
       return;
     }
-    
+
     foreach (var connection in Graph.ReachableConnections)
     {
       if (connection.Bidirectional)
