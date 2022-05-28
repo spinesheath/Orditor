@@ -11,17 +11,33 @@
     <UserControl.Resources>
         <c:InventoryItemNameToImagePathConverter x:Key="ImageConverter"/>
 
-        <DataTemplate x:Key="SkillCheckBoxTemplate"
+        <DataTemplate x:Key="BooleanItemTemplate"
                       DataType="{x:Type vm:BooleanInventoryItemViewModel}">
             <CheckBox ToolTip="{Binding Name}" 
                       IsChecked="{Binding Value}"
                       Foreground="LightGray"
-                      Margin="0,0,10,0">
+                      Margin="2">
                 <CheckBox.Template>
-                    <ControlTemplate>
-                        <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
-                               Height="32" 
-                               Stretch="Uniform"/>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Border BorderThickness="2" 
+                                CornerRadius="16" 
+                                Width="32" 
+                                Height="32"
+                                Name="Circle"
+                                Background="Black">
+                            <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
+                                   Stretch="Uniform"
+                                   RenderOptions.BitmapScalingMode="Fant"
+                                   Margin="-2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Circle" Property="BorderBrush" Value="DodgerBlue"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="Circle" Property="BorderBrush" Value="DarkGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </CheckBox.Template>
             </CheckBox>
@@ -31,7 +47,7 @@
     <DockPanel LastChildFill="False">
         <ItemsControl ItemsSource="{Binding Skills}" 
                       DockPanel.Dock="Top"
-                      ItemTemplate="{StaticResource SkillCheckBoxTemplate}">
+                      ItemTemplate="{StaticResource BooleanItemTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
