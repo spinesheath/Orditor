@@ -19,6 +19,7 @@ internal class InventoryViewModel : NotificationObject
     Teleporters = Observable(TpNames.Select(Boolean));
     WorldEvents = Observable(WorldEventNames.Select(Boolean));
     Modifiers = Observable(ModifierNames.Select(Boolean));
+    Resources = Observable(ResourceNames.Select(Integer));
 
     ShowReachable = new DelegateCommand(ExecuteShowReachable);
   }
@@ -26,6 +27,7 @@ internal class InventoryViewModel : NotificationObject
   public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
   public OriginSelectorViewModel OriginSelector { get; }
+  public ObservableCollection<IntegerInventoryItemViewModel> Resources { get; }
   public DelegateCommand ShowReachable { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
@@ -45,6 +47,15 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.TpHoru),
     nameof(Inventory.TpBlackroot),
     nameof(Inventory.TpLostGrove)
+  };
+
+  private static readonly List<string> ResourceNames = new()
+  {
+    nameof(Inventory.Health),
+    nameof(Inventory.Energy),
+    nameof(Inventory.AbilityCells),
+    nameof(Inventory.Keystones),
+    nameof(Inventory.MapFragments)
   };
 
   private static readonly List<string> SkillNames = new()
@@ -105,6 +116,11 @@ internal class InventoryViewModel : NotificationObject
   private BooleanInventoryItemViewModel Boolean(string n)
   {
     return new BooleanInventoryItemViewModel(_inventory, n);
+  }
+
+  private IntegerInventoryItemViewModel Integer(string n)
+  {
+    return new IntegerInventoryItemViewModel(_inventory, n);
   }
 
   private void ExecuteShowReachable()

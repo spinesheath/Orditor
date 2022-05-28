@@ -87,6 +87,22 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
+        <ItemsControl ItemsSource="{Binding Resources}" DockPanel.Dock="Top">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:IntegerInventoryItemViewModel}">
+                    <!--<CheckBox Content="{Binding Name}" 
+                              IsChecked="{Binding Value}"
+                              Foreground="LightGray"
+                              Margin="0,0,10,0"/>-->
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
         <DockPanel DockPanel.Dock="Top">
             <Button DockPanel.Dock="Right"
                     Content="⌖"
