@@ -15,6 +15,11 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
       return DependencyProperty.UnsetValue;
     }
 
+    if (s.StartsWith("Tp"))
+    {
+      return "/Data/teleporter.png";
+    }
+
     return Mapping.TryGetValue(s, out var path) ? path : $"/Data/{s.ToLowerInvariant()}.png";
   }
 
@@ -27,6 +32,11 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
   {
     { "GinsoKey", "/Data/watervein.png" },
     { "ForlornKey", "/Data/gumonseal.png" },
-    { "HoruKey", "/Data/sunstone.png" }
+    { "HoruKey", "/Data/sunstone.png" },
+    { "Health", "/Data/hc.png" },
+    { "Energy", "/Data/ec.png" },
+    { "AbilityCells", "/Data/ac.png" },
+    { "MapFragments", "/Data/ms.png" },
+    { "Keystones", "/Data/ks.png" },
   };
 }

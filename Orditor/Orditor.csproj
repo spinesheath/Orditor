@@ -40,6 +40,7 @@
     <None Remove="Data\spiritflame.png" />
     <None Remove="Data\stomp.png" />
     <None Remove="Data\sunstone.png" />
+    <None Remove="Data\teleporter.png" />
     <None Remove="Data\tree.png" />
     <None Remove="Data\walljump.png" />
     <None Remove="Data\warmth.png" />
@@ -60,87 +61,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Data\ac.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\bash.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\chargeflame.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\chargejump.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\cleanwater.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\climb.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\dash.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\doublejump.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\ec.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\glide.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\grenade.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\gumonseal.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\hc.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\ks.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\ms.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\pedestal.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\plant.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\spiritflame.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\stomp.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\sunstone.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\tree.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\walljump.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\warmth.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\watervein.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\windrestored.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\world.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Data\xp.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Data\ac.png" />
+    <Resource Include="Data\bash.png" />
+    <Resource Include="Data\chargeflame.png" />
+    <Resource Include="Data\chargejump.png" />
+    <Resource Include="Data\cleanwater.png" />
+    <Resource Include="Data\climb.png" />
+    <Resource Include="Data\dash.png" />
+    <Resource Include="Data\doublejump.png" />
+    <Resource Include="Data\ec.png" />
+    <Resource Include="Data\glide.png" />
+    <Resource Include="Data\grenade.png" />
+    <Resource Include="Data\gumonseal.png" />
+    <Resource Include="Data\hc.png" />
+    <Resource Include="Data\ks.png" />
+    <Resource Include="Data\ms.png" />
+    <Resource Include="Data\pedestal.png" />
+    <Resource Include="Data\plant.png" />
+    <Resource Include="Data\spiritflame.png" />
+    <Resource Include="Data\stomp.png" />
+    <Resource Include="Data\sunstone.png" />
+    <Resource Include="Data\teleporter.png"/>
+    <Resource Include="Data\tree.png" />
+    <Resource Include="Data\walljump.png" />
+    <Resource Include="Data\warmth.png" />
+    <Resource Include="Data\watervein.png" />
+    <Resource Include="Data\windrestored.png" />
+    <Resource Include="Data\world.png" />
+    <Resource Include="Data\xp.png" />
   </ItemGroup>
 
   <ItemGroup>

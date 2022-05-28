@@ -23,7 +23,7 @@
                                 Width="32" 
                                 Height="32"
                                 Name="Circle"
-                                Background="Black">
+                                Background="MidnightBlue">
                             <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
                                    Stretch="Uniform"
                                    RenderOptions.BitmapScalingMode="Fant"
@@ -70,20 +70,14 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <ItemsControl ItemsSource="{Binding Teleporters}" DockPanel.Dock="Top">
+        <ItemsControl ItemsSource="{Binding Teleporters}" 
+                      DockPanel.Dock="Top"
+                      ItemTemplate="{StaticResource BooleanItemTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
+                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:BooleanInventoryItemViewModel}">
-                    <CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <ItemsControl ItemsSource="{Binding WorldEvents}" 
@@ -115,12 +109,12 @@
         <ItemsControl ItemsSource="{Binding Resources}" DockPanel.Dock="Top">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
+                    <UniformGrid IsItemsHost="True" Columns="3" VerticalAlignment="Top"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:IntegerInventoryItemViewModel}">
-                    <DockPanel>
+                    <DockPanel LastChildFill="False">
                         <num:NumericUpDown
                             DockPanel.Dock="Left"
                             DisplayLength="2"
@@ -133,7 +127,11 @@
                             StepSize="1"
                             LargeStepSize="10"
                             Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" Foreground="LightGray"/>
+                        <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
+                               Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="Fant"
+                               Height="28"
+                               HorizontalAlignment="Left"/>
                     </DockPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
