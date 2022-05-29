@@ -65,10 +65,8 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
     {
       Origin = _graph.Homes.First(h => h.Name == origin);
     }
-
-    var openWorld = _inventory.OpenWorld;
-
-    var reachableLocations = new OriReachable(_graph, openWorld).Reachable(_inventory, Origin.Name).ToHashSet();
+    
+    var reachableLocations = new OriReachable(_graph, _inventory, Origin.Name).ReachableHomes.ToHashSet();
 
     ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h.Name)).ToList();
     UnreachableHomes = _graph.Homes.Except(ReachableHomes);

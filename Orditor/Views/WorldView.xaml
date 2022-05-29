@@ -29,7 +29,8 @@
                                    Messenger="{Binding Messenger}"
                                    Greyscale="{Binding ElementName=GreyscaleCheckBox, Path=IsChecked}"/>
         </controls:Viewer>
-        <CheckBox x:Name="GreyscaleCheckBox" 
+        <CheckBox x:Name="GreyscaleCheckBox"
+                  IsChecked="True"
                   HorizontalAlignment="Right" 
                   VerticalAlignment="Bottom"
                   Margin="4">
