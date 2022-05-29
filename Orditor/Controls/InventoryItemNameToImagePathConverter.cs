@@ -15,11 +15,6 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
       return DependencyProperty.UnsetValue;
     }
 
-    if (s.StartsWith("Tp"))
-    {
-      return "/Data/teleporter.png";
-    }
-
     return Mapping.TryGetValue(s, out var path) ? path : $"/Data/{s.ToLowerInvariant()}.png";
   }
 
