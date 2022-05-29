@@ -266,6 +266,12 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
         Areas.SetLocation(_pannedMarker.Home, x, y);
         Messenger?.Select(_pannedMarker.Home);
       }
+      else
+      {
+        var p = Coordinates.GameToMap(_pannedMarker.Home.X, _pannedMarker.Home.Y);
+        Canvas.SetTop(_pannedMarker, p.Y - _pannedMarker.Height / 2);
+        Canvas.SetLeft(_pannedMarker, p.X - _pannedMarker.Width / 2);
+      }
     }
 
     Cursor = Cursors.Arrow;
