@@ -19,6 +19,9 @@
                 <CheckBox.Template>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Grid>
+                            <Ellipse Width="32" 
+                                     Height="32"
+                                     Fill="MidnightBlue"/>
                             <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
                                    Stretch="Uniform"
                                    RenderOptions.BitmapScalingMode="Fant"
