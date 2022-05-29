@@ -10,6 +10,7 @@ internal class PickupGraph
     Homes = homes.ToList();
     Pickups = pickups.ToList();
     LocationCount = homes.Count + pickups.Count;
+    ConnectionCount = connections.Count;
 
     var tempConnections = new List<Connection>[homes.Count];
     for (var i = 0; i < homes.Count; i++)
@@ -29,19 +30,10 @@ internal class PickupGraph
     }
   }
 
-  public Connection[] Outgoing(Home home)
-  {
-    return _outgoingConnections[home.Id];
-  }
-
-  public int LocationCount { get; }
+  public int ConnectionCount { get; }
   public IEnumerable<Home> Homes { get; }
+  public int LocationCount { get; }
   public IEnumerable<Pickup> Pickups { get; }
-
-  public Home? Home(string name)
-  {
-    return Homes.FirstOrDefault(x => x.Name == name);
-  }
 
   public IEnumerable<Home> GetConnectedHomes(Home home)
   {
@@ -52,6 +44,16 @@ internal class PickupGraph
   {
     return Outgoing(home).Select(c => c.Target).OfType<Pickup>().Distinct();
   }
-  
+
+  public Home? Home(string name)
+  {
+    return Homes.FirstOrDefault(x => x.Name == name);
+  }
+
+  public Connection[] Outgoing(Home home)
+  {
+    return _outgoingConnections[home.Id];
+  }
+
   private readonly Connection[][] _outgoingConnections;
 }

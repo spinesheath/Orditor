@@ -65,8 +65,20 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
     {
       Origin = _graph.Homes.First(h => h.Name == origin);
     }
+
+    var oriReachable = new OriReachable(_graph, _inventory, Origin);
+    var reachableLocations = oriReachable.Reachable.ToHashSet();
     
-    var reachableLocations = new OriReachable(_graph, _inventory, Origin).Reachable.ToHashSet();
+    var traversableByHome = new Dictionary<Home, HashSet<Location>>();
+    foreach (var home in _graph.Homes)
+    {
+      traversableByHome[home] = new HashSet<Location>();
+    }
+
+    foreach (var connection in oriReachable.Traversable)
+    {
+      traversableByHome[connection.Home].Add(connection.Target);
+    }
 
     ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h)).ToList();
     UnreachableHomes = _graph.Homes.Except(ReachableHomes);
@@ -76,16 +88,27 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
     var connections = new List<RestrictedConnection>();
     foreach (var home in _graph.Homes)
     {
+      var traversableConnections = traversableByHome[home];
       var connectedHomes = _graph.GetConnectedHomes(home);
       foreach (var target in connectedHomes)
       {
+        var traversable = traversableConnections.Contains(target);
+
         var bidirectional = _graph.GetConnectedHomes(target).Contains(home);
-        connections.Add(new RestrictedConnection(home, target, bidirectional));
+
+        if (!traversable && bidirectional)
+        {
+          traversable = traversableByHome[target].Contains(home);
+        }
+
+        connections.Add(new RestrictedConnection(home, target, bidirectional, traversable));
       }
 
       foreach (var pickup in _graph.GetPickups(home))
       {
-        connections.Add(new RestrictedConnection(home, pickup, false));
+        var traversable = traversableConnections.Contains(pickup);
+
+        connections.Add(new RestrictedConnection(home, pickup, false, traversable));
       }
     }
 

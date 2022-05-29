@@ -8,6 +8,7 @@ internal class OriReachable
   public OriReachable(PickupGraph graph, Inventory inventory, Home origin)
   {
     var reachable = new List<Location>(graph.LocationCount) { origin };
+    var traversable = new List<Connection>();
 
     var openWorld = inventory.OpenWorld;
     if (openWorld)
@@ -33,6 +34,11 @@ internal class OriReachable
       var outgoing = graph.Outgoing(home);
       foreach (var connection in outgoing)
       {
+        if (inventory.Fulfills(connection.Requirement))
+        {
+          traversable.Add(connection);
+        }
+
         if (connection.Requirement.Keystone != 0)
         {
           if (!openWorld || connection.Home.Name != "SunkenGladesRunaway" || connection.Target.Name != "GladesMain")
@@ -75,7 +81,10 @@ internal class OriReachable
     }
 
     Reachable = reachable;
+    Traversable = traversable;
   }
 
   public IEnumerable<Location> Reachable { get; }
+
+  public IEnumerable<Connection> Traversable { get; }
 }

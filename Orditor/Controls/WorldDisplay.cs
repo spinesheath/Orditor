@@ -119,11 +119,11 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     {
       if (connection.Bidirectional)
       {
-        _graphCanvas.Children.Add(Connection.Good(Messenger, connection));
+        _graphCanvas.Children.Add(Connection.Bidirectional(Messenger, connection));
       }
       else
       {
-        _graphCanvas.Children.Add(Connection.Bad(Messenger, connection));
+        _graphCanvas.Children.Add(Connection.Unidirectional(Messenger, connection));
       }
     }
   }
