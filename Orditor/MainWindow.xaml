@@ -13,9 +13,9 @@
         MinWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" MinWidth="10"/>
+            <ColumnDefinition Width="6*" MinWidth="10"/>
             <ColumnDefinition Width="4"/>
-            <ColumnDefinition Width="*" MinWidth="10"/>
+            <ColumnDefinition Width="3*" MinWidth="10"/>
         </Grid.ColumnDefinitions>
 
         <v:WorldView x:Name="WorldView" Grid.Column="0"/>

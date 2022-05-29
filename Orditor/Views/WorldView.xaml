@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:Orditor.Controls"
              xmlns:vm="clr-namespace:Orditor.ViewModels"
              mc:Ignorable="d"
-             Background="Black" 
+             Background="#121212"
              d:DataContext="{d:DesignInstance Type={x:Type vm:WorldViewModel}}">
     <UserControl.Resources>
         <LinearGradientBrush x:Key="RainbowBrush" StartPoint="0,0" EndPoint="1,1">
