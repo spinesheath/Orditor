@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using Orditor.Model;
 using Orditor.Orchestration;
@@ -14,21 +15,20 @@ internal class InventoryViewModel : NotificationObject
     _inventory = Inventory.Default();
 
     OriginSelector = originSelector;
-    Skills = Observable(SkillNames.Select(Boolean));
-    LogicSets = Observable(LogicSetNames.Select(Boolean));
-    Teleporters = Observable(TpNames.Select(Boolean));
-    WorldEvents = Observable(WorldEventNames.Select(Boolean));
-    Modifiers = Observable(ModifierNames.Select(Boolean));
-    Resources = Observable(ResourceNames.Select(Integer));
+    Skills = Listen(Observable(SkillNames.Select(Boolean)));
+    LogicSets = Listen(Observable(LogicSetNames.Select(Boolean)));
+    Teleporters = Listen(Observable(TpNames.Select(Boolean)));
+    WorldEvents = Listen(Observable(WorldEventNames.Select(Boolean)));
+    Modifiers = Listen(Observable(ModifierNames.Select(Boolean)));
+    Resources = Listen(Observable(ResourceNames.Select(Integer)));
 
-    ShowReachable = new DelegateCommand(ExecuteShowReachable);
+    originSelector.PropertyChanged += OnChange;
   }
 
   public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
   public OriginSelectorViewModel OriginSelector { get; }
   public ObservableCollection<IntegerInventoryItemViewModel> Resources { get; }
-  public DelegateCommand ShowReachable { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> WorldEvents { get; }
@@ -113,6 +113,34 @@ internal class InventoryViewModel : NotificationObject
   private readonly Inventory _inventory;
   private readonly Messenger _messenger;
 
+  private ObservableCollection<BooleanInventoryItemViewModel> Listen(ObservableCollection<BooleanInventoryItemViewModel> list)
+  {
+    foreach (var vm in list)
+    {
+      vm.PropertyChanged += OnChange;
+    }
+
+    return list;
+  }
+
+  private ObservableCollection<IntegerInventoryItemViewModel> Listen(ObservableCollection<IntegerInventoryItemViewModel> list)
+  {
+    foreach (var vm in list)
+    {
+      vm.PropertyChanged += OnChange;
+    }
+
+    return list;
+  }
+
+  private void OnChange(object? sender, PropertyChangedEventArgs e)
+  {
+    if (e.PropertyName is nameof(InventoryItemViewModel<object>.Value) or nameof(OriginSelector.Origin))
+    {
+      _messenger.InventoryChanged(_inventory, OriginSelector.Origin);
+    }
+  }
+
   private BooleanInventoryItemViewModel Boolean(string n)
   {
     return new BooleanInventoryItemViewModel(_inventory, n);
@@ -121,10 +149,5 @@ internal class InventoryViewModel : NotificationObject
   private IntegerInventoryItemViewModel Integer(string n)
   {
     return new IntegerInventoryItemViewModel(_inventory, n);
-  }
-
-  private void ExecuteShowReachable()
-  {
-    _messenger.InventoryChanged(_inventory, OriginSelector.Origin);
   }
 }

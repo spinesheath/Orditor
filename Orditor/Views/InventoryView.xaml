@@ -162,7 +162,5 @@
             <ComboBox ItemsSource="{Binding OriginSelector.Homes}" 
                       SelectedItem="{Binding OriginSelector.Origin}"/>
         </DockPanel>
-
-        <Button DockPanel.Dock="Top" Content="Show" Command="{Binding ShowReachable}"/>
     </DockPanel>
 </UserControl>

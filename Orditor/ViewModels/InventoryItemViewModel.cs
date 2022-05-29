@@ -25,7 +25,14 @@ internal class InventoryItemViewModel<T> : NotificationObject
   public T Value
   {
     get => (T)_property.GetValue(_inventory)!;
-    set => _property.SetValue(_inventory, value);
+    set
+    {
+      if (!Value?.Equals(value) ?? true)
+      {
+        _property.SetValue(_inventory, value);
+        OnPropertyChanged();
+      }
+    }
   }
 
   private readonly Inventory _inventory;
