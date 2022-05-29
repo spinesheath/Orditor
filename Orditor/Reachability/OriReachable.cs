@@ -5,15 +5,18 @@ namespace Orditor.Reachability;
 
 internal class OriReachable
 {
-  public OriReachable(PickupGraph graph, Inventory inventory, string originName)
+  public OriReachable(PickupGraph graph, Inventory inventory, Home origin)
   {
-    var reachable = new List<string>(graph.LocationCount);
-    reachable.Add(originName);
+    var reachable = new List<Location>(graph.LocationCount) { origin };
 
     var openWorld = inventory.OpenWorld;
     if (openWorld)
     {
-      reachable.Add("GladesMain");
+      var gladesMain = graph.Home("GladesMain");
+      if (gladesMain != null)
+      {
+        reachable.Add(gladesMain);
+      }
     }
 
     var reachableById = new bool[graph.LocationCount];
@@ -23,7 +26,6 @@ internal class OriReachable
     var keystoneDestinationsById = new bool[graph.LocationCount];
 
     var newNodes = new Queue<Home>();
-    var origin = graph.Home(originName) ?? throw new InvalidGraphException();
     newNodes.Enqueue(origin);
     while (newNodes.Count != 0)
     {
@@ -43,12 +45,10 @@ internal class OriReachable
             }
           }
         }
-        else if (!reachableById[connection.Target.Id] &&
-                 inventory.Fulfills(connection.Requirement))
+        else if (!reachableById[connection.Target.Id] && inventory.Fulfills(connection.Requirement))
         {
-          var name = connection.Target.Name;
           reachableById[connection.Target.Id] = true;
-          reachable.Add(name);
+          reachable.Add(connection.Target);
           if (connection.Target is Home target)
           {
             newNodes.Enqueue(target);
@@ -63,7 +63,7 @@ internal class OriReachable
           if (!reachableById[destination.Id])
           {
             reachableById[destination.Id] = true;
-            reachable.Add(destination.Name);
+            reachable.Add(destination);
 
             if (destination is Home target)
             {
@@ -74,8 +74,8 @@ internal class OriReachable
       }
     }
 
-    ReachableHomes = reachable;
+    Reachable = reachable;
   }
 
-  public IEnumerable<string> ReachableHomes { get; }
+  public IEnumerable<Location> Reachable { get; }
 }

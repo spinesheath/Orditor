@@ -66,11 +66,11 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
       Origin = _graph.Homes.First(h => h.Name == origin);
     }
     
-    var reachableLocations = new OriReachable(_graph, _inventory, Origin.Name).ReachableHomes.ToHashSet();
+    var reachableLocations = new OriReachable(_graph, _inventory, Origin).Reachable.ToHashSet();
 
-    ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h.Name)).ToList();
+    ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h)).ToList();
     UnreachableHomes = _graph.Homes.Except(ReachableHomes);
-    ReachablePickups = _graph.Pickups.Where(p => reachableLocations.Contains(p.Name)).ToList();
+    ReachablePickups = _graph.Pickups.Where(p => reachableLocations.Contains(p)).ToList();
     UnreachablePickups = _graph.Pickups.Except(ReachablePickups);
 
     var connections = new List<RestrictedConnection>();
