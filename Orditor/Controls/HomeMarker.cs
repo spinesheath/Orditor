@@ -10,10 +10,11 @@ namespace Orditor.Controls;
 
 internal class HomeMarker : Border
 {
-  public HomeMarker(Home home, Messenger messenger, bool reachable)
+  public HomeMarker(Home home, Messenger messenger, bool reachable, bool isOrigin)
   {
     _messenger = messenger;
     _reachable = reachable;
+    _isOrigin = isOrigin;
     _marker = CreateMarker(home.Name);
     Home = home;
 
@@ -26,10 +27,10 @@ internal class HomeMarker : Border
   public Home Home { get; }
 
   private const int Radius = 15;
-
+  private readonly bool _isOrigin;
+  private readonly Ellipse _marker;
   private readonly Messenger _messenger;
   private readonly bool _reachable;
-  private readonly Ellipse _marker;
 
   protected override void OnInitialized(EventArgs e)
   {
@@ -63,30 +64,40 @@ internal class HomeMarker : Border
   {
     if (hovering)
     {
-      if (_reachable)
+      if (_isOrigin)
       {
-        _marker.Stroke = GraphColors.AccessibleHighlighted;
-        _marker.Fill = GraphColors.AccessibleHighlighted;
+        Paint(GraphColors.SpecialHighlighted);
+      }
+      else if (_reachable)
+      {
+        Paint(GraphColors.AccessibleHighlighted);
       }
       else
       {
-        _marker.Stroke = GraphColors.InaccessibleHighlighted;
-        _marker.Fill = GraphColors.InaccessibleHighlighted;
+        Paint(GraphColors.InaccessibleHighlighted);
       }
     }
     else
     {
-      if (_reachable)
+      if (_isOrigin)
       {
-        _marker.Stroke = GraphColors.Accessible;
-        _marker.Fill = GraphColors.Accessible;
+        Paint(GraphColors.Special);
+      }
+      else if (_reachable)
+      {
+        Paint(GraphColors.Accessible);
       }
       else
       {
-        _marker.Stroke = GraphColors.Inaccessible;
-        _marker.Fill = GraphColors.Inaccessible;
+        Paint(GraphColors.Inaccessible);
       }
     }
+  }
+
+  private void Paint(Brush brush)
+  {
+    _marker.Stroke = brush;
+    _marker.Fill = brush;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

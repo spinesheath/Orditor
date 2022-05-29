@@ -137,20 +137,21 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
 
     foreach (var home in Graph.ReachableHomes)
     {
-      var marker = CreateHomeMarker(home, Messenger, true);
+      var isOrigin = Graph.Origin == home;
+      var marker = CreateHomeMarker(home, Messenger, true, isOrigin);
       _graphCanvas.Children.Add(marker);
     }
 
     foreach (var home in Graph.UnreachableHomes)
     {
-      var marker = CreateHomeMarker(home, Messenger, false);
+      var marker = CreateHomeMarker(home, Messenger, false, false);
       _graphCanvas.Children.Add(marker);
     }
   }
 
-  private HomeMarker CreateHomeMarker(Home home, Messenger messenger, bool reachable)
+  private HomeMarker CreateHomeMarker(Home home, Messenger messenger, bool reachable, bool isOrigin)
   {
-    var marker = new HomeMarker(home, messenger, reachable);
+    var marker = new HomeMarker(home, messenger, reachable, isOrigin);
 
     marker.MouseLeftButtonDown += OnHomeMouseDown;
 

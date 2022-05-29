@@ -60,11 +60,9 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
   private void Update(string? origin = null)
   {
     _graph = _parser.Parse(_areas.Text);
-
-    if (origin != null)
-    {
-      Origin = _graph.Homes.First(h => h.Name == origin);
-    }
+    
+    // Have to look origin up again since it could be a new instance with same name
+    Origin = _graph.Homes.First(h => h.Name == (origin ?? Origin.Name));
 
     var oriReachable = new OriReachable(_graph, _inventory, Origin);
     var reachableLocations = oriReachable.Reachable.ToHashSet();
