@@ -36,9 +36,23 @@
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="Circle" Property="Stroke" Value="DodgerBlue"/>
                             </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Circle" Property="Stroke" Value="LightSkyBlue"/>
+                            </MultiTrigger>
                             <Trigger Property="IsChecked" Value="False">
                                 <Setter TargetName="Circle" Property="Stroke" Value="DarkGray"/>
                             </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="False"/>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Circle" Property="Stroke" Value="LightGray"/>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </CheckBox.Template>

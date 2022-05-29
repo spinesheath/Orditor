@@ -92,27 +92,27 @@ internal class Connection : Canvas
     {
       if (_traversable)
       {
-        Paint(Brushes.CadetBlue);
+        Paint(GraphColors.AccessibleHighlighted);
       }
       else
       {
-        Paint(Brushes.Orange);
+        Paint(GraphColors.InaccessibleHighlighted);
       }
     }
     else
     {
       if (_traversable)
       {
-        Paint(Brushes.White);
+        Paint(GraphColors.Accessible);
       }
       else
       {
-        Paint(Brushes.OrangeRed);
+        Paint(GraphColors.Inaccessible);
       }
     }
   }
 
-  private void Paint(SolidColorBrush brush)
+  private void Paint(Brush brush)
   {
     _line.Stroke = brush;
     if (_arrowHead != null)

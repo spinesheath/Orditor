@@ -65,26 +65,26 @@ internal class HomeMarker : Border
     {
       if (_reachable)
       {
-        _marker.Stroke = Brushes.CadetBlue;
-        _marker.Fill = Brushes.CadetBlue;
+        _marker.Stroke = GraphColors.AccessibleHighlighted;
+        _marker.Fill = GraphColors.AccessibleHighlighted;
       }
       else
       {
-        _marker.Stroke = Brushes.Orange;
-        _marker.Fill = Brushes.Orange;
+        _marker.Stroke = GraphColors.InaccessibleHighlighted;
+        _marker.Fill = GraphColors.InaccessibleHighlighted;
       }
     }
     else
     {
       if (_reachable)
       {
-        _marker.Stroke = Brushes.White;
-        _marker.Fill = Brushes.White;
+        _marker.Stroke = GraphColors.Accessible;
+        _marker.Fill = GraphColors.Accessible;
       }
       else
       {
-        _marker.Stroke = Brushes.OrangeRed;
-        _marker.Fill = Brushes.OrangeRed;
+        _marker.Stroke = GraphColors.Inaccessible;
+        _marker.Fill = GraphColors.Inaccessible;
       }
     }
   }
