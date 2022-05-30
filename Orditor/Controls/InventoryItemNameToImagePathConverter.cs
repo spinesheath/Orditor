@@ -52,6 +52,8 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
     { "gjump", "/data/gjump.png" },
     { "glitched", "/data/glitched.png" },
     { "timedlevel", "/data/timedlevel.png" },
-    { "insane", "/data/insane.png" }
+    { "insane", "/data/insane.png" },
+    { "opendungeons", "/data/opendungeons.png" },
+    { "openworld", "/data/openworld.png" }
   };
 }

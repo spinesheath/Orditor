@@ -11,6 +11,10 @@
     <UserControl.Resources>
         <c:InventoryItemNameToImagePathConverter x:Key="ImageConverter"/>
 
+        <ItemsPanelTemplate x:Key="UniformItemsPanel">
+            <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
+        </ItemsPanelTemplate>
+
         <DataTemplate x:Key="BooleanItemTemplate"
                       DataType="{x:Type vm:BooleanInventoryItemViewModel}">
             <CheckBox ToolTip="{Binding Name}" 
@@ -59,13 +63,8 @@
     <DockPanel LastChildFill="False">
         <ItemsControl ItemsSource="{Binding Skills}" 
                       DockPanel.Dock="Top"
-                      ItemTemplate="{StaticResource BooleanItemTemplate}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                      ItemTemplate="{StaticResource BooleanItemTemplate}"
+                      ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
         <c:LogicSetButton DockPanel.Dock="Top"
                           Margin="2"
@@ -104,41 +103,22 @@
 
         <ItemsControl ItemsSource="{Binding Teleporters}" 
                       DockPanel.Dock="Top"
-                      ItemTemplate="{StaticResource BooleanItemTemplate}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                      ItemTemplate="{StaticResource BooleanItemTemplate}"
+                      ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
         <ItemsControl ItemsSource="{Binding WorldEvents}" 
                       DockPanel.Dock="Top"
-                      ItemTemplate="{StaticResource BooleanItemTemplate}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="5" VerticalAlignment="Top"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
+                      ItemTemplate="{StaticResource BooleanItemTemplate}"
+                      ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
-        <ItemsControl ItemsSource="{Binding Modifiers}" DockPanel.Dock="Top">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:BooleanInventoryItemViewModel}">
-                    <CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Modifiers}" 
+                      DockPanel.Dock="Top"
+                      ItemTemplate="{StaticResource BooleanItemTemplate}"
+                      ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
-        <ItemsControl ItemsSource="{Binding Resources}" DockPanel.Dock="Top">
+        <ItemsControl ItemsSource="{Binding Resources}" 
+                      DockPanel.Dock="Top"
+                      Margin="2">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid IsItemsHost="True" Columns="3" VerticalAlignment="Top"/>
@@ -155,6 +135,7 @@
                             MaxValue="99"
                             MinValue="0"
                             Foreground="LightGray"
+                            Background="Black"
                             IsMouseDragEnabled="False"
                             StepSize="1"
                             LargeStepSize="10"
@@ -169,7 +150,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <DockPanel DockPanel.Dock="Top">
+        <DockPanel DockPanel.Dock="Top" Margin="2">
             <Button DockPanel.Dock="Right"
                     Content="⌖"
                     Width="20"
