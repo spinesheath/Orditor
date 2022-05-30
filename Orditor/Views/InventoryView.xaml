@@ -15,21 +15,17 @@
                       DataType="{x:Type vm:BooleanInventoryItemViewModel}">
             <CheckBox ToolTip="{Binding Name}" 
                       IsChecked="{Binding Value}"
-                      Margin="2">
+                      Margin="2"
+                      MaxWidth="32"
+                      MaxHeight="32">
                 <CheckBox.Template>
                     <ControlTemplate TargetType="{x:Type CheckBox}">
                         <Grid>
-                            <Ellipse Width="32" 
-                                     Height="32"
-                                     Fill="MidnightBlue"/>
+                            <Ellipse Fill="MidnightBlue"/>
                             <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
                                    Stretch="Uniform"
-                                   RenderOptions.BitmapScalingMode="Fant"
-                                   Width="32"
-                                   Height="32"/>
+                                   RenderOptions.BitmapScalingMode="Fant"/>
                             <Ellipse StrokeThickness="2"
-                                     Width="32" 
-                                     Height="32"
                                      Name="Circle"/>
                         </Grid>
                         <ControlTemplate.Triggers>
@@ -70,6 +66,12 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+
+        <c:LogicSetButton DockPanel.Dock="Top"
+                          Margin="2"
+                          ItemsSource="{Binding WorldEvents}"
+                          ItemTemplate="{StaticResource BooleanItemTemplate}"
+                          Title="W"/>
 
         <ItemsControl ItemsSource="{Binding LogicSets}" DockPanel.Dock="Top">
             <ItemsControl.ItemsPanel>
