@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\abilities.png" />
     <None Remove="Data\ac.png" />
     <None Remove="Data\annotations.xml" />
     <None Remove="Data\areasSyntax.xml" />
@@ -26,21 +27,31 @@
     <None Remove="Data\chargejump.png" />
     <None Remove="Data\cleanwater.png" />
     <None Remove="Data\climb.png" />
+    <None Remove="Data\core.png" />
     <None Remove="Data\dash.png" />
+    <None Remove="Data\dbash.png" />
+    <None Remove="Data\dboost.png" />
     <None Remove="Data\doublejump.png" />
     <None Remove="Data\ec.png" />
+    <None Remove="Data\gjump.png" />
     <None Remove="Data\glide.png" />
+    <None Remove="Data\glitched.png" />
     <None Remove="Data\grenade.png" />
     <None Remove="Data\gumonseal.png" />
     <None Remove="Data\hc.png" />
+    <None Remove="Data\insane.png" />
     <None Remove="Data\ks.png" />
+    <None Remove="Data\lure.png" />
     <None Remove="Data\ms.png" />
+    <None Remove="Data\opendungeons.png" />
+    <None Remove="Data\openworld.png" />
     <None Remove="Data\pedestal.png" />
     <None Remove="Data\plant.png" />
     <None Remove="Data\spiritflame.png" />
     <None Remove="Data\stomp.png" />
     <None Remove="Data\sunstone.png" />
     <None Remove="Data\teleporter.png" />
+    <None Remove="Data\timedlevel.png" />
     <None Remove="Data\tpblackroot.png" />
     <None Remove="Data\tpforlorn.png" />
     <None Remove="Data\tpginso.png" />
@@ -73,27 +84,38 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Data\abilities.png" />
     <Resource Include="Data\ac.png" />
     <Resource Include="Data\bash.png" />
     <Resource Include="Data\chargeflame.png" />
     <Resource Include="Data\chargejump.png" />
     <Resource Include="Data\cleanwater.png" />
     <Resource Include="Data\climb.png" />
+    <Resource Include="Data\core.png" />
     <Resource Include="Data\dash.png" />
+    <Resource Include="Data\dbash.png" />
+    <Resource Include="Data\dboost.png" />
     <Resource Include="Data\doublejump.png" />
     <Resource Include="Data\ec.png" />
+    <Resource Include="Data\gjump.png" />
     <Resource Include="Data\glide.png" />
+    <Resource Include="Data\glitched.png" />
     <Resource Include="Data\grenade.png" />
     <Resource Include="Data\gumonseal.png" />
     <Resource Include="Data\hc.png" />
+    <Resource Include="Data\lure.png" />
+    <Resource Include="Data\insane.png" />
     <Resource Include="Data\ks.png" />
     <Resource Include="Data\ms.png" />
+    <Resource Include="Data\opendungeons.png" />
+    <Resource Include="Data\openworld.png" />
     <Resource Include="Data\pedestal.png" />
     <Resource Include="Data\plant.png" />
     <Resource Include="Data\spiritflame.png" />
     <Resource Include="Data\stomp.png" />
     <Resource Include="Data\sunstone.png" />
     <Resource Include="Data\teleporter.png" />
+    <Resource Include="Data\timedlevel.png" />
     <Resource Include="Data\tpblackroot.png" />
     <Resource Include="Data\tpforlorn.png" />
     <Resource Include="Data\tpginso.png" />

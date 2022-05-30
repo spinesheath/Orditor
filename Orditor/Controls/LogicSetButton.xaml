@@ -49,7 +49,7 @@
                                               DockPanel.Dock="Left"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"
-                                              Width="32"/>
+                                              Width="28"/>
                             <StackPanel Orientation="Horizontal" 
                                         IsItemsHost="True"
                                         HorizontalAlignment="Left"
