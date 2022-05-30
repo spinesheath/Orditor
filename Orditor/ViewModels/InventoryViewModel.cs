@@ -16,16 +16,25 @@ internal class InventoryViewModel : NotificationObject
 
     OriginSelector = originSelector;
     Skills = Listen(Observable(SkillNames.Select(Boolean)));
-    LogicSets = Listen(Observable(LogicSetNames.Select(Boolean)));
     Teleporters = Listen(Observable(TpNames.Select(Boolean)));
     WorldEvents = Listen(Observable(WorldEventNames.Select(Boolean)));
     Modifiers = Listen(Observable(ModifierNames.Select(Boolean)));
     Resources = Listen(Observable(ResourceNames.Select(Integer)));
 
+    CasualLogicSets = Listen(Observable(CasualLogicSetNames.Select(Boolean)));
+    StandardLogicSets = Listen(Observable(StandardLogicSetNames.Select(Boolean)));
+    ExpertLogicSets = Listen(Observable(ExpertLogicSetNames.Select(Boolean)));
+    MasterLogicSets = Listen(Observable(MasterLogicSetNames.Select(Boolean)));
+    OtherLogicSets = Listen(Observable(OtherLogicSetNames.Select(Boolean)));
+
     originSelector.PropertyChanged += OnChange;
   }
 
-  public ObservableCollection<BooleanInventoryItemViewModel> LogicSets { get; }
+  public ObservableCollection<BooleanInventoryItemViewModel> OtherLogicSets { get; }
+  public ObservableCollection<BooleanInventoryItemViewModel> MasterLogicSets { get; }
+  public ObservableCollection<BooleanInventoryItemViewModel> ExpertLogicSets { get; }
+  public ObservableCollection<BooleanInventoryItemViewModel> StandardLogicSets { get; }
+  public ObservableCollection<BooleanInventoryItemViewModel> CasualLogicSets { get; }
   public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
   public OriginSelectorViewModel OriginSelector { get; }
   public ObservableCollection<IntegerInventoryItemViewModel> Resources { get; }
@@ -87,24 +96,40 @@ internal class InventoryViewModel : NotificationObject
     nameof(Inventory.OpenDungeons)
   };
 
-  private static readonly List<string> LogicSetNames = new()
+  private static readonly List<string> CasualLogicSetNames = new()
   {
     nameof(Inventory.CasualCore),
-    nameof(Inventory.CasualDboost),
+    nameof(Inventory.CasualDboost)
+  };
+
+  private static readonly List<string> StandardLogicSetNames = new()
+  {
     nameof(Inventory.StandardCore),
     nameof(Inventory.StandardDboost),
     nameof(Inventory.StandardLure),
-    nameof(Inventory.StandardAbilities),
+    nameof(Inventory.StandardAbilities)
+  };
+
+  private static readonly List<string> ExpertLogicSetNames = new()
+  {
     nameof(Inventory.ExpertCore),
     nameof(Inventory.ExpertDboost),
     nameof(Inventory.ExpertLure),
     nameof(Inventory.ExpertAbilities),
-    nameof(Inventory.Dbash),
+    nameof(Inventory.Dbash)
+  };
+
+  private static readonly List<string> MasterLogicSetNames = new()
+  {
     nameof(Inventory.MasterCore),
     nameof(Inventory.MasterDboost),
     nameof(Inventory.MasterLure),
     nameof(Inventory.MasterAbilities),
-    nameof(Inventory.Gjump),
+    nameof(Inventory.Gjump)
+  };
+
+  private static readonly List<string> OtherLogicSetNames = new()
+  {
     nameof(Inventory.Glitched),
     nameof(Inventory.TimedLevel),
     nameof(Inventory.Insane)

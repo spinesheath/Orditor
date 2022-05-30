@@ -5,7 +5,7 @@ namespace Orditor.Controls;
 
 internal class LogicSetButton : ItemsControl
 {
-  public LogicSetButton()
+  static LogicSetButton()
   {
     DefaultStyleKeyProperty.OverrideMetadata(typeof(LogicSetButton), new FrameworkPropertyMetadata(typeof(LogicSetButton)));
   }

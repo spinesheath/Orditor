@@ -69,25 +69,33 @@
 
         <c:LogicSetButton DockPanel.Dock="Top"
                           Margin="2"
-                          ItemsSource="{Binding WorldEvents}"
+                          ItemsSource="{Binding CasualLogicSets}"
                           ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          Title="W"/>
+                          Title="C"/>
 
-        <ItemsControl ItemsSource="{Binding LogicSets}" DockPanel.Dock="Top">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid IsItemsHost="True" Columns="2" VerticalAlignment="Top"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:BooleanInventoryItemViewModel}">
-                    <CheckBox Content="{Binding Name}" 
-                              IsChecked="{Binding Value}"
-                              Foreground="LightGray"
-                              Margin="0,0,10,0"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <c:LogicSetButton DockPanel.Dock="Top"
+                          Margin="2"
+                          ItemsSource="{Binding StandardLogicSets}"
+                          ItemTemplate="{StaticResource BooleanItemTemplate}"
+                          Title="C"/>
+
+        <c:LogicSetButton DockPanel.Dock="Top"
+                          Margin="2"
+                          ItemsSource="{Binding ExpertLogicSets}"
+                          ItemTemplate="{StaticResource BooleanItemTemplate}"
+                          Title="C"/>
+
+        <c:LogicSetButton DockPanel.Dock="Top"
+                          Margin="2"
+                          ItemsSource="{Binding MasterLogicSets}"
+                          ItemTemplate="{StaticResource BooleanItemTemplate}"
+                          Title="C"/>
+
+        <c:LogicSetButton DockPanel.Dock="Top"
+                          Margin="2"
+                          ItemsSource="{Binding OtherLogicSets}"
+                          ItemTemplate="{StaticResource BooleanItemTemplate}"
+                          Title="C"/>
 
         <ItemsControl ItemsSource="{Binding Teleporters}" 
                       DockPanel.Dock="Top"

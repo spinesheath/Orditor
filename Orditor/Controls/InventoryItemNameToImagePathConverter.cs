@@ -15,7 +15,8 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
       return DependencyProperty.UnsetValue;
     }
 
-    return Mapping.TryGetValue(s, out var path) ? path : $"/Data/{s.ToLowerInvariant()}.png";
+    var lowercase = s.ToLowerInvariant();
+    return Mapping.TryGetValue(lowercase, out var path) ? path : $"/Data/{lowercase}.png";
   }
 
   public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -25,13 +26,32 @@ internal class InventoryItemNameToImagePathConverter : IValueConverter
 
   private static readonly Dictionary<string, string> Mapping = new()
   {
-    { "GinsoKey", "/Data/watervein.png" },
-    { "ForlornKey", "/Data/gumonseal.png" },
-    { "HoruKey", "/Data/sunstone.png" },
-    { "Health", "/Data/hc.png" },
-    { "Energy", "/Data/ec.png" },
-    { "AbilityCells", "/Data/ac.png" },
-    { "MapFragments", "/Data/ms.png" },
-    { "Keystones", "/Data/ks.png" },
+    { "ginsokey", "/Data/watervein.png" },
+    { "forlornkey", "/Data/gumonseal.png" },
+    { "horukey", "/Data/sunstone.png" },
+    { "health", "/Data/hc.png" },
+    { "energy", "/Data/ec.png" },
+    { "abilitycells", "/Data/ac.png" },
+    { "mapfragments", "/Data/ms.png" },
+    { "keystones", "/Data/ks.png" },
+    { "casualcore", "/data/ks.png" },
+    { "casualdboost", "/data/ks.png" },
+    { "standardcore", "/data/ks.png" },
+    { "standarddboost", "/data/ks.png" },
+    { "standardlure", "/data/ks.png" },
+    { "standardabilities", "/data/ks.png" },
+    { "expertcore", "/data/ks.png" },
+    { "expertdboost", "/data/ks.png" },
+    { "expertlure", "/data/ks.png" },
+    { "expertabilities", "/data/ks.png" },
+    { "dbash", "/data/ks.png" },
+    { "mastercore", "/data/ks.png" },
+    { "masterdboost", "/data/ks.png" },
+    { "masterlure", "/data/ks.png" },
+    { "masterabilities", "/data/ks.png" },
+    { "gjump", "/data/ks.png" },
+    { "glitched", "/data/ks.png" },
+    { "timedlevel", "/data/ks.png" },
+    { "insane", "/data/ks.png" }
   };
 }
