@@ -7,7 +7,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:LogicSetButton}">
                     <CheckBox Height="32"
-                              Foreground="LightGray">
+                              Foreground="LightGray"
+                              IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}}">
                         <CheckBox.Template>
                             <ControlTemplate TargetType="{x:Type CheckBox}">
                                 <Border BorderThickness="2" 

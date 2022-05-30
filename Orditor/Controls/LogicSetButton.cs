@@ -23,7 +23,8 @@ internal class LogicSetButton : ItemsControl
   }
 
   public static readonly DependencyProperty IsCheckedProperty = DependencyProperty.Register(
-    nameof(IsChecked), typeof(bool), typeof(LogicSetButton), new PropertyMetadata(default(bool)));
+    nameof(IsChecked), typeof(bool), typeof(LogicSetButton), 
+    new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
   public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
     nameof(Title), typeof(object), typeof(LogicSetButton), new PropertyMetadata(default(object)));

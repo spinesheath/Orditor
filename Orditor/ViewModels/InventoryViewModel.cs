@@ -30,16 +30,56 @@ internal class InventoryViewModel : NotificationObject
     originSelector.PropertyChanged += OnChange;
   }
 
-  public ObservableCollection<BooleanInventoryItemViewModel> OtherLogicSets { get; }
-  public ObservableCollection<BooleanInventoryItemViewModel> MasterLogicSets { get; }
-  public ObservableCollection<BooleanInventoryItemViewModel> ExpertLogicSets { get; }
-  public ObservableCollection<BooleanInventoryItemViewModel> StandardLogicSets { get; }
+  public bool Casual
+  {
+    get => CasualLogicSets.All(i => i.Value);
+    set => SetLogicSet(CasualLogicSets, Casual, value);
+  }
+
   public ObservableCollection<BooleanInventoryItemViewModel> CasualLogicSets { get; }
+
+  public bool Expert
+  {
+    get => ExpertLogicSets.All(i => i.Value);
+    set => SetLogicSet(ExpertLogicSets, Expert, value);
+  }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> ExpertLogicSets { get; }
+
+  public bool Master
+  {
+    get => MasterLogicSets.All(i => i.Value);
+    set => SetLogicSet(MasterLogicSets, Master, value);
+  }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> MasterLogicSets { get; }
+
   public ObservableCollection<BooleanInventoryItemViewModel> Modifiers { get; }
+
   public OriginSelectorViewModel OriginSelector { get; }
+
+  public bool Other
+  {
+    get => OtherLogicSets.All(i => i.Value);
+    set => SetLogicSet(OtherLogicSets, Other, value);
+  }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> OtherLogicSets { get; }
+
   public ObservableCollection<IntegerInventoryItemViewModel> Resources { get; }
+
   public ObservableCollection<BooleanInventoryItemViewModel> Skills { get; }
+
+  public bool Standard
+  {
+    get => StandardLogicSets.All(i => i.Value);
+    set => SetLogicSet(StandardLogicSets, Standard, value);
+  }
+
+  public ObservableCollection<BooleanInventoryItemViewModel> StandardLogicSets { get; }
+
   public ObservableCollection<BooleanInventoryItemViewModel> Teleporters { get; }
+
   public ObservableCollection<BooleanInventoryItemViewModel> WorldEvents { get; }
 
   private static readonly List<string> TpNames = new()
@@ -137,6 +177,24 @@ internal class InventoryViewModel : NotificationObject
 
   private readonly Inventory _inventory;
   private readonly Messenger _messenger;
+  private bool _batchUpdate;
+
+  private void SetLogicSet(IEnumerable<BooleanInventoryItemViewModel> logicSet, bool oldValue, bool value)
+  {
+    if (value == oldValue)
+    {
+      return;
+    }
+
+    _batchUpdate = true;
+    foreach (var item in logicSet)
+    {
+      item.Value = value;
+    }
+
+    _batchUpdate = false;
+    _messenger.InventoryChanged(_inventory, OriginSelector.Origin);
+  }
 
   private ObservableCollection<BooleanInventoryItemViewModel> Listen(ObservableCollection<BooleanInventoryItemViewModel> list)
   {
@@ -160,9 +218,19 @@ internal class InventoryViewModel : NotificationObject
 
   private void OnChange(object? sender, PropertyChangedEventArgs e)
   {
+    if (_batchUpdate)
+    {
+      return;
+    }
+
     if (e.PropertyName is nameof(InventoryItemViewModel<object>.Value) or nameof(OriginSelector.Origin))
     {
       _messenger.InventoryChanged(_inventory, OriginSelector.Origin);
+      OnPropertyChanged(nameof(Casual));
+      OnPropertyChanged(nameof(Standard));
+      OnPropertyChanged(nameof(Expert));
+      OnPropertyChanged(nameof(Master));
+      OnPropertyChanged(nameof(Other));
     }
   }
 
