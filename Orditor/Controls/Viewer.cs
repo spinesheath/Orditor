@@ -35,10 +35,10 @@ public class Viewer : ContentControl
   }
 
   public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register(
-    "Zoom", typeof(double), typeof(Viewer), new PropertyMetadata(1.0, OnZoomChanged));
+    nameof(Zoom), typeof(double), typeof(Viewer), new PropertyMetadata(1.0, OnZoomChanged));
 
   public static readonly DependencyProperty ZoomRateProperty = DependencyProperty.Register(
-    "ZoomRate", typeof(double), typeof(Viewer), new PropertyMetadata(1.1));
+    nameof(ZoomRate), typeof(double), typeof(Viewer), new PropertyMetadata(1.1));
 
   private Vector _offset;
   private Point _panGripPosition = new(0, 0);

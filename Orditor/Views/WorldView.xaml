@@ -23,7 +23,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <controls:Viewer Zoom="0.2">
+        <controls:Viewer Zoom="0.26">
             <controls:WorldDisplay Graph="{Binding Graph}"
                                    Areas="{Binding Areas}"
                                    Messenger="{Binding Messenger}"
