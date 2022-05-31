@@ -184,7 +184,7 @@ internal class Connection : Canvas
       direction.Normalize();
 
       var arrowLength = direction * 7;
-      var startPoint = target + direction * 10;
+      var startPoint = target + direction * 3.8;
 
       var head = new PathFigure();
       head.IsClosed = true;

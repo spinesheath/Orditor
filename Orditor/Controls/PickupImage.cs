@@ -11,7 +11,7 @@ internal class PickupImage : Image
 {
   public PickupImage(Pickup pickup, Messenger messenger)
   {
-    _pickup = pickup;
+    Pickup = pickup;
     _messenger = messenger;
     var imageName = PickupImageName(pickup);
 
@@ -21,12 +21,13 @@ internal class PickupImage : Image
     ToolTip = pickup.Name;
   }
 
-  private readonly Pickup _pickup;
+  public Pickup Pickup { get; }
+
   private readonly Messenger _messenger;
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
   {
-    _messenger.Select(_pickup);
+    _messenger.Select(Pickup);
   }
 
   private static string PickupImageName(Pickup pickup)

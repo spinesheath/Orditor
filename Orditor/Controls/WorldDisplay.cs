@@ -124,6 +124,14 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
       {
         home.Radius = baseRadius;
       }
+      else if (child is PickupImage pickup)
+      {
+        pickup.Width = baseRadius * 2;
+        pickup.Height = baseRadius * 2;
+        var p = Coordinates.GameToMap(pickup.Pickup.X, pickup.Pickup.Y);
+        Canvas.SetTop(pickup, p.Y - baseRadius);
+        Canvas.SetLeft(pickup, p.X - baseRadius);
+      }
     }
   }
 
