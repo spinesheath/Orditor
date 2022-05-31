@@ -37,12 +37,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
   {
     var names = ReadHomes();
     var selection = Origin;
-    Homes.Clear();
-    foreach (var name in names)
-    {
-      Homes.Add(name);
-    }
-
+    Homes.Update(names);
     RestoreSelection(selection);
   }
 
