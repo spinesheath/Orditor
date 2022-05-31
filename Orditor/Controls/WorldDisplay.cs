@@ -56,7 +56,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     OnGraphChanged();
   }
 
-  public void Changed()
+  public void GraphChanged()
   {
     OnGraphChanged();
   }
@@ -225,7 +225,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
       return;
     }
 
-    foreach (var pickup in Graph.ReachablePickups.Concat(Graph.UnreachablePickups))
+    foreach (var pickup in Graph.AllPickups)
     {
       var marker = PickupMarker(pickup, Messenger);
       _graphCanvas.Children.Add(marker);

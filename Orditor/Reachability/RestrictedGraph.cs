@@ -17,12 +17,15 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
     ReachableHomes = Enumerable.Empty<Home>();
     UnreachableHomes = Enumerable.Empty<Home>();
     ReachablePickups = Enumerable.Empty<Pickup>();
-    UnreachablePickups = Enumerable.Empty<Pickup>();
     ReachableConnections = Enumerable.Empty<RestrictedConnection>();
     UnreachableConnections = Enumerable.Empty<RestrictedConnection>();
 
     Update();
   }
+
+  public IEnumerable<Home> AllHomes => _graph.Homes;
+  
+  public IEnumerable<Pickup> AllPickups => _graph.Pickups;
 
   public Home Origin { get; private set; }
 
@@ -35,8 +38,6 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
   public IEnumerable<RestrictedConnection> UnreachableConnections { get; private set; }
 
   public IEnumerable<Home> UnreachableHomes { get; private set; }
-
-  public IEnumerable<Pickup> UnreachablePickups { get; private set; }
 
   public void AreasChanged()
   {
@@ -81,7 +82,6 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
     ReachableHomes = _graph.Homes.Where(h => reachableLocations.Contains(h)).ToList();
     UnreachableHomes = _graph.Homes.Except(ReachableHomes);
     ReachablePickups = _graph.Pickups.Where(p => reachableLocations.Contains(p)).ToList();
-    UnreachablePickups = _graph.Pickups.Except(ReachablePickups);
 
     var connections = new List<RestrictedConnection>();
     foreach (var home in _graph.Homes)

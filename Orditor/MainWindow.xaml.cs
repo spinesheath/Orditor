@@ -36,9 +36,9 @@ internal partial class MainWindow
 
     var world = new WorldViewModel(graph, messenger, areas);
 
-    var originSelector = new OriginSelectorViewModel(parser, areas);
+    var originSelector = new OriginSelectorViewModel(graph);
     messenger.Listen((ISelectionListener)originSelector);
-    messenger.Listen((IAreasListener)originSelector);
+    messenger.Listen((IRestrictedGraphListener)originSelector);
 
     var inventory = new InventoryViewModel(messenger, originSelector);
 

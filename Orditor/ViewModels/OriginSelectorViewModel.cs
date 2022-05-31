@@ -3,15 +3,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Orditor.Model;
 using Orditor.Orchestration;
+using Orditor.Reachability;
 
 namespace Orditor.ViewModels;
 
-internal class OriginSelectorViewModel : NotificationObject, ISelectionListener, IAreasListener
+internal class OriginSelectorViewModel : NotificationObject, ISelectionListener, IRestrictedGraphListener
 {
-  public OriginSelectorViewModel(PickupGraphParser parser, AreasOri areas)
+  public OriginSelectorViewModel(RestrictedGraph graph)
   {
-    _parser = parser;
-    _areas = areas;
+    _graph = graph;
     SelectOrigin = new DelegateCommand(ExecuteSelectOrigin, () => !_selectingOrigin);
     Homes = Observable(ReadHomes());
   }
@@ -33,7 +33,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
 
   public DelegateCommand SelectOrigin { get; }
 
-  public void AreasChanged()
+  public void GraphChanged()
   {
     var names = ReadHomes();
     var selection = Origin;
@@ -53,8 +53,8 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
     SelectOrigin.RaiseCanExecuteChanged();
   }
 
-  private readonly AreasOri _areas;
-  private readonly PickupGraphParser _parser;
+  private readonly RestrictedGraph _graph;
+
   private string _origin = "SunkenGladesRunaway";
   private bool _selectingOrigin;
 
@@ -76,8 +76,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
 
   private IEnumerable<string> ReadHomes()
   {
-    var graph = _parser.Parse(_areas.Text);
-    return graph.Homes.Select(h => h.Name).OrderBy(x => x);
+    return _graph.AllHomes.Select(h => h.Name).OrderBy(x => x);
   }
 
   private void ExecuteSelectOrigin()

@@ -2,5 +2,5 @@
 
 internal interface IRestrictedGraphListener
 {
-  void Changed();
+  void GraphChanged();
 }

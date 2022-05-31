@@ -45,7 +45,7 @@ internal class Messenger
   {
     foreach (var listener in _restrictedGraphListeners)
     {
-      listener.Changed();
+      listener.GraphChanged();
     }
   }
 
