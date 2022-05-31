@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>orditor.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -71,6 +72,10 @@
     <None Remove="Data\windrestored.png" />
     <None Remove="Data\world.png" />
     <None Remove="Data\xp.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="orditor.ico" />
   </ItemGroup>
 
   <ItemGroup>
