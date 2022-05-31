@@ -139,7 +139,7 @@
                             IsMouseDragEnabled="False"
                             StepSize="1"
                             LargeStepSize="10"
-                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
                         <Image Source="{Binding Name, Converter={StaticResource ImageConverter}}" 
                                Stretch="Uniform"
                                RenderOptions.BitmapScalingMode="Fant"
