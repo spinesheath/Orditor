@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Shapes;
 using Orditor.Model;
 using Orditor.Orchestration;
@@ -25,12 +26,20 @@ internal class HomeMarker : Border
   }
 
   public Home Home { get; }
-
-  private const int Radius = 15;
+  
   private readonly bool _isOrigin;
   private readonly Ellipse _marker;
   private readonly Messenger _messenger;
   private readonly bool _reachable;
+
+  public static readonly DependencyProperty RadiusProperty = DependencyProperty.Register(
+    nameof(Radius), typeof(double), typeof(HomeMarker), new PropertyMetadata(15.0d));
+
+  public double Radius
+  {
+    get => (double)GetValue(RadiusProperty);
+    set => SetValue(RadiusProperty, value);
+  }
 
   protected override void OnInitialized(EventArgs e)
   {
@@ -50,14 +59,21 @@ internal class HomeMarker : Border
     UpdateColor(false);
   }
 
-  private static Ellipse CreateMarker(string home)
+  private Ellipse CreateMarker(string home)
   {
     var marker = new Ellipse();
-    marker.Width = Radius;
-    marker.Height = Radius;
-    marker.StrokeThickness = 1;
+    marker.StrokeThickness = 0;
     marker.ToolTip = home;
+    BindRadius(marker, HeightProperty);
+    BindRadius(marker, WidthProperty);
     return marker;
+  }
+
+  private void BindRadius(Shape target, DependencyProperty property)
+  {
+    var binding = new Binding(nameof(Radius));
+    binding.Source = this;
+    target.SetBinding(property, binding);
   }
 
   private void UpdateColor(bool hovering)
@@ -66,38 +82,32 @@ internal class HomeMarker : Border
     {
       if (_isOrigin)
       {
-        Paint(GraphColors.SpecialHighlighted);
+        _marker.Fill = GraphColors.SpecialHighlighted;
       }
       else if (_reachable)
       {
-        Paint(GraphColors.AccessibleHighlighted);
+        _marker.Fill = GraphColors.AccessibleHighlighted;
       }
       else
       {
-        Paint(GraphColors.InaccessibleHighlighted);
+        _marker.Fill = GraphColors.InaccessibleHighlighted;
       }
     }
     else
     {
       if (_isOrigin)
       {
-        Paint(GraphColors.Special);
+        _marker.Fill = GraphColors.Special;
       }
       else if (_reachable)
       {
-        Paint(GraphColors.Accessible);
+        _marker.Fill = GraphColors.Accessible;
       }
       else
       {
-        Paint(GraphColors.Inaccessible);
+        _marker.Fill = GraphColors.Inaccessible;
       }
     }
-  }
-
-  private void Paint(Brush brush)
-  {
-    _marker.Stroke = brush;
-    _marker.Fill = brush;
   }
 
   protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

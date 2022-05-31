@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -31,6 +32,12 @@ internal class Connection : Canvas
     Paint(false);
   }
 
+  public double StrokeThickness
+  {
+    get => (double)GetValue(StrokeThicknessProperty);
+    set => SetValue(StrokeThicknessProperty, value);
+  }
+
   public static UIElement Bidirectional(Messenger messenger, RestrictedConnection connection)
   {
     return new Connection(messenger, connection.Location1, connection.Location2, false, connection.Traversable);
@@ -43,6 +50,9 @@ internal class Connection : Canvas
     return c;
   }
 
+  public static readonly DependencyProperty StrokeThicknessProperty = DependencyProperty.Register(
+    nameof(StrokeThickness), typeof(double), typeof(Connection), new PropertyMetadata(3.0d));
+
   private static readonly DoubleCollection DashArray = new() { 5, 2 };
   private readonly Arrow? _arrowHead;
   private readonly Line _line;
@@ -51,10 +61,10 @@ internal class Connection : Canvas
   private readonly Messenger _messenger;
   private readonly bool _traversable;
 
-  private static Arrow CreateArrowHead(Vector coordinates1, Vector coordinates2)
+  private Arrow CreateArrowHead(Vector coordinates1, Vector coordinates2)
   {
     var arrow = new Arrow(new Point(coordinates1.X, coordinates1.Y), new Point(coordinates2.X, coordinates2.Y));
-    arrow.StrokeThickness = 3;
+    BindThickness(arrow);
     return arrow;
   }
 
@@ -130,11 +140,19 @@ internal class Connection : Canvas
       Y1 = location1.Y,
       X2 = location2.X,
       Y2 = location2.Y,
-      StrokeThickness = 3,
       Tag = this
     };
 
+    BindThickness(connection);
+
     return connection;
+  }
+
+  private void BindThickness(Shape target)
+  {
+    var binding = new Binding(nameof(StrokeThickness));
+    binding.Source = this;
+    target.SetBinding(Shape.StrokeThicknessProperty, binding);
   }
 
   private class Arrow : Shape

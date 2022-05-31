@@ -41,6 +41,12 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     set => SetValue(MessengerProperty, value);
   }
 
+  public double StrokeThicknessFactor
+  {
+    get => (double)GetValue(StrokeThicknessFactorProperty);
+    set => SetValue(StrokeThicknessFactorProperty, value);
+  }
+
   public override void OnApplyTemplate()
   {
     base.OnApplyTemplate();
@@ -54,6 +60,9 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
   {
     OnGraphChanged();
   }
+
+  public static readonly DependencyProperty StrokeThicknessFactorProperty = DependencyProperty.Register(
+    nameof(StrokeThicknessFactor), typeof(double), typeof(WorldDisplay), new PropertyMetadata(default(double), OnFactorChanged));
 
   public static readonly DependencyProperty GreyscaleProperty = DependencyProperty.Register(
     nameof(Greyscale), typeof(bool), typeof(WorldDisplay), new PropertyMetadata(default(bool)));
@@ -89,6 +98,35 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     display.OnGraphChanged();
   }
 
+  private static void OnFactorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+  {
+    var display = (WorldDisplay)d;
+    display.OnFactorChanged();
+  }
+
+  private void OnFactorChanged()
+  {
+    if (_graphCanvas == null)
+    {
+      return;
+    }
+
+    var baseThickness = StrokeThicknessFactor <= 0 ? 3 : 0.8 + 0.4 / StrokeThicknessFactor;
+    var baseRadius = StrokeThicknessFactor <= 0 ? 15 : 5 + 5 * 0.52 / StrokeThicknessFactor;
+
+    foreach (UIElement child in _graphCanvas.Children)
+    {
+      if (child is Connection connection)
+      {
+        connection.StrokeThickness = baseThickness;
+      }
+      else if (child is HomeMarker home)
+      {
+        home.Radius = baseRadius;
+      }
+    }
+  }
+
   private static void OnGraphChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
   {
     var display = (WorldDisplay)d;
@@ -106,6 +144,8 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     AddConnectionMarkers();
     AddHomeMarkers();
     AddPickupMarkers();
+
+    OnFactorChanged();
   }
 
   private void AddConnectionMarkers()

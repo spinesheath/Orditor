@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Orditor.Controls"
+             xmlns:c="clr-namespace:Orditor.Controls"
              xmlns:vm="clr-namespace:Orditor.ViewModels"
              mc:Ignorable="d"
              Background="#121212"
@@ -23,12 +23,13 @@
     </UserControl.Resources>
 
     <Grid>
-        <controls:Viewer Zoom="0.26">
-            <controls:WorldDisplay Graph="{Binding Graph}"
+        <c:Viewer Zoom="0.26">
+            <c:WorldDisplay Graph="{Binding Graph}"
                                    Areas="{Binding Areas}"
                                    Messenger="{Binding Messenger}"
-                                   Greyscale="{Binding ElementName=GreyscaleCheckBox, Path=IsChecked}"/>
-        </controls:Viewer>
+                                   Greyscale="{Binding ElementName=GreyscaleCheckBox, Path=IsChecked}"
+                                   StrokeThicknessFactor="{Binding Zoom, RelativeSource={RelativeSource AncestorType={x:Type c:Viewer}}}"/>
+        </c:Viewer>
         <CheckBox x:Name="GreyscaleCheckBox"
                   IsChecked="True"
                   HorizontalAlignment="Right" 
