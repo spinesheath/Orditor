@@ -69,7 +69,15 @@ internal class CodeCompletion
 
     var partialText = text.Substring(previousWhitespaceIndex + 1, indexInLine - previousWhitespaceIndex - 1);
 
-    if (leadingTabs == 1 && segmentIndex == 1)
+    if (leadingTabs == 2 && segmentIndex == 1)
+    {
+      Show(CompletionCandidates.Logic, partialText);
+    }
+    else if (leadingTabs == 2 && segmentIndex > 1)
+    {
+      Show(CompletionCandidates.Requirements, partialText);
+    }
+    else if (leadingTabs == 1 && segmentIndex == 1)
     {
       if (partialText[^1] == ':')
       {
@@ -90,14 +98,6 @@ internal class CodeCompletion
       {
         Show(Pickups(), partialText);
       }
-    }
-    else if (leadingTabs == 2 && segmentIndex == 1)
-    {
-      Show(CompletionCandidates.Logic, partialText);
-    }
-    else if (leadingTabs == 2 && segmentIndex > 1)
-    {
-      Show(CompletionCandidates.Requirements, partialText);
     }
   }
 

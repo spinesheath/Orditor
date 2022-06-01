@@ -1,24 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Orditor.Controls;
-
-internal class CompletionCandidate
-{
-  public CompletionCandidate(params string[] fragments)
-  {
-    Value = fragments[0];
-    Fragments = fragments.Select(s => s.ToLowerInvariant()).ToArray();
-  }
-
-  public string Value { get; }
-
-  public string[] Fragments { get; }
-}
+﻿namespace Orditor.Controls;
 
 internal static class CompletionCandidates
 {
-  public static readonly List<CompletionCandidate> Requirements = new()
+  public static readonly CompletionCandidate[] Requirements =
   {
     new("Free"),
     new("WallJump", "jump", "wj"),
@@ -57,13 +41,13 @@ internal static class CompletionCandidates
     new("Ability=12", "triplejump", "tj", "ultradefense", "defense", "ud")
   };
 
-  public static readonly List<CompletionCandidate> Connection = new()
+  public static readonly CompletionCandidate[] Connection =
   {
     new("pickup:"),
     new("conn:")
   };
 
-  public static readonly List<CompletionCandidate> Logic = new()
+  public static readonly CompletionCandidate[] Logic =
   {
     new("casual-core", "casual", "core", "cc"),
     new("casual-dboost", "casual", "dboost", "damage", "cd"),
