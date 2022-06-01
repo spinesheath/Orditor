@@ -4,7 +4,13 @@
 	<Color name="Comment" foreground="Green" />
 	<Color name="String" foreground="Blue" />
 	<RuleSet>
-		<Span color="Comment" begin="--" />
+		<Span color="Comment" begin="--">
+			<RuleSet>
+				<Keywords fontWeight="bold">
+					<Word>anchor</Word>
+				</Keywords>
+			</RuleSet>
+		</Span>
 		<Keywords foreground="Blue">
 			<Word>casual-core</Word>
 			<Word>casual-dboost</Word>
@@ -25,35 +31,10 @@
 			<Word>glitched</Word>
 			<Word>timed-level</Word>
 			<Word>insane</Word>
-		</Keywords>
-		<Keywords foreground="Black">
-			<Word>Free</Word>
-			<Word>WallJump</Word>
-			<Word>ChargeFlame</Word>
-			<Word>DoubleJump</Word>
-			<Word>Bash</Word>
-			<Word>Stomp</Word>
-			<Word>Glide</Word>
-			<Word>Climb</Word>
-			<Word>ChargeJump</Word>
-			<Word>Grenade</Word>
-			<Word>Dash</Word>
-			<Word>Water</Word>
-			<Word>Wind</Word>
-			<Word>GinsoKey</Word>
-			<Word>ForlornKey</Word>
-			<Word>HoruKey</Word>
-			<Word>TPGrove</Word>
-			<Word>TPSwamp</Word>
-			<Word>TPGrotto</Word>
-			<Word>TPValley</Word>
-			<Word>TPSorrow</Word>
-			<Word>TPGinso</Word>
-			<Word>TPForlorn</Word>
-			<Word>TPHoru</Word>
-			<Word>Mapstone</Word>
-			<Word>OpenWorld</Word>
-			<Word>Open</Word>
+			<Word>loc:</Word>
+			<Word>home:</Word>
+			<Word>conn:</Word>
+			<Word>pickup:</Word>
 		</Keywords>
 	</RuleSet>
 </SyntaxDefinition>
