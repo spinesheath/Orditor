@@ -85,12 +85,20 @@ internal class FoldingStrategy
     return offset;
   }
 
+  public void Unfold(int offset)
+  {
+    foreach (var folding in _foldingManager.GetFoldingsContaining(offset))
+    {
+      folding.IsFolded = false;
+    }
+  }
+
   public void UpdateFoldings(TextDocument document)
   {
     var foldings = SafeCreateNewFoldings(document, out var firstErrorOffset);
     _foldingManager.UpdateFoldings(foldings, firstErrorOffset);
   }
-  
+
   private readonly FoldingManager _foldingManager;
 
   private static bool IsHome(FoldingSection folding)

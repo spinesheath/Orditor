@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
 using ICSharpCode.AvalonEdit;
@@ -74,6 +75,16 @@ internal class Editor : Decorator, ISelectionListener
 
   private readonly TextEditor _textEditor = new();
 
+  protected override void OnPreviewKeyDown(KeyEventArgs e)
+  {
+    if (e.Key != Key.Up && e.Key != Key.Down)
+    {
+      _foldingStrategy.Unfold(_textEditor.CaretOffset);
+    }
+
+    base.OnKeyDown(e);
+  }
+
   private static IHighlightingDefinition LoadHighlighting()
   {
     var assembly = typeof(Annotations).Assembly;
@@ -87,6 +98,8 @@ internal class Editor : Decorator, ISelectionListener
   {
     var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
     _textEditor.ScrollTo(line.LineNumber, 0);
+    _textEditor.CaretOffset = unfoldedOffset;
+    _textEditor.Focus();
   }
 
   private static void OnSelectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
