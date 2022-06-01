@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Orditor.Controls;
 
@@ -7,7 +8,7 @@ internal class CompletionCandidate
   public CompletionCandidate(params string[] fragments)
   {
     Value = fragments[0];
-    Fragments = fragments;
+    Fragments = fragments.Select(s => s.ToLowerInvariant()).ToArray();
   }
 
   public string Value { get; }
@@ -17,35 +18,35 @@ internal class CompletionCandidate
 
 internal static class CompletionCandidates
 {
-  public static readonly List<string> Keywords = new()
+  public static readonly List<CompletionCandidate> Requirements = new()
   {
-    "Free",
-    "WallJump",
-    "ChargeFlame",
-    "DoubleJump",
-    "Bash",
-    "Stomp",
-    "Glide",
-    "Climb",
-    "ChargeJump",
-    "Grenade",
-    "Dash",
-    "Water",
-    "Wind",
-    "GinsoKey",
-    "ForlornKey",
-    "HoruKey",
-    "TPGrove",
-    "TPSwamp",
-    "TPGrotto",
-    "TPValley",
-    "TPSorrow",
-    "TPGinso",
-    "TPForlorn",
-    "TPHoru",
-    "Mapstone",
-    "OpenWorld",
-    "Open"
+    new("Free"),
+    new("WallJump", "jump", "wj"),
+    new("ChargeFlame", "flame", "cf"),
+    new("DoubleJump", "jump", "dj"),
+    new("Bash"),
+    new("Stomp"),
+    new("Glide"),
+    new("Climb"),
+    new("ChargeJump", "jump", "cj"),
+    new("Grenade"),
+    new("Dash"),
+    new("Water", "clean"),
+    new("Wind", "restored"),
+    new("GinsoKey", "water", "vein"),
+    new("ForlornKey", "gumon", "seal"),
+    new("HoruKey", "sunstone"),
+    new("TPGrove", "grove"),
+    new("TPSwamp", "swamp"),
+    new("TPGrotto", "grotto"),
+    new("TPValley", "valley"),
+    new("TPSorrow", "sorrow"),
+    new("TPGinso", "ginso"),
+    new("TPForlorn", "forlorn"),
+    new("TPHoru", "horu"),
+    new("Mapstone", "map", "ms"),
+    new("OpenWorld", "world"),
+    new("Open", "dungeons")
   };
 
   public static readonly List<CompletionCandidate> Connection = new()

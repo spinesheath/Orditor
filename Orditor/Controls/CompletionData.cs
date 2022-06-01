@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
@@ -9,11 +10,12 @@ namespace Orditor.Controls;
 
 internal class CompletionData : NotificationObject, ICompletionData
 {
-  public CompletionData(CompletionCandidate candidate, string partialText)
+  public CompletionData(CompletionCandidate candidate, string partialTextLowercase)
   {
-    _partialText = partialText;
+    Debug.Assert(partialTextLowercase == partialTextLowercase.ToLowerInvariant());
+    _partialTextLength = partialTextLowercase.Length;
     Text = candidate.Value;
-    Priority = CalculatePriority(candidate, partialText);
+    Priority = CalculatePriority(candidate, partialTextLowercase);
   }
 
   public ImageSource? Image => null;
@@ -28,10 +30,10 @@ internal class CompletionData : NotificationObject, ICompletionData
 
   public void Complete(TextArea textArea, ISegment segment, EventArgs insertionRequestEventArgs)
   {
-    textArea.Document.Replace(segment.Offset - _partialText.Length, _partialText.Length, Text);
+    textArea.Document.Replace(segment.Offset - _partialTextLength, _partialTextLength, Text);
   }
 
-  private readonly string _partialText;
+  private readonly int _partialTextLength;
 
   private static int CalculatePriority(CompletionCandidate candidate, string partialText)
   {

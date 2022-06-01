@@ -95,6 +95,10 @@ internal class CodeCompletion
     {
       Show(CompletionCandidates.Logic, partialText);
     }
+    else if (leadingTabs == 2 && segmentIndex > 1)
+    {
+      Show(CompletionCandidates.Requirements, partialText);
+    }
   }
 
   private IEnumerable<CompletionCandidate> Pickups()
@@ -145,7 +149,8 @@ internal class CodeCompletion
 
   private void Show(IEnumerable<CompletionCandidate> candidates, string partialText)
   {
-    var list = candidates.Select(c => new CompletionData(c, partialText)).ToList();
+    var lowercase = partialText.ToLowerInvariant();
+    var list = candidates.Select(c => new CompletionData(c, lowercase)).ToList();
     if (list.Count == 0)
     {
       return;
