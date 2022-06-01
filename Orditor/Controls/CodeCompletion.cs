@@ -144,8 +144,11 @@ internal class CodeCompletion
     {
       if (text.Substring(1, 5) == "conn:" && string.IsNullOrWhiteSpace(text[indexInLine..]))
       {
-        var homes = GetHomes();
-        Show(homes, partialText);
+        Show(Homes(), partialText);
+      }
+      else if (text.Substring(1, 7) == "pickup:" && string.IsNullOrWhiteSpace(text[indexInLine..]))
+      {
+        Show(Pickups(), partialText);
       }
     }
     else if (leadingTabs == 2 && segmentIndex == 1)
@@ -154,7 +157,18 @@ internal class CodeCompletion
     }
   }
 
-  private IEnumerable<string> GetHomes()
+  private IEnumerable<string> Pickups()
+  {
+    foreach (var line in _editor.Document.Lines)
+    {
+      if (LineParser.TryPickupName(_editor.Document.GetText(line)) is { } name)
+      {
+        yield return name;
+      }
+    }
+  }
+
+  private IEnumerable<string> Homes()
   {
     foreach (var line in _editor.Document.Lines)
     {

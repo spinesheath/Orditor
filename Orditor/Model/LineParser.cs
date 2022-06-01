@@ -79,6 +79,12 @@ internal static class LineParser
     return new Pickup(name, idGenerator.Next(), zone, x, y, vanillaContent, difficulty);
   }
 
+  public static string? TryPickupName(string line)
+  {
+    var match = PickupDefinitionRegex.Match(line);
+    return match.Success ? match.Groups[1].Value : null;
+  }
+
   public static string? TryPickupReference(string line)
   {
     var match = PickupReferenceRegex.Match(line);
@@ -95,11 +101,6 @@ internal static class LineParser
   private static readonly Regex PickupDefinitionRegex =
     new(@"^\s*loc:\s+(\w+)\s+([-\d]+)\s+([-\d]+)\s+(\w+)\s+(\d+)\s+(\w+)");
 
-  private static Regex HomeReplacementRegex(string home)
-  {
-    return new Regex($@"^(\s*home:\s*{home})(\s+[-\d]+\s+[-\d]+)?(\s+.*)?$", RegexOptions.Multiline);
-  }
-  
   //home: SunkenGladesRunaway *111 111
   private static readonly Regex HomeRegex = new(@"^\s*home:\s*(\w+)(?:\s+([-\d]+)\s+([-\d]+))?", RegexOptions.Multiline);
 
@@ -111,6 +112,11 @@ internal static class LineParser
 
   //expert-dboost Grenade Health=6
   private static readonly Regex RequirementRegex = new(@"^\s*([-\w]+)\s+(.*)$", RegexOptions.Multiline);
+
+  private static Regex HomeReplacementRegex(string home)
+  {
+    return new Regex($@"^(\s*home:\s*{home})(\s+[-\d]+\s+[-\d]+)?(\s+.*)?$", RegexOptions.Multiline);
+  }
 
   private static int ToInt(Capture capture, int fallback = int.MaxValue)
   {
