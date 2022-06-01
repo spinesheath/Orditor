@@ -33,9 +33,9 @@ internal static class CompletionCandidates
     new("Dash"),
     new("Water", "clean"),
     new("Wind", "restored"),
-    new("GinsoKey", "water", "vein"),
-    new("ForlornKey", "gumon", "seal"),
-    new("HoruKey", "sunstone"),
+    new("GinsoKey", "water", "vein", "wv"),
+    new("ForlornKey", "gumon", "seal", "gs"),
+    new("HoruKey", "sunstone", "ss"),
     new("TPGrove", "grove"),
     new("TPSwamp", "swamp"),
     new("TPGrotto", "grotto"),
@@ -46,7 +46,15 @@ internal static class CompletionCandidates
     new("TPHoru", "horu"),
     new("Mapstone", "map", "ms"),
     new("OpenWorld", "world"),
-    new("Open", "dungeons")
+    new("Open", "dungeons"),
+    new("Health=", "hc"),
+    new("Energy=", "ec"),
+    new("Ability=", "ac"),
+    new("Keystone=", "ks"),
+    new("Mapstone", "ms"),
+    new("Ability=3", "airdash", "ad", "burn"),
+    new("Ability=6", "chargedash", "cd", "rocketjump", "meteorkick"),
+    new("Ability=12", "triplejump", "tj", "ultradefense", "defense", "ud")
   };
 
   public static readonly List<CompletionCandidate> Connection = new()
