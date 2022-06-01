@@ -3,16 +3,16 @@ using System.Linq;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Folding;
+using ICSharpCode.AvalonEdit.Document;
+using Orditor.Model;
 
 namespace Orditor.Controls;
 
 internal class CodeCompletion
 {
-  public CodeCompletion(TextEditor editor, FoldingManager foldingManager)
+  public CodeCompletion(TextEditor editor)
   {
     _editor = editor;
-    _foldingManager = foldingManager;
     var textArea = editor.TextArea;
     textArea.TextEntering += TextEntering;
     textArea.TextEntered += TextEntered;
@@ -75,33 +75,24 @@ internal class CodeCompletion
     "gjump",
     "glitched",
     "timed-level",
-    "insane",
+    "insane"
   };
 
   private readonly TextEditor _editor;
-  private readonly FoldingManager _foldingManager;
   private CompletionWindow? _completionWindow;
 
   private void TextEntered(object sender, TextCompositionEventArgs e)
   {
-    var offset = _editor.CaretOffset;
-    var line = _editor.Document.GetLineByOffset(offset);
-    var previousLine = line.PreviousLine;
-    if (previousLine == null)
+    var caretOffset = _editor.CaretOffset;
+    var currentLine = _editor.Document.GetLineByOffset(caretOffset);
+
+    if (!IsInsideHome(currentLine))
     {
       return;
     }
 
-    var foldings = _foldingManager.GetFoldingsContaining(offset);
-    var isInsideHome = foldings.Any(f => f.Tag is HomeFolding);
-
-    if (!isInsideHome)
-    {
-      return;
-    }
-
-    var text = _editor.Document.GetText(line);
-    var indexInLine = offset - line.Offset;
+    var text = _editor.Document.GetText(currentLine);
+    var indexInLine = caretOffset - currentLine.Offset;
     if (indexInLine < text.Length && !char.IsWhiteSpace(text[indexInLine]))
     {
       return;
@@ -129,7 +120,7 @@ internal class CodeCompletion
     }
 
     var partialText = text.Substring(previousWhitespaceIndex + 1, indexInLine - previousWhitespaceIndex - 1);
-    
+
     if (leadingTabs == 1 && segmentIndex == 1)
     {
       Show(ConnectionSuggestions, partialText);
@@ -138,6 +129,28 @@ internal class CodeCompletion
     {
       Show(LogicSuggestions, partialText);
     }
+  }
+
+  private bool IsInsideHome(DocumentLine line)
+  {
+    if (LineParser.IsHome(_editor.Document.GetText(line)))
+    {
+      return false;
+    }
+
+    var currentLine = line.PreviousLine;
+    while (currentLine != null)
+    {
+      var text = _editor.Document.GetText(currentLine);
+      if (LineParser.IsHome(text))
+      {
+        return true;
+      }
+
+      currentLine = currentLine.PreviousLine;
+    }
+
+    return false;
   }
 
   private void Show(IEnumerable<string> keywords, string partialText)
