@@ -8,6 +8,8 @@
 			<RuleSet>
 				<Keywords fontWeight="bold">
 					<Word>anchor</Word>
+					<Word>anchored</Word>
+					<Word>anchor point</Word>
 				</Keywords>
 			</RuleSet>
 		</Span>
