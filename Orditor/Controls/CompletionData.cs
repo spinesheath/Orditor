@@ -9,11 +9,11 @@ namespace Orditor.Controls;
 
 internal class CompletionData : NotificationObject, ICompletionData
 {
-  public CompletionData(string text, string partialText)
+  public CompletionData(CompletionCandidate candidate, string partialText)
   {
     _partialText = partialText;
-    Text = text;
-    Priority = CalculatePriority(text, partialText);
+    Text = candidate.Value;
+    Priority = CalculatePriority(candidate, partialText);
   }
 
   public ImageSource? Image => null;
@@ -33,11 +33,17 @@ internal class CompletionData : NotificationObject, ICompletionData
 
   private readonly string _partialText;
 
-  private static int CalculatePriority(string text, string partialText)
+  private static int CalculatePriority(CompletionCandidate candidate, string partialText)
   {
-    // TODO if partial="dj" then prioritize DoubleJump etc.
-    var i = 0;
-    for (; i < text.Length && i < partialText.Length && text[i] == partialText[i]; i++) { }
-    return i;
+    var best = 0;
+    foreach (var fragment in candidate.Fragments)
+    {
+      var i = 0;
+      for (; i < fragment.Length && i < partialText.Length && fragment[i] == partialText[i]; i++) { }
+
+      best = i == fragment.Length ? 1000 : Math.Max(best, i);
+    }
+
+    return best;
   }
 }

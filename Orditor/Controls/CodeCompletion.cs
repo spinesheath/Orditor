@@ -18,66 +18,6 @@ internal class CodeCompletion
     textArea.TextEntered += TextEntered;
   }
 
-  private static readonly List<string> Keywords = new()
-  {
-    "Free",
-    "WallJump",
-    "ChargeFlame",
-    "DoubleJump",
-    "Bash",
-    "Stomp",
-    "Glide",
-    "Climb",
-    "ChargeJump",
-    "Grenade",
-    "Dash",
-    "Water",
-    "Wind",
-    "GinsoKey",
-    "ForlornKey",
-    "HoruKey",
-    "TPGrove",
-    "TPSwamp",
-    "TPGrotto",
-    "TPValley",
-    "TPSorrow",
-    "TPGinso",
-    "TPForlorn",
-    "TPHoru",
-    "Mapstone",
-    "OpenWorld",
-    "Open"
-  };
-
-  private static readonly List<string> ConnectionSuggestions = new()
-  {
-    "pickup:",
-    "conn:"
-  };
-
-  private static readonly List<string> LogicSuggestions = new()
-  {
-    "casual-core",
-    "casual-dboost",
-    "standard-core",
-    "standard-dboost",
-    "standard-lure",
-    "standard-abilities",
-    "expert-core",
-    "expert-dboost",
-    "expert-lure",
-    "expert-abilities",
-    "dbash",
-    "master-core",
-    "master-dboost",
-    "master-lure",
-    "master-abilities",
-    "gjump",
-    "glitched",
-    "timed-level",
-    "insane"
-  };
-
   private readonly TextEditor _editor;
   private CompletionWindow? _completionWindow;
 
@@ -137,7 +77,7 @@ internal class CodeCompletion
       }
       else if (string.IsNullOrWhiteSpace(text[indexInLine..]))
       {
-        Show(ConnectionSuggestions, partialText);
+        Show(CompletionCandidates.Connection, partialText);
       }
     }
     else if (leadingTabs == 1 && segmentIndex > 1)
@@ -153,28 +93,30 @@ internal class CodeCompletion
     }
     else if (leadingTabs == 2 && segmentIndex == 1)
     {
-      Show(LogicSuggestions, partialText);
+      Show(CompletionCandidates.Logic, partialText);
     }
   }
 
-  private IEnumerable<string> Pickups()
+  private IEnumerable<CompletionCandidate> Pickups()
   {
     foreach (var line in _editor.Document.Lines)
     {
       if (LineParser.TryPickupName(_editor.Document.GetText(line)) is { } name)
       {
-        yield return name;
+        // TODO cache
+        yield return new CompletionCandidate(name);
       }
     }
   }
 
-  private IEnumerable<string> Homes()
+  private IEnumerable<CompletionCandidate> Homes()
   {
     foreach (var line in _editor.Document.Lines)
     {
       if (LineParser.TryHomeName(_editor.Document.GetText(line)) is { } name)
       {
-        yield return name;
+        // TODO cache
+        yield return new CompletionCandidate(name);
       }
     }
   }
@@ -201,9 +143,9 @@ internal class CodeCompletion
     return false;
   }
 
-  private void Show(IEnumerable<string> keywords, string partialText)
+  private void Show(IEnumerable<CompletionCandidate> candidates, string partialText)
   {
-    var list = keywords.Select(keyword => new CompletionData(keyword, partialText)).ToList();
+    var list = candidates.Select(c => new CompletionData(c, partialText)).ToList();
     if (list.Count == 0)
     {
       return;
