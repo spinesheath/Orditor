@@ -165,6 +165,9 @@ internal class CodeCompletion
       data.Add(item);
     }
 
+    _completionWindow.CompletionList.IsFiltering = false;
+    _completionWindow.CompletionList.SelectedItem = list[0];
+
     _completionWindow.Show();
     _completionWindow.Closed += (_, _) => _completionWindow = null;
   }
