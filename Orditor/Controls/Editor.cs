@@ -8,6 +8,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Search;
 using Orditor.Model;
 using Orditor.Orchestration;
 
@@ -25,6 +26,7 @@ internal class Editor : Decorator, ISelectionListener
     _foldingStrategy = new FoldingStrategy(foldingManager);
     _textEditor.SyntaxHighlighting = LoadHighlighting();
     _ = new CodeCompletion(_textEditor);
+    _ = SearchPanel.Install(_textEditor);
   }
 
   public Messenger Messenger
