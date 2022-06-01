@@ -83,6 +83,11 @@ internal class CodeCompletion
 
   private void TextEntered(object sender, TextCompositionEventArgs e)
   {
+    if (string.IsNullOrWhiteSpace(e.TextComposition.Text))
+    {
+      return;
+    }
+
     var caretOffset = _editor.CaretOffset;
     var currentLine = _editor.Document.GetLineByOffset(caretOffset);
 
@@ -113,9 +118,12 @@ internal class CodeCompletion
       {
         previousWhitespaceIndex = i;
       }
-      else if (previousWhitespaceIndex + 1 == i)
+      else
       {
-        segmentIndex += 1;
+        if (previousWhitespaceIndex + 1 == i)
+        {
+          segmentIndex += 1;
+        }
       }
     }
 
@@ -123,11 +131,37 @@ internal class CodeCompletion
 
     if (leadingTabs == 1 && segmentIndex == 1)
     {
-      Show(ConnectionSuggestions, partialText);
+      if (partialText[^1] == ':')
+      {
+        _completionWindow?.Close();
+      }
+      else if (string.IsNullOrWhiteSpace(text[indexInLine..]))
+      {
+        Show(ConnectionSuggestions, partialText);
+      }
+    }
+    else if (leadingTabs == 1 && segmentIndex > 1)
+    {
+      if (text.Substring(1, 5) == "conn:" && string.IsNullOrWhiteSpace(text[indexInLine..]))
+      {
+        var homes = GetHomes();
+        Show(homes, partialText);
+      }
     }
     else if (leadingTabs == 2 && segmentIndex == 1)
     {
       Show(LogicSuggestions, partialText);
+    }
+  }
+
+  private IEnumerable<string> GetHomes()
+  {
+    foreach (var line in _editor.Document.Lines)
+    {
+      if (LineParser.TryHomeName(_editor.Document.GetText(line)) is { } name)
+      {
+        yield return name;
+      }
     }
   }
 
