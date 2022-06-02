@@ -98,6 +98,11 @@ internal class Editor : Decorator, ISelectionListener
 
   private void ScrollTo(int unfoldedOffset)
   {
+    if (unfoldedOffset < 0 || unfoldedOffset >= _textEditor.Document.TextLength)
+    {
+      return;
+    }
+
     var line = _textEditor.Document.GetLineByOffset(unfoldedOffset);
     _textEditor.ScrollTo(line.LineNumber, 0);
     _textEditor.CaretOffset = unfoldedOffset;

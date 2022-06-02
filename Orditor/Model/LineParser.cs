@@ -99,10 +99,10 @@ internal static class LineParser
 
   //loc: FirstPickup 92 -227 EX15 0 Glades
   private static readonly Regex PickupDefinitionRegex =
-    new(@"^\s*loc:\s+(\w+)\s+([-\d]+)\s+([-\d]+)\s+(\w+)\s+(\d+)\s+(\w+)");
+    new(@"^\s*loc:\s+(\w+)\s+(-?\d+)\s+(-?\d+)\s+(\w+)\s+(\d+)\s+(\w+)");
 
   //home: SunkenGladesRunaway *111 111
-  private static readonly Regex HomeRegex = new(@"^\s*home:\s*(\w+)(?:\s+([-\d]+)\s+([-\d]+))?", RegexOptions.Multiline);
+  private static readonly Regex HomeRegex = new(@"^\s*home:\s*(\w+)(?:\s+(-?\d+)\s+(-?\d+))?", RegexOptions.Multiline);
 
   //pickup: FirstPickup
   private static readonly Regex PickupReferenceRegex = new(@"^\s*pickup:\s*(\w+)", RegexOptions.Multiline);

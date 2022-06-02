@@ -65,6 +65,12 @@ internal class CodeCompletion
     for (var i = 0; i < indexInLine; i++)
     {
       var c = text[i];
+      if (c == '-' && text.Length > i + 1 && text[i + 1] == '-')
+      {
+        Hide();
+        return;
+      }
+
       if (c != '\t' && leadingTabs < 0)
       {
         leadingTabs = i;
@@ -97,7 +103,7 @@ internal class CodeCompletion
     {
       if (partialText[^1] == ':')
       {
-        _completionWindow?.Close();
+        Hide();
       }
       else if (string.IsNullOrWhiteSpace(text[indexInLine..]))
       {
@@ -115,6 +121,11 @@ internal class CodeCompletion
         Show(Pickups(), partialText);
       }
     }
+  }
+
+  private void Hide()
+  {
+    _completionWindow?.Close();
   }
 
   private IEnumerable<CompletionCandidate> Pickups()
