@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
+using NLog;
 using Orditor.Model;
 
 namespace Orditor.Controls;
 
 internal class CodeCompletion
 {
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
   public CodeCompletion(TextEditor editor)
   {
     _editor = editor;
@@ -22,6 +26,18 @@ internal class CodeCompletion
   private CompletionWindow? _completionWindow;
 
   private void TextEntered(object sender, TextCompositionEventArgs e)
+  {
+    try
+    {
+      PrepareSuggestions(e);
+    }
+    catch (Exception exception)
+    {
+      Logger.Error(exception);
+    }
+  }
+
+  private void PrepareSuggestions(TextCompositionEventArgs e)
   {
     if (string.IsNullOrWhiteSpace(e.TextComposition.Text))
     {
@@ -37,7 +53,7 @@ internal class CodeCompletion
     }
 
     var text = _editor.Document.GetText(currentLine);
-    var indexInLine = caretOffset - currentLine.Offset;
+    var indexInLine = Math.Min(caretOffset - currentLine.Offset, text.Length);
     if (indexInLine < text.Length && !char.IsWhiteSpace(text[indexInLine]))
     {
       return;
@@ -107,7 +123,6 @@ internal class CodeCompletion
     {
       if (LineParser.TryPickupName(_editor.Document.GetText(line)) is { } name)
       {
-        // TODO cache
         yield return new CompletionCandidate(name);
       }
     }
@@ -119,7 +134,6 @@ internal class CodeCompletion
     {
       if (LineParser.TryHomeName(_editor.Document.GetText(line)) is { } name)
       {
-        // TODO cache
         yield return new CompletionCandidate(name);
       }
     }

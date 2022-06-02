@@ -1,5 +1,8 @@
 ﻿using System.Linq;
 using System.Windows;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Orditor.Model;
 using Orditor.Orchestration;
 using Orditor.Properties;
@@ -14,13 +17,15 @@ internal partial class MainWindow
   {
     InitializeComponent();
 
+    SetupLogging();
+
     var file = new FileManager(Settings.Default);
     if (!file.Valid)
     {
       Application.Current.Shutdown();
       return;
     }
-    
+
     var annotations = new Annotations();
     var parser = new PickupGraphParser(annotations);
     InitializeLocations(parser, file);
@@ -45,6 +50,14 @@ internal partial class MainWindow
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
     InventoryView.DataContext = inventory;
+  }
+
+  private static void SetupLogging()
+  {
+    var config = new LoggingConfiguration();
+    var logfile = new FileTarget("logfile") { FileName = "${specialfolder:folder=LocalApplicationData}/Orditor/log.txt" };
+    config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+    LogManager.Configuration = config;
   }
 
   private static void InitializeLocations(PickupGraphParser parser, FileManager file)
