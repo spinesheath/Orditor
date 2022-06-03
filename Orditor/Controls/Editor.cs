@@ -97,6 +97,14 @@ internal class Editor : Decorator, ISelectionListener
       {
         e.Handled = true;
       }
+      else if (e.Key == Key.Left && _refactorings.MoveLeft())
+      {
+        e.Handled = true;
+      }
+      else if (e.Key == Key.Right && _refactorings.MoveRight())
+      {
+        e.Handled = true;
+      }
     }
 
     base.OnKeyDown(e);

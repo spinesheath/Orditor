@@ -97,7 +97,7 @@ internal static class LineParser
     return match.Success ? new Requirements(match.Groups[0].Value) : null;
   }
 
-  private static string StripComment(string line)
+  public static string StripComment(string line)
   {
     var i = line.IndexOf("--", StringComparison.Ordinal);
     return i < 0 ? line : line[..i];
