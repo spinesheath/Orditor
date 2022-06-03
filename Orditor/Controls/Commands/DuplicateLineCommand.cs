@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
 
 namespace Orditor.Controls.Commands;
 
-internal class DuplicateLineCommand : ICommand
+internal class DuplicateLineCommand : BaseCommand
 {
-  private readonly TextEditor _editor;
-
   public DuplicateLineCommand(TextEditor editor)
   {
     _editor = editor;
   }
 
-  public bool CanExecute(object? parameter) => true;
-
-  public void Execute(object? parameter)
+  protected override void Execute()
   {
     var offset = _editor.CaretOffset;
     var line = _editor.Document.GetLineByOffset(offset);
@@ -25,5 +20,5 @@ internal class DuplicateLineCommand : ICommand
     _editor.CaretOffset = offset + toInsert.Length;
   }
 
-  public event EventHandler? CanExecuteChanged { add { } remove { } }
+  private readonly TextEditor _editor;
 }
