@@ -8,23 +8,23 @@ internal static class LineParser
 {
   public static bool IsConnection(string line)
   {
-    return ConnectionRegex.Match(line).Success;
+    return ConnectionRegex.Match(StripComment(line)).Success;
   }
 
   public static bool IsHome(string line)
   {
-    return HomeRegex.Match(line).Success;
+    return HomeRegex.Match(StripComment(line)).Success;
   }
 
   public static bool IsHome(string line, string home)
   {
-    var match = HomeRegex.Match(line);
+    var match = HomeRegex.Match(StripComment(line));
     return match.Success && match.Groups[1].Value == home;
   }
 
   public static bool IsPickupReference(string line)
   {
-    return PickupReferenceRegex.Match(line).Success;
+    return PickupReferenceRegex.Match(StripComment(line)).Success;
   }
 
   public static string SetLocation(string text, string home, int x, int y)
@@ -35,13 +35,13 @@ internal static class LineParser
 
   public static string? TryConnection(string line)
   {
-    var match = ConnectionRegex.Match(line);
+    var match = ConnectionRegex.Match(StripComment(line));
     return match.Success ? match.Groups[1].Value : null;
   }
 
   public static Home? TryHome(string line, Annotations annotations, IdGenerator homeIdGenerator)
   {
-    var match = HomeRegex.Match(line);
+    var match = HomeRegex.Match(StripComment(line));
     if (!match.Success)
     {
       return null;
@@ -57,13 +57,13 @@ internal static class LineParser
 
   public static string? TryHomeName(string line)
   {
-    var match = HomeRegex.Match(line);
+    var match = HomeRegex.Match(StripComment(line));
     return match.Success ? match.Groups[1].Value : null;
   }
 
   public static Pickup? TryPickupDefinition(string line, IdGenerator idGenerator)
   {
-    var match = PickupDefinitionRegex.Match(line);
+    var match = PickupDefinitionRegex.Match(StripComment(line));
     if (!match.Success)
     {
       return null;
@@ -81,20 +81,26 @@ internal static class LineParser
 
   public static string? TryPickupName(string line)
   {
-    var match = PickupDefinitionRegex.Match(line);
+    var match = PickupDefinitionRegex.Match(StripComment(line));
     return match.Success ? match.Groups[1].Value : null;
   }
 
   public static string? TryPickupReference(string line)
   {
-    var match = PickupReferenceRegex.Match(line);
+    var match = PickupReferenceRegex.Match(StripComment(line));
     return match.Success ? match.Groups[1].Value : null;
   }
 
   public static Requirements? TryRequirement(string line)
   {
-    var match = RequirementRegex.Match(line);
+    var match = RequirementRegex.Match(StripComment(line));
     return match.Success ? new Requirements(match.Groups[0].Value) : null;
+  }
+
+  private static string StripComment(string line)
+  {
+    var i = line.IndexOf("--", StringComparison.Ordinal);
+    return i < 0 ? line : line[..i];
   }
 
   //loc: FirstPickup 92 -227 EX15 0 Glades
