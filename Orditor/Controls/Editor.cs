@@ -167,7 +167,6 @@ internal class Editor : Decorator, ISelectionListener
     if (_textEditor.Text != Text)
     {
       _textEditor.Text = Text;
-      _foldingStrategy.UpdateFoldings(_textEditor.Document);
     }
   }
 
@@ -179,5 +178,6 @@ internal class Editor : Decorator, ISelectionListener
   private void OnTextChangedInternal(object? sender, EventArgs e)
   {
     Text = _textEditor.Text;
+    _foldingStrategy.UpdateFoldings(_textEditor.Document);
   }
 }
