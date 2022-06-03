@@ -92,7 +92,7 @@ internal class Refactorings
 
     var withoutComments = LineParser.StripComment(text);
     var offsetInLine = offset - line.Offset;
-    if (offsetInLine >= withoutComments.Length)
+    if (offsetInLine > withoutComments.Length)
     {
       return false;
     }
@@ -109,13 +109,27 @@ internal class Refactorings
         tokenIndexAtCaret = tokens.Count;
       }
 
-      if (char.IsWhiteSpace(text[i]) != currentlyWhitespace)
+      var isWhiteSpace = char.IsWhiteSpace(text[i]);
+      if (isWhiteSpace != currentlyWhitespace)
       {
         currentlyWhitespace = !currentlyWhitespace;
         tokens.Add(text.Substring(tokenStartIndex, i - tokenStartIndex));
         tokenOffsets.Add(tokenStartIndex);
         tokenStartIndex = i;
+
+        if (i == offsetInLine && !isWhiteSpace)
+        {
+          tokenIndexAtCaret = tokens.Count;
+        }
       }
+    }
+
+    tokens.Add(text[tokenStartIndex..]);
+    tokenOffsets.Add(tokenStartIndex);
+
+    if (offsetInLine == withoutComments.Length)
+    {
+      tokenIndexAtCaret = tokens.Count - 1;
     }
 
     if (tokenIndexAtCaret < 5 || string.IsNullOrWhiteSpace(tokens[tokenIndexAtCaret]))
@@ -162,14 +176,23 @@ internal class Refactorings
         tokenIndexAtCaret = tokens.Count;
       }
 
-      if (char.IsWhiteSpace(text[i]) != currentlyWhitespace)
+      var isWhiteSpace = char.IsWhiteSpace(text[i]);
+      if (isWhiteSpace != currentlyWhitespace)
       {
         currentlyWhitespace = !currentlyWhitespace;
         tokens.Add(text.Substring(tokenStartIndex, i - tokenStartIndex));
         tokenOffsets.Add(tokenStartIndex);
         tokenStartIndex = i;
+
+        if (i == offsetInLine && !isWhiteSpace)
+        {
+          tokenIndexAtCaret = tokens.Count;
+        }
       }
     }
+
+    tokens.Add(text[tokenStartIndex..]);
+    tokenOffsets.Add(tokenStartIndex);
 
     if (tokenIndexAtCaret < 3 || tokenIndexAtCaret >= tokens.Count - 2 || string.IsNullOrWhiteSpace(tokens[tokenIndexAtCaret]))
     {

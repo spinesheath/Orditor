@@ -29,7 +29,6 @@ internal class Editor : Decorator, ISelectionListener
     _ = new CodeCompletion(_textEditor);
     _ = SearchPanel.Install(_textEditor);
     _refactorings = new Refactorings(_textEditor);
-    _textEditor.InputBindings.Add(InputBindingFactory.DuplicateLine(_textEditor));
   }
 
   public Messenger Messenger
@@ -107,6 +106,11 @@ internal class Editor : Decorator, ISelectionListener
       {
         e.Handled = true;
       }
+    }
+    else if ((Keyboard.Modifiers & ctrlAltShift) == ModifierKeys.Control && e.Key == Key.D)
+    {
+      new DuplicateLineCommand(_textEditor).Execute(null);
+      e.Handled = true;
     }
 
     base.OnKeyDown(e);
