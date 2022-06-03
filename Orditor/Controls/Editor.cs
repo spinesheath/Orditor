@@ -9,6 +9,7 @@ using ICSharpCode.AvalonEdit.Folding;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.AvalonEdit.Search;
+using Orditor.Controls.Commands;
 using Orditor.Model;
 using Orditor.Orchestration;
 
@@ -28,6 +29,7 @@ internal class Editor : Decorator, ISelectionListener
     _ = new CodeCompletion(_textEditor);
     _ = SearchPanel.Install(_textEditor);
     _refactorings = new Refactorings(_textEditor);
+    _textEditor.InputBindings.Add(InputBindingFactory.DuplicateLine(_textEditor));
   }
 
   public Messenger Messenger
