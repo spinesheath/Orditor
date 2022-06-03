@@ -115,7 +115,7 @@ internal static class LineParser
 
   private static Regex HomeReplacementRegex(string home)
   {
-    return new Regex($@"^(\s*home:\s*{home})(\s+[-\d]+\s+[-\d]+)?(\s+.*)?$", RegexOptions.Multiline);
+    return new Regex($@"^(\s*home:\s*{home})(\s+-?\d+\s+-?\d+)?(\s+.*)?$", RegexOptions.Multiline);
   }
 
   private static int ToInt(Capture capture, int fallback = int.MaxValue)

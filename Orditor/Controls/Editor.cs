@@ -27,6 +27,7 @@ internal class Editor : Decorator, ISelectionListener
     _textEditor.SyntaxHighlighting = LoadHighlighting();
     _ = new CodeCompletion(_textEditor);
     _ = SearchPanel.Install(_textEditor);
+    _refactorings = new Refactorings(_textEditor);
   }
 
   public Messenger Messenger
@@ -76,12 +77,26 @@ internal class Editor : Decorator, ISelectionListener
   private readonly FoldingStrategy _foldingStrategy;
 
   private readonly TextEditor _textEditor = new();
+  private readonly Refactorings _refactorings;
 
   protected override void OnPreviewKeyDown(KeyEventArgs e)
   {
     if (e.Key != Key.Up && e.Key != Key.Down)
     {
       _foldingStrategy.Unfold(_textEditor.CaretOffset);
+    }
+
+    var ctrlAltShift = ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift;
+    if ((Keyboard.Modifiers & ctrlAltShift) == ctrlAltShift)
+    {
+      if (e.Key == Key.Up && _refactorings.MoveUp())
+      {
+        e.Handled = true;
+      }
+      else if (e.Key == Key.Down && _refactorings.MoveDown())
+      {
+        e.Handled = true;
+      }
     }
 
     base.OnKeyDown(e);

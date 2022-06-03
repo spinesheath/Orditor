@@ -30,29 +30,35 @@ internal class Requirements
           other.Add(part);
         }
       }
-      else
+      else if (p.Length == 2)
       {
+        var count = ParsePositiveInteger(p[1]);
         if (p[0] == "Health")
         {
-          Health += Convert.ToInt32(p[1]);
+          Health += count;
         }
         else if (p[0] == "Energy")
         {
-          Energy += Convert.ToInt32(p[1]);
+          Energy += count;
         }
         else if (p[0] == "Ability")
         {
-          Ability += Convert.ToInt32(p[1]);
+          Ability += count;
         }
         else if (p[0] == "Keystone")
         {
-          Keystone += Convert.ToInt32(p[1]);
+          Keystone += count;
         }
       }
     }
 
     Skills = skills;
     Other = other;
+  }
+
+  private static int ParsePositiveInteger(string value)
+  {
+    return int.TryParse(value, out var n) ? Math.Max(n, 0) : 0;
   }
 
   public int Ability { get; }
