@@ -13,7 +13,7 @@ internal class PickupGraphParser
 
   public PickupGraph Parse(string text)
   {
-    var lines = text.Split(Environment.NewLine).Select(RemoveCommentAndTrim).ToList();
+    var lines = text.Split(Environment.NewLine).Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
     return ReadGraph(lines);
   }
 
