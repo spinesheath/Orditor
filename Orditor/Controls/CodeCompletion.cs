@@ -59,6 +59,12 @@ internal class CodeCompletion
       return;
     }
 
+    if (indexInLine > 0 && char.IsDigit(text[indexInLine - 1]))
+    {
+      Hide();
+      return;
+    }
+
     var leadingTabs = -1;
     var previousWhitespaceIndex = -1;
     var segmentIndex = 0;

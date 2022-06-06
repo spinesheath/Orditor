@@ -14,6 +14,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
     _graph = graph;
     SelectOrigin = new DelegateCommand(ExecuteSelectOrigin, () => !_selectingOrigin);
     Homes = Observable(ReadHomes());
+    UpdateSummary();
   }
 
   public ObservableCollection<string> Homes { get; }
@@ -33,12 +34,15 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
 
   public DelegateCommand SelectOrigin { get; }
 
+  public string Summary { get; private set; } = string.Empty;
+
   public void GraphChanged()
   {
     var names = ReadHomes();
     var selection = Origin;
     Homes.Update(names);
     RestoreSelection(selection);
+    UpdateSummary();
   }
 
   public void Selected(Home home)
@@ -57,6 +61,12 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
 
   private string _origin = "SunkenGladesRunaway";
   private bool _selectingOrigin;
+
+  private void UpdateSummary()
+  {
+    Summary = $"{_graph.ReachablePickups.Count()} / {_graph.AllPickups.Count()}";
+    OnPropertyChanged(nameof(Summary));
+  }
 
   private void RestoreSelection(string selection)
   {

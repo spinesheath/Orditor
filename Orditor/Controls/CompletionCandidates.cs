@@ -60,7 +60,7 @@ internal static class CompletionCandidates
     new("expert-lure", "expert", "lure", "el"),
     new("expert-abilities", "expert", "abilities", "ability", "ea"),
     new("dbash", "expert", "bash", "eb"),
-    new("master-core", "master", "core"),
+    new("master-core", "master", "core", "mc"),
     new("master-dboost", "master", "dboost", "damage", "md"),
     new("master-lure", "master", "lure", "ml"),
     new("master-abilities", "master", "abilities", "ability", "ma"),

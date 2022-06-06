@@ -158,5 +158,7 @@
             <ComboBox ItemsSource="{Binding OriginSelector.Homes}" 
                       SelectedItem="{Binding OriginSelector.Origin}"/>
         </DockPanel>
+
+        <TextBlock Text="{Binding OriginSelector.Summary}" DockPanel.Dock="Top" Foreground="LightGray"/>
     </DockPanel>
 </UserControl>
