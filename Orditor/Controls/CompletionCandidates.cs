@@ -35,10 +35,7 @@ internal static class CompletionCandidates
     new("Energy=", "ec"),
     new("Ability=", "ac"),
     new("Keystone=", "ks"),
-    new("Mapstone", "ms"),
-    new("Ability=3", "airdash", "ad", "burn"),
-    new("Ability=6", "chargedash", "cd", "rocketjump", "meteorkick"),
-    new("Ability=12", "triplejump", "tj", "ultradefense", "defense", "ud")
+    new("Mapstone", "ms")
   };
 
   public static readonly CompletionCandidate[] Connection =
@@ -49,22 +46,10 @@ internal static class CompletionCandidates
 
   public static readonly CompletionCandidate[] Logic =
   {
-    new("casual-core", "casual", "core", "cc"),
-    new("casual-dboost", "casual", "dboost", "damage", "cd"),
-    new("standard-core", "standard", "core", "sc"),
-    new("standard-dboost", "standard", "dboost", "damage", "sd"),
-    new("standard-lure", "standard", "lure", "sl"),
-    new("standard-abilities", "standard", "abilities", "ability", "sa"),
-    new("expert-core", "expert", "core", "ec"),
-    new("expert-dboost", "expert", "dboost", "damage", "ed"),
-    new("expert-lure", "expert", "lure", "el"),
-    new("expert-abilities", "expert", "abilities", "ability", "ea"),
-    new("dbash", "expert", "bash", "eb"),
-    new("master-core", "master", "core", "mc"),
-    new("master-dboost", "master", "dboost", "damage", "md"),
-    new("master-lure", "master", "lure", "ml"),
-    new("master-abilities", "master", "abilities", "ability", "ma"),
-    new("gjump", "master", "grenade"),
+    new("casual"),
+    new("standard"),
+    new("expert"),
+    new("master"),
     new("glitched"),
     new("timed-level", "tl"),
     new("insane")

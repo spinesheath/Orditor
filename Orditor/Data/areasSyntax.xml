@@ -14,6 +14,19 @@
 			</RuleSet>
 		</Span>
 		<Keywords foreground="Blue">
+			<Word>casual</Word>
+			<Word>standard</Word>
+			<Word>expert</Word>
+			<Word>master</Word>
+			<Word>glitched</Word>
+			<Word>timed-level</Word>
+			<Word>insane</Word>
+			<Word>loc:</Word>
+			<Word>home:</Word>
+			<Word>conn:</Word>
+			<Word>pickup:</Word>
+		</Keywords>
+		<Keywords foreground="Red">
 			<Word>casual-core</Word>
 			<Word>casual-dboost</Word>
 			<Word>standard-core</Word>
@@ -30,13 +43,6 @@
 			<Word>master-lure</Word>
 			<Word>master-abilities</Word>
 			<Word>gjump</Word>
-			<Word>glitched</Word>
-			<Word>timed-level</Word>
-			<Word>insane</Word>
-			<Word>loc:</Word>
-			<Word>home:</Word>
-			<Word>conn:</Word>
-			<Word>pickup:</Word>
 		</Keywords>
 	</RuleSet>
 </SyntaxDefinition>

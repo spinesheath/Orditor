@@ -7,6 +7,10 @@ public static class Coordinates
 {
   public static Vector GameToMap(int x, int y)
   {
+    if (x == int.MaxValue)
+      x = 700;
+    if (y == int.MaxValue)
+      y = 700;
     return new Vector((x - GameTopLeft.X) * ScaleX, (y - GameTopLeft.Y) * ScaleY) + MapTopLeft;
   }
 
