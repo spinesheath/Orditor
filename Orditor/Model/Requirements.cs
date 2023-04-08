@@ -10,7 +10,6 @@ internal class Requirements
   public Requirements(string raw)
   {
     var parts = raw.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
-    Logic = parts[0];
 
     var skills = new List<Skill>();
     var other = new List<string>();
@@ -71,8 +70,6 @@ internal class Requirements
 
   public int Keystone { get; }
 
-  public string Logic { get; }
-
   public IReadOnlyCollection<string> Other { get; }
 
   public IReadOnlyCollection<Skill> Skills { get; }
@@ -80,8 +77,6 @@ internal class Requirements
   public override string ToString()
   {
     var sb = new StringBuilder();
-    sb.Append(Logic);
-    sb.Append(' ');
 
     if (Health > 0)
     {

@@ -91,11 +91,6 @@ internal class Inventory
       }
     }
 
-    if (!HasLogic(requirement))
-    {
-      return false;
-    }
-
     if (!requirement.Other.All(HasOther))
     {
       return false;
@@ -127,6 +122,30 @@ internal class Inventory
   {
     switch (key.ToLowerInvariant())
     {
+      case "free":
+        return true;
+      case "casual":
+        return Casual;
+      case "standard":
+        return Standard;
+      case "expert":
+        return Expert;
+      case "dbash":
+        return Dbash;
+      case "master":
+        return Master;
+      case "gjump":
+        return Gjump;
+      case "glitched":
+        return Glitched;
+      case "timedlevel":
+        return TimedLevel;
+      case "insane":
+        return Insane;
+      case "dboost":
+        return Dboost;
+      case "lure":
+        return Lure;
       case "tpsorrow":
         return TpSorrow;
       case "tpgrotto":
@@ -171,40 +190,22 @@ internal class Inventory
         return Dash && AbilityCells >= 6;
       case "doublebash":
         return Bash && Dbash;
+      case "triplejump":
+        return DoubleJump && AbilityCells >= 12;
+      case "ultradefense":
+        return AbilityCells >= 12;
+      case "grenadejump":
+        return Climb && ChargeJump && Grenade;
+      case "bashgrenade":
+        return Bash && Grenade;
+      case "chargeflameburn":
+        return ChargeFlame && AbilityCells >= 3;
+      case "rekindle":
+        return AbilityCells >= 3;
+      case "mapstone":
+        return MapFragments >= 1;
     }
 
     return false;
-  }
-
-  private bool HasLogic(Requirements requirement)
-  {
-    var logic = requirement.Logic.Replace("-", "").ToLowerInvariant();
-    switch (logic)
-    {
-      case "casual":
-        return Casual;
-      case "standard":
-        return Standard;
-      case "expert":
-        return Expert;
-      case "dbash":
-        return Dbash;
-      case "master":
-        return Master;
-      case "gjump":
-        return Gjump;
-      case "glitched":
-        return Glitched;
-      case "timedlevel":
-        return TimedLevel;
-      case "insane":
-        return Insane;
-      case "dboost":
-        return Dboost;
-      case "lure":
-        return Lure;
-    }
-
-    return true;
   }
 }
