@@ -21,6 +21,10 @@
 			<Word>glitched</Word>
 			<Word>timed-level</Word>
 			<Word>insane</Word>
+			<Word>dboost</Word>
+			<Word>dbash</Word>
+			<Word>lure</Word>
+			<Word>gjump</Word>
 			<Word>loc:</Word>
 			<Word>home:</Word>
 			<Word>conn:</Word>
@@ -37,12 +41,10 @@
 			<Word>expert-dboost</Word>
 			<Word>expert-lure</Word>
 			<Word>expert-abilities</Word>
-			<Word>dbash</Word>
 			<Word>master-core</Word>
 			<Word>master-dboost</Word>
 			<Word>master-lure</Word>
 			<Word>master-abilities</Word>
-			<Word>gjump</Word>
 		</Keywords>
 	</RuleSet>
 </SyntaxDefinition>

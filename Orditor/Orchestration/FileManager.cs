@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 using Orditor.Properties;
 
@@ -9,6 +10,18 @@ internal class FileManager
   public FileManager(Settings settings)
   {
     _settings = settings;
+    var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+    if (directoryName != null)
+    {
+      var localAreasPath = Path.Combine(directoryName, "areas.ori");
+      if (File.Exists(localAreasPath))
+      {
+        _areasOriPath = localAreasPath;
+        Valid = true;
+        return;
+      }
+    }
+
     if (File.Exists(settings.AreasOriPath))
     {
       Valid = true;
@@ -47,9 +60,10 @@ internal class FileManager
 
   public string Areas
   {
-    get => File.ReadAllText(_settings.AreasOriPath);
-    set => File.WriteAllText(_settings.AreasOriPath, value);
+    get => File.ReadAllText(_areasOriPath ?? _settings.AreasOriPath);
+    set => File.WriteAllText(_areasOriPath ?? _settings.AreasOriPath, value);
   }
 
   private readonly Settings _settings;
+  private readonly string? _areasOriPath;
 }

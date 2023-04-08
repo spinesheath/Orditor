@@ -8,20 +8,17 @@ internal class Inventory
 {
   public int AbilityCells { get; set; }
   public bool Bash { get; set; }
-  public bool CasualCore { get; set; }
-  public bool CasualDboost { get; set; }
+  public bool Casual { get; set; }
   public bool ChargeFlame { get; set; }
   public bool ChargeJump { get; set; }
   public bool CleanWater { get; set; }
   public bool Climb { get; set; }
   public bool Dash { get; set; }
   public bool Dbash { get; set; }
+  public bool Dboost { get; set; }
   public bool DoubleJump { get; set; }
   public int Energy { get; set; }
-  public bool ExpertAbilities { get; set; }
-  public bool ExpertCore { get; set; }
-  public bool ExpertDboost { get; set; }
-  public bool ExpertLure { get; set; }
+  public bool Expert { get; set; }
   public bool ForlornKey { get; set; }
   public bool GinsoKey { get; set; }
   public bool Gjump { get; set; }
@@ -32,17 +29,12 @@ internal class Inventory
   public bool HoruKey { get; set; }
   public bool Insane { get; set; }
   public int Keystones { get; set; }
+  public bool Lure { get; set; }
   public int MapFragments { get; set; }
-  public bool MasterAbilities { get; set; }
-  public bool MasterCore { get; set; }
-  public bool MasterDboost { get; set; }
-  public bool MasterLure { get; set; }
+  public bool Master { get; set; }
   public bool OpenDungeons { get; set; }
   public bool OpenWorld { get; set; }
-  public bool StandardAbilities { get; set; }
-  public bool StandardCore { get; set; }
-  public bool StandardDboost { get; set; }
-  public bool StandardLure { get; set; }
+  public bool Standard { get; set; }
   public bool Stomp { get; set; }
   public bool TimedLevel { get; set; }
   public bool TpBlackroot { get; set; }
@@ -68,12 +60,8 @@ internal class Inventory
     inventory.MapFragments = 11;
     inventory.Health = 15;
     inventory.Energy = 15;
-    inventory.CasualCore = true;
-    inventory.CasualDboost = true;
-    inventory.StandardCore = true;
-    inventory.StandardDboost = true;
-    inventory.StandardAbilities = true;
-    inventory.StandardLure = true;
+    inventory.Casual = true;
+    inventory.Standard = true;
     inventory.OpenDungeons = true;
     inventory.WallJump = true;
     inventory.ChargeFlame = true;
@@ -177,9 +165,15 @@ internal class Inventory
         return OpenDungeons;
       case "openworld":
         return OpenWorld;
+      case "airdash":
+        return Dash && AbilityCells >= 3;
+      case "chargedash":
+        return Dash && AbilityCells >= 6;
+      case "doublebash":
+        return Bash && Dbash;
     }
 
-    return true;
+    return false;
   }
 
   private bool HasLogic(Requirements requirement)
@@ -187,36 +181,16 @@ internal class Inventory
     var logic = requirement.Logic.Replace("-", "").ToLowerInvariant();
     switch (logic)
     {
-      case "casualcore":
-        return CasualCore;
-      case "casualdboost":
-        return CasualDboost;
-      case "standardcore":
-        return StandardCore;
-      case "standarddboost":
-        return StandardDboost;
-      case "standardlure":
-        return StandardLure;
-      case "standardabilities":
-        return StandardAbilities;
-      case "expertcore":
-        return ExpertCore;
-      case "expertdboost":
-        return ExpertDboost;
-      case "expertlure":
-        return ExpertLure;
-      case "expertabilities":
-        return ExpertAbilities;
+      case "casual":
+        return Casual;
+      case "standard":
+        return Standard;
+      case "expert":
+        return Expert;
       case "dbash":
         return Dbash;
-      case "mastercore":
-        return MasterCore;
-      case "masterdboost":
-        return MasterDboost;
-      case "masterlure":
-        return MasterLure;
-      case "masterabilities":
-        return MasterAbilities;
+      case "master":
+        return Master;
       case "gjump":
         return Gjump;
       case "glitched":
@@ -225,6 +199,10 @@ internal class Inventory
         return TimedLevel;
       case "insane":
         return Insane;
+      case "dboost":
+        return Dboost;
+      case "lure":
+        return Lure;
     }
 
     return true;

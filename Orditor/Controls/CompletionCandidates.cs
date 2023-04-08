@@ -9,12 +9,15 @@ internal static class CompletionCandidates
     new("ChargeFlame", "flame", "cf"),
     new("DoubleJump", "jump", "dj"),
     new("Bash"),
+    new("DoubleBash", "db"),
     new("Stomp"),
     new("Glide"),
     new("Climb"),
     new("ChargeJump", "jump", "cj"),
     new("Grenade"),
     new("Dash"),
+    new("AirDash", "ad"),
+    new("ChargeDash", "cd"),
     new("Water", "clean"),
     new("Wind", "restored"),
     new("GinsoKey", "water", "vein", "wv"),
@@ -52,6 +55,10 @@ internal static class CompletionCandidates
     new("master"),
     new("glitched"),
     new("timed-level", "tl"),
-    new("insane")
+    new("insane"),
+    new("dboost"),
+    new("lure"),
+    new("gjump"),
+    new("dbash")
   };
 }

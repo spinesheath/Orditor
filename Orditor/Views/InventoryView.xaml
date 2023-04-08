@@ -66,40 +66,10 @@
                       ItemTemplate="{StaticResource BooleanItemTemplate}"
                       ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
-        <c:LogicSetButton DockPanel.Dock="Top"
-                          Margin="2"
-                          ItemsSource="{Binding CasualLogicSets}"
-                          ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          IsChecked="{Binding Casual}"
-                          Title="C"/>
-
-        <c:LogicSetButton DockPanel.Dock="Top"
-                          Margin="2"
-                          ItemsSource="{Binding StandardLogicSets}"
-                          ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          IsChecked="{Binding Standard}"
-                          Title="S"/>
-
-        <c:LogicSetButton DockPanel.Dock="Top"
-                          Margin="2"
-                          ItemsSource="{Binding ExpertLogicSets}"
-                          ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          IsChecked="{Binding Expert}"
-                          Title="E"/>
-
-        <c:LogicSetButton DockPanel.Dock="Top"
-                          Margin="2"
-                          ItemsSource="{Binding MasterLogicSets}"
-                          ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          IsChecked="{Binding Master}"
-                          Title="M"/>
-
-        <c:LogicSetButton DockPanel.Dock="Top"
-                          Margin="2"
-                          ItemsSource="{Binding OtherLogicSets}"
-                          ItemTemplate="{StaticResource BooleanItemTemplate}"
-                          IsChecked="{Binding Other}"
-                          Title="O"/>
+        <ItemsControl ItemsSource="{Binding LogicSets}" 
+                      DockPanel.Dock="Top"
+                      ItemTemplate="{StaticResource BooleanItemTemplate}"
+                      ItemsPanel="{StaticResource UniformItemsPanel}"/>
 
         <ItemsControl ItemsSource="{Binding Teleporters}" 
                       DockPanel.Dock="Top"
