@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Orditor.Model;
@@ -14,7 +13,7 @@ internal class Requirements
     var skills = new List<Skill>();
     var other = new List<string>();
 
-    foreach (var part in parts.Skip(1))
+    foreach (var part in parts)
     {
       var p = part.Split('=');
       if (p.Length == 1)

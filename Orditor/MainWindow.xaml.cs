@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using NLog;
 using NLog.Config;
@@ -11,7 +12,7 @@ using Orditor.ViewModels;
 
 namespace Orditor;
 
-internal partial class MainWindow
+internal partial class MainWindow : IInventoryListener
 {
   public MainWindow()
   {
@@ -40,16 +41,18 @@ internal partial class MainWindow
     messenger.Listen((IInventoryListener)graph);
 
     var world = new WorldViewModel(graph, messenger, areas);
+    var originSelector = new OriginSelectorViewModel(graph, Settings.Default.Origin);
 
-    var originSelector = new OriginSelectorViewModel(graph);
     messenger.Listen((ISelectionListener)originSelector);
     messenger.Listen((IRestrictedGraphListener)originSelector);
+    messenger.Listen(this);
 
-    var inventory = new InventoryViewModel(messenger, originSelector);
+    var inventory = LoadInventory();
+    var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
 
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
-    InventoryView.DataContext = inventory;
+    InventoryView.DataContext = inventoryViewModel;
   }
 
   private static void SetupLogging()
@@ -84,5 +87,23 @@ internal partial class MainWindow
     }
 
     return current;
+  }
+
+  void IInventoryListener.Changed(Inventory inventory, string origin)
+  {
+    Settings.Default.Inventory = JsonSerializer.Serialize(inventory);
+    Settings.Default.Origin = origin;
+    Settings.Default.Save();
+  }
+
+  private static Inventory LoadInventory()
+  {
+    Inventory? inventory = null;
+    if (!string.IsNullOrEmpty(Settings.Default.Inventory))
+    {
+      inventory = JsonSerializer.Deserialize<Inventory>(Settings.Default.Inventory);
+    }
+
+    return inventory ?? Inventory.Default();
   }
 }

@@ -9,11 +9,12 @@ namespace Orditor.ViewModels;
 
 internal class OriginSelectorViewModel : NotificationObject, ISelectionListener, IRestrictedGraphListener
 {
-  public OriginSelectorViewModel(RestrictedGraph graph)
+  public OriginSelectorViewModel(RestrictedGraph graph, string origin)
   {
     _graph = graph;
     SelectOrigin = new DelegateCommand(ExecuteSelectOrigin, () => !_selectingOrigin);
     Homes = Observable(ReadHomes());
+    RestoreSelection(origin);
     UpdateSummary();
   }
 
@@ -36,7 +37,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
 
   public string Summary { get; private set; } = string.Empty;
 
-  public void GraphChanged()
+  void IRestrictedGraphListener.GraphChanged()
   {
     var names = ReadHomes();
     var selection = Origin;
@@ -45,7 +46,7 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
     UpdateSummary();
   }
 
-  public void Selected(Home home)
+  void ISelectionListener.Selected(Home home)
   {
     if (!_selectingOrigin)
     {
@@ -57,9 +58,9 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
     SelectOrigin.RaiseCanExecuteChanged();
   }
 
+  private const string DefaultOrigin = "SunkenGladesRunaway";
   private readonly RestrictedGraph _graph;
-
-  private string _origin = "SunkenGladesRunaway";
+  private string _origin = DefaultOrigin;
   private bool _selectingOrigin;
 
   private void UpdateSummary()
@@ -74,9 +75,9 @@ internal class OriginSelectorViewModel : NotificationObject, ISelectionListener,
     {
       Origin = selection;
     }
-    else if (Homes.Contains("SunkenGladesRunaway"))
+    else if (Homes.Contains(DefaultOrigin))
     {
-      Origin = "SunkenGladesRunaway";
+      Origin = DefaultOrigin;
     }
     else
     {

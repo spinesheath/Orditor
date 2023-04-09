@@ -9,10 +9,10 @@ namespace Orditor.ViewModels;
 
 internal class InventoryViewModel : NotificationObject
 {
-  public InventoryViewModel(Messenger messenger, OriginSelectorViewModel originSelector)
+  public InventoryViewModel(Inventory inventory, Messenger messenger, OriginSelectorViewModel originSelector)
   {
     _messenger = messenger;
-    _inventory = Inventory.Default();
+    _inventory = inventory;
 
     OriginSelector = originSelector;
     Skills = Listen(Observable(SkillNames.Select(Boolean)));
