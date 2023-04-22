@@ -38,13 +38,13 @@ internal class Connection : Canvas
     set => SetValue(StrokeThicknessProperty, value);
   }
 
-  public static UIElement Bidirectional(Messenger messenger, RestrictedConnection connection)
+  public static UIElement Create(Messenger messenger, RestrictedConnection connection)
   {
-    return new Connection(messenger, connection.Location1, connection.Location2, false, connection.Traversable);
-  }
+    if (connection.Bidirectional)
+    {
+      return new Connection(messenger, connection.Location1, connection.Location2, false, connection.Traversable);
+    }
 
-  public static Connection Unidirectional(Messenger messenger, RestrictedConnection connection)
-  {
     var c = new Connection(messenger, connection.Location1, connection.Location2, true, connection.Traversable);
     c._line.StrokeDashArray = DashArray;
     return c;

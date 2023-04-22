@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,8 @@ namespace Orditor.Controls;
 [TemplatePart(Name = "PART_GraphCanvas", Type = typeof(Canvas))]
 internal class WorldDisplay : Control, IRestrictedGraphListener
 {
+  private static readonly ISet<string> HiddenHomes = new HashSet<string>{"TeleporterNetwork"};
+
   static WorldDisplay()
   {
     DefaultStyleKeyProperty.OverrideMetadata(typeof(WorldDisplay), new FrameworkPropertyMetadata(typeof(WorldDisplay)));
@@ -147,7 +150,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     {
       return;
     }
-
+    
     ClearMarkers();
     AddConnectionMarkers();
     AddHomeMarkers();
@@ -162,17 +165,15 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
     {
       return;
     }
-
+    
     foreach (var connection in Graph.ReachableConnections)
     {
-      if (connection.Bidirectional)
+      if (HiddenHomes.Contains(connection.Location1.Name) || HiddenHomes.Contains(connection.Location2.Name))
       {
-        _graphCanvas.Children.Add(Connection.Bidirectional(Messenger, connection));
+        continue;
       }
-      else
-      {
-        _graphCanvas.Children.Add(Connection.Unidirectional(Messenger, connection));
-      }
+
+      _graphCanvas.Children.Add(Connection.Create(Messenger, connection));
     }
   }
 
@@ -185,6 +186,11 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
 
     foreach (var home in Graph.ReachableHomes)
     {
+      if (HiddenHomes.Contains(home.Name))
+      {
+        continue;
+      }
+
       var isOrigin = Graph.Origin == home;
       var marker = CreateHomeMarker(home, Messenger, true, isOrigin);
       _graphCanvas.Children.Add(marker);
@@ -192,6 +198,11 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
 
     foreach (var home in Graph.UnreachableHomes)
     {
+      if (HiddenHomes.Contains(home.Name))
+      {
+        continue;
+      }
+
       var marker = CreateHomeMarker(home, Messenger, false, false);
       _graphCanvas.Children.Add(marker);
     }
