@@ -34,21 +34,21 @@ internal partial class MainWindow : IInventoryListener
     var messenger = new Messenger();
     var areas = new AreasOri(file, messenger);
     var areasEditor = new AreasEditorViewModel(areas, messenger);
-    messenger.Listen(areasEditor);
+    
+    var inventory = LoadInventory();
+    var origin = LoadOrigin();
 
-    var graph = new RestrictedGraph(areas, parser, messenger);
+    var graph = new RestrictedGraph(areas, parser, messenger, inventory, origin);
+    var world = new WorldViewModel(graph, messenger, areas);
+    var originSelector = new OriginSelectorViewModel(graph, origin);
+    var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
+
+    messenger.Listen(areasEditor);
     messenger.Listen((IAreasListener)graph);
     messenger.Listen((IInventoryListener)graph);
-
-    var world = new WorldViewModel(graph, messenger, areas);
-    var originSelector = new OriginSelectorViewModel(graph, Settings.Default.Origin);
-
     messenger.Listen((ISelectionListener)originSelector);
     messenger.Listen((IRestrictedGraphListener)originSelector);
     messenger.Listen(this);
-
-    var inventory = LoadInventory();
-    var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
 
     WorldView.DataContext = world;
     AreasEditorView.DataContext = areasEditor;
@@ -94,6 +94,11 @@ internal partial class MainWindow : IInventoryListener
     Settings.Default.Inventory = JsonSerializer.Serialize(inventory);
     Settings.Default.Origin = origin;
     Settings.Default.Save();
+  }
+
+  private static string LoadOrigin()
+  {
+    return string.IsNullOrEmpty(Settings.Default.Origin) ? "SunkenGladesRunaway" : Settings.Default.Origin;
   }
 
   private static Inventory LoadInventory()

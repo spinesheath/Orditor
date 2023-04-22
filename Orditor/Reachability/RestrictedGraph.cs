@@ -7,13 +7,14 @@ namespace Orditor.Reachability;
 
 internal class RestrictedGraph : IAreasListener, IInventoryListener
 {
-  public RestrictedGraph(AreasOri areas, PickupGraphParser parser, Messenger messenger)
+  public RestrictedGraph(AreasOri areas, PickupGraphParser parser, Messenger messenger, Inventory inventory, string origin)
   {
     _areas = areas;
     _parser = parser;
     _messenger = messenger;
     _graph = parser.Parse(areas.Text);
-    Origin = _graph.Homes.First(h => h.Name == "SunkenGladesRunaway");
+    _inventory = inventory;
+    Origin = _graph.Homes.First(h => h.Name == origin);
     ReachableHomes = Enumerable.Empty<Home>();
     UnreachableHomes = Enumerable.Empty<Home>();
     ReachablePickups = Enumerable.Empty<Pickup>();
@@ -56,7 +57,7 @@ internal class RestrictedGraph : IAreasListener, IInventoryListener
   private readonly PickupGraphParser _parser;
   private readonly Messenger _messenger;
   private PickupGraph _graph;
-  private Inventory _inventory = Inventory.Default();
+  private Inventory _inventory;
 
   private void Update(string? origin = null)
   {
