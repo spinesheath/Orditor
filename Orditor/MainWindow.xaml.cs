@@ -67,7 +67,32 @@ internal partial class MainWindow : IInventoryListener
   {
     var text = file.Areas;
     var graph = parser.Parse(text);
+
+    var unknownHomes = graph.Homes.Where(h => !PositionIsKnown(h));
+    foreach (var home in unknownHomes)
+    {
+      var neighbors = graph.GetConnectedHomes(home).Where(PositionIsKnown).OfType<Location>().Concat(graph.GetPickups(home)).ToList();
+      switch (neighbors.Count)
+      {
+        case 0:
+          continue;
+        case 1:
+          home.SetLocation(neighbors[0].X + 10, neighbors[0].Y);
+          break;
+        default:
+        {
+          home.SetLocation(neighbors.Sum(h => h.X) / neighbors.Count, neighbors.Sum(h => h.Y) / neighbors.Count);
+          break;
+        }
+      }
+    }
+
     SaveLocations(graph, text, file);
+  }
+
+  private static bool PositionIsKnown(Home home)
+  {
+    return home.X != int.MaxValue && home.Y != int.MaxValue;
   }
 
   private static void SaveLocations(PickupGraph graph, string text, FileManager file)
