@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using NLog;
@@ -14,45 +15,55 @@ namespace Orditor;
 
 internal partial class MainWindow : IInventoryListener
 {
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
   public MainWindow()
   {
     InitializeComponent();
 
     SetupLogging();
 
-    var file = new FileManager(Settings.Default);
-    if (!file.Valid)
+    try
     {
-      Application.Current.Shutdown();
-      return;
-    }
+      var file = new FileManager(Settings.Default);
+      if (!file.Valid)
+      {
+        Logger.Info("No valid areas file");
+        Application.Current.Shutdown();
+        return;
+      }
 
-    var annotations = new Annotations();
-    var parser = new PickupGraphParser(annotations);
-    InitializeLocations(parser, file);
+      var annotations = new Annotations();
+      var parser = new PickupGraphParser(annotations);
+      InitializeLocations(parser, file);
 
-    var messenger = new Messenger();
-    var areas = new AreasOri(file, messenger);
-    var areasEditor = new AreasEditorViewModel(areas, messenger);
+      var messenger = new Messenger();
+      var areas = new AreasOri(file, messenger);
+      var areasEditor = new AreasEditorViewModel(areas, messenger);
     
-    var inventory = LoadInventory();
-    var origin = LoadOrigin();
+      var inventory = LoadInventory();
+      var origin = LoadOrigin();
 
-    var graph = new RestrictedGraph(areas, parser, messenger, inventory, origin);
-    var world = new WorldViewModel(graph, messenger, areas);
-    var originSelector = new OriginSelectorViewModel(graph, origin);
-    var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
+      var graph = new RestrictedGraph(areas, parser, messenger, inventory, origin);
+      var world = new WorldViewModel(graph, messenger, areas);
+      var originSelector = new OriginSelectorViewModel(graph, origin);
+      var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
 
-    messenger.Listen(areasEditor);
-    messenger.Listen((IAreasListener)graph);
-    messenger.Listen((IInventoryListener)graph);
-    messenger.Listen((ISelectionListener)originSelector);
-    messenger.Listen((IRestrictedGraphListener)originSelector);
-    messenger.Listen(this);
+      messenger.Listen(areasEditor);
+      messenger.Listen((IAreasListener)graph);
+      messenger.Listen((IInventoryListener)graph);
+      messenger.Listen((ISelectionListener)originSelector);
+      messenger.Listen((IRestrictedGraphListener)originSelector);
+      messenger.Listen(this);
 
-    WorldView.DataContext = world;
-    AreasEditorView.DataContext = areasEditor;
-    InventoryView.DataContext = inventoryViewModel;
+      WorldView.DataContext = world;
+      AreasEditorView.DataContext = areasEditor;
+      InventoryView.DataContext = inventoryViewModel;
+    }
+    catch (Exception e)
+    {
+      Logger.Error(e);
+    }
   }
 
   private static void SetupLogging()
