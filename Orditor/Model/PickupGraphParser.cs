@@ -1,11 +1,15 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Orditor.Model;
 
 internal class PickupGraphParser
 {
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
   public PickupGraphParser(Annotations annotations)
   {
     _annotations = annotations;
@@ -13,11 +17,26 @@ internal class PickupGraphParser
 
   public PickupGraph Parse(string text)
   {
-    var lines = text.Split(Environment.NewLine).Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
-    return ReadGraph(lines);
+    var lines = SplitToLines(text).Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
+    var graph = ReadGraph(lines);
+    if (!graph.Homes.Any())
+    {
+      Logger.Error("Graph is empty. Input length: {0} Line count: {1} Newline: '{2}'", text.Length, lines.Count, Environment.NewLine);
+    }
+
+    return graph;
   }
 
   private readonly Annotations _annotations;
+
+  private static IEnumerable<string> SplitToLines(string text)
+  {
+    using var reader = new StringReader(text);
+    while (reader.ReadLine() is { } line)
+    {
+      yield return line;
+    }
+  }
 
   private static string RemoveCommentAndTrim(string line)
   {

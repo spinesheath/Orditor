@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Orditor.Model;
 using Orditor.Orchestration;
 
@@ -7,19 +8,37 @@ namespace Orditor.Reachability;
 
 internal class RestrictedGraph : IAreasListener, IInventoryListener
 {
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
   public RestrictedGraph(AreasOri areas, PickupGraphParser parser, Messenger messenger, Inventory inventory, string origin)
   {
     _areas = areas;
     _parser = parser;
     _messenger = messenger;
-    _graph = parser.Parse(areas.Text);
     _inventory = inventory;
-    Origin = _graph.Homes.First(h => h.Name == origin);
+
     ReachableHomes = Enumerable.Empty<Home>();
     UnreachableHomes = Enumerable.Empty<Home>();
     ReachablePickups = Enumerable.Empty<Pickup>();
     ReachableConnections = Enumerable.Empty<RestrictedConnection>();
     UnreachableConnections = Enumerable.Empty<RestrictedConnection>();
+
+    _graph = parser.Parse(areas.Text);
+    if (!_graph.Homes.Any())
+    {
+      Logger.Error("Graph is empty");
+      Origin = new Home("unknown", 0, 0, 0);
+      return;
+    }
+
+    var home = _graph.Homes.FirstOrDefault(h => h.Name == origin);
+    if (home == null)
+    {
+      Logger.Warn("Could not find {0} among {1} homes", origin, _graph.Homes.Count());
+      home = _graph.Homes.First();
+    }
+
+    Origin = home;
 
     Update();
   }
