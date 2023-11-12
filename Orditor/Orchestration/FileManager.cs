@@ -53,6 +53,8 @@ internal class FileManager
     set => File.WriteAllText(_areasOriPath ?? _settings.AreasOriPath, value);
   }
 
+  public string FilePath => _areasOriPath ?? _settings.AreasOriPath;
+
   public bool Valid { get; }
   private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
   private readonly string? _areasOriPath;

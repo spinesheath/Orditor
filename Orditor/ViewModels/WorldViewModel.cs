@@ -16,4 +16,5 @@ internal class WorldViewModel : NotificationObject
   public RestrictedGraph Graph { get; }
   public Messenger Messenger { get; }
   public AreasOri Areas { get; }
+  public string FilePath => Areas.FilePath;
 }

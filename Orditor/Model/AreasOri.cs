@@ -24,6 +24,8 @@ internal class AreasOri
       }
     }
   }
+  
+  public string FilePath => _file.FilePath;
 
   public void SetLocation(Home home, int x, int y)
   {
