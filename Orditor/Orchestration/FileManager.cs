@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using NLog;
 using Orditor.Properties;
 
 namespace Orditor.Orchestration;
@@ -18,6 +19,7 @@ internal class FileManager
       {
         _areasOriPath = localAreasPath;
         Valid = true;
+        Logger.Info("Attempting to load local file {0}", _areasOriPath);
         return;
       }
     }
@@ -25,6 +27,7 @@ internal class FileManager
     if (File.Exists(settings.AreasOriPath))
     {
       Valid = true;
+      Logger.Info("Attempting to load from setting {0}", settings.AreasOriPath);
       return;
     }
 
@@ -40,10 +43,9 @@ internal class FileManager
       settings.AreasOriPath = dialog.FileName;
       settings.Save();
       Valid = true;
+      Logger.Info("Attempting to load new {0}", settings.AreasOriPath);
     }
   }
-
-  public bool Valid { get; }
 
   public string Areas
   {
@@ -51,6 +53,8 @@ internal class FileManager
     set => File.WriteAllText(_areasOriPath ?? _settings.AreasOriPath, value);
   }
 
-  private readonly Settings _settings;
+  public bool Valid { get; }
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
   private readonly string? _areasOriPath;
+  private readonly Settings _settings;
 }

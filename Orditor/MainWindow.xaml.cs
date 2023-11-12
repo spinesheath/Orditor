@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Windows;
 using NLog;
@@ -14,8 +15,6 @@ namespace Orditor;
 
 internal partial class MainWindow : IInventoryListener
 {
-  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
   public MainWindow()
   {
     if (Settings.Default.UpgradeSettings)
@@ -38,13 +37,13 @@ internal partial class MainWindow : IInventoryListener
         Application.Current.Shutdown();
         return;
       }
-      
+
       var parser = new PickupGraphParser();
 
       var messenger = new Messenger();
       var areas = new AreasOri(file, messenger);
       var areasEditor = new AreasEditorViewModel(areas, messenger);
-    
+
       var inventory = LoadInventory();
       var origin = LoadOrigin();
 
@@ -66,16 +65,9 @@ internal partial class MainWindow : IInventoryListener
     }
     catch (Exception e)
     {
-      Logger.Error(e);
+      Logger.Fatal(e);
+      throw;
     }
-  }
-
-  private static void SetupLogging()
-  {
-    var config = new LoggingConfiguration();
-    var logfile = new FileTarget("logfile") { FileName = "${specialfolder:folder=LocalApplicationData}/Orditor/log.txt" };
-    config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
-    LogManager.Configuration = config;
   }
 
   void IInventoryListener.Changed(Inventory inventory, string origin)
@@ -83,6 +75,29 @@ internal partial class MainWindow : IInventoryListener
     Settings.Default.Inventory = JsonSerializer.Serialize(inventory);
     Settings.Default.Origin = origin;
     Settings.Default.Save();
+  }
+
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+  protected override void OnClosing(CancelEventArgs e)
+  {
+    Logger.Info("Shutting down");
+    base.OnClosing(e);
+  }
+
+  private static void SetupLogging()
+  {
+    var config = new LoggingConfiguration();
+    var logfile = new FileTarget("logfile")
+    {
+      FileName = "${specialfolder:folder=LocalApplicationData}/Orditor/log.txt",
+      ArchiveAboveSize = 5_000_000,
+      MaxArchiveFiles = 2
+    };
+    config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
+    LogManager.Configuration = config;
+
+    Logger.Info("Starting");
   }
 
   private static string LoadOrigin()
