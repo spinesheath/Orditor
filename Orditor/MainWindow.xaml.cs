@@ -19,6 +19,13 @@ internal partial class MainWindow : IInventoryListener
 
   public MainWindow()
   {
+    if (Settings.Default.UpgradeSettings)
+    {
+      Settings.Default.Upgrade();
+      Settings.Default.UpgradeSettings = false;
+      Settings.Default.Save();
+    }
+
     InitializeComponent();
 
     SetupLogging();
