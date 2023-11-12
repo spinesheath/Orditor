@@ -6,8 +6,9 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>orditor.ico</ApplicationIcon>
-    <AssemblyVersion>0.5.4.0</AssemblyVersion>
-    <FileVersion>0.5.4.0</FileVersion>
+    <AssemblyVersion>0.6.0</AssemblyVersion>
+    <FileVersion>0.6.0</FileVersion>
+    <Version>0.6.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
