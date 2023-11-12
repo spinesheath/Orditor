@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text.Json;
 using System.Windows;
 using NLog;
@@ -39,10 +38,8 @@ internal partial class MainWindow : IInventoryListener
         Application.Current.Shutdown();
         return;
       }
-
-      var annotations = new Annotations();
-      var parser = new PickupGraphParser(annotations);
-      InitializeLocations(parser, file);
+      
+      var parser = new PickupGraphParser();
 
       var messenger = new Messenger();
       var areas = new AreasOri(file, messenger);
@@ -79,57 +76,6 @@ internal partial class MainWindow : IInventoryListener
     var logfile = new FileTarget("logfile") { FileName = "${specialfolder:folder=LocalApplicationData}/Orditor/log.txt" };
     config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
     LogManager.Configuration = config;
-  }
-
-  private static void InitializeLocations(PickupGraphParser parser, FileManager file)
-  {
-    var text = file.Areas;
-    var graph = parser.Parse(text);
-
-    var unknownHomes = graph.Homes.Where(h => !PositionIsKnown(h));
-    foreach (var home in unknownHomes)
-    {
-      var neighbors = graph.GetConnectedHomes(home).Where(PositionIsKnown).OfType<Location>().Concat(graph.GetPickups(home)).ToList();
-      switch (neighbors.Count)
-      {
-        case 0:
-          continue;
-        case 1:
-          home.SetLocation(neighbors[0].X + 10, neighbors[0].Y);
-          break;
-        default:
-        {
-          home.SetLocation(neighbors.Sum(h => h.X) / neighbors.Count, neighbors.Sum(h => h.Y) / neighbors.Count);
-          break;
-        }
-      }
-    }
-
-    SaveLocations(graph, text, file);
-  }
-
-  private static bool PositionIsKnown(Home home)
-  {
-    return home.X != int.MaxValue && home.Y != int.MaxValue;
-  }
-
-  private static void SaveLocations(PickupGraph graph, string text, FileManager file)
-  {
-    var modified = graph.Homes.Aggregate(text, SetLocation);
-    if (modified != text)
-    {
-      file.Areas = modified;
-    }
-  }
-
-  private static string SetLocation(string current, Home home)
-  {
-    if (home.X != int.MaxValue && home.Y != int.MaxValue)
-    {
-      return LineParser.SetLocation(current, home.Name, home.X, home.Y);
-    }
-
-    return current;
   }
 
   void IInventoryListener.Changed(Inventory inventory, string origin)

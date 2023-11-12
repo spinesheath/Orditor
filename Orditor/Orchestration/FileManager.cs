@@ -28,11 +28,6 @@ internal class FileManager
       return;
     }
 
-    if (!AcceptModification())
-    {
-      return;
-    }
-
     var dialog = new OpenFileDialog();
     dialog.CheckFileExists = true;
     dialog.Multiselect = false;
@@ -46,14 +41,6 @@ internal class FileManager
       settings.Save();
       Valid = true;
     }
-  }
-
-  private static bool AcceptModification()
-  {
-    const string text = "Choose an areas.ori file. It may immediately be modified.";
-    const string caption = "Choose areas.ori";
-    var result = MessageBox.Show(text, caption, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-    return result == DialogResult.OK;
   }
 
   public bool Valid { get; }

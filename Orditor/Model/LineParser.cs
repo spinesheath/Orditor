@@ -39,7 +39,7 @@ internal static class LineParser
     return match.Success ? match.Groups[1].Value : null;
   }
 
-  public static Home? TryHome(string line, Annotations annotations, IdGenerator homeIdGenerator)
+  public static Home? TryHome(string line, IdGenerator homeIdGenerator)
   {
     var match = HomeRegex.Match(StripComment(line));
     if (!match.Success)
@@ -48,9 +48,8 @@ internal static class LineParser
     }
 
     var name = match.Groups[1].Value;
-    var (ax, ay) = annotations.Location(name);
-    var x = ToInt(match.Groups[2], ax);
-    var y = ToInt(match.Groups[3], ay);
+    var x = ToInt(match.Groups[2]);
+    var y = ToInt(match.Groups[3]);
 
     return new Home(name, homeIdGenerator.Next(), x, y);
   }

@@ -118,7 +118,7 @@ internal class Editor : Decorator, ISelectionListener
 
   private static IHighlightingDefinition LoadHighlighting()
   {
-    var assembly = typeof(Annotations).Assembly;
+    var assembly = typeof(Editor).Assembly;
     using var stream = assembly.GetManifestResourceStream(SyntaxResourceName);
     using var reader = new XmlTextReader(stream!);
     var resolver = new HighlightingManager();

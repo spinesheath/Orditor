@@ -10,11 +10,6 @@ internal class PickupGraphParser
 {
   private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-  public PickupGraphParser(Annotations annotations)
-  {
-    _annotations = annotations;
-  }
-
   public PickupGraph Parse(string text)
   {
     var lines = SplitToLines(text).Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
@@ -26,8 +21,6 @@ internal class PickupGraphParser
 
     return graph;
   }
-
-  private readonly Annotations _annotations;
 
   private static IEnumerable<string> SplitToLines(string text)
   {
@@ -48,7 +41,7 @@ internal class PickupGraphParser
   private PickupGraph ReadGraph(List<string> lines)
   {
     var accumulator = new Accumulator();
-    accumulator.ReadDefinitions(lines, _annotations);
+    accumulator.ReadDefinitions(lines);
 
     var connections = new List<Connection>();
     var linesForCurrentHome = new Queue<string>();
@@ -128,13 +121,13 @@ internal class PickupGraphParser
       return name == null ? null : Pickups.FirstOrDefault(p => p.Name == name);
     }
 
-    public void ReadDefinitions(List<string> lines, Annotations annotations)
+    public void ReadDefinitions(List<string> lines)
     {
       var idGenerator = new IdGenerator();
 
       foreach (var line in lines)
       {
-        Add(LineParser.TryHome(line, annotations, idGenerator));
+        Add(LineParser.TryHome(line, idGenerator));
       }
 
       foreach (var line in lines)

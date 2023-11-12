@@ -25,7 +25,6 @@
   <ItemGroup>
     <None Remove="Data\abilities.png" />
     <None Remove="Data\ac.png" />
-    <None Remove="Data\annotations.xml" />
     <None Remove="Data\areasSyntax.xml" />
     <None Remove="Data\bash.png" />
     <None Remove="Data\casual.png" />
@@ -87,7 +86,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data\annotations.xml" />
     <EmbeddedResource Include="Data\areasSyntax.xml" />
   </ItemGroup>
 
