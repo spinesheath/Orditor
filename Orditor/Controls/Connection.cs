@@ -40,7 +40,7 @@ internal class Connection : Canvas
 
   public static UIElement Create(Messenger messenger, RestrictedConnection connection)
   {
-    if (connection.Bidirectional)
+    if (connection.Bidirectional || connection.Location2 is Pickup)
     {
       return new Connection(messenger, connection.Location1, connection.Location2, false, connection.Traversable);
     }

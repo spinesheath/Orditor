@@ -114,7 +114,7 @@ internal class WorldDisplay : Control, IRestrictedGraphListener
       return;
     }
 
-    var baseThickness = StrokeThicknessFactor <= 0 ? 3 : 0.8 + 0.4 / StrokeThicknessFactor;
+    var baseThickness = StrokeThicknessFactor <= 0 ? 3 : 0.5 + 0.75 / StrokeThicknessFactor;
     var baseRadius = StrokeThicknessFactor <= 0 ? 15 : 5 + 5 * 0.52 / StrokeThicknessFactor;
 
     foreach (UIElement child in _graphCanvas.Children)
