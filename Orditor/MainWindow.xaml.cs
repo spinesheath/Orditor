@@ -62,6 +62,7 @@ internal partial class MainWindow : IInventoryListener
       WorldView.DataContext = world;
       AreasEditorView.DataContext = areasEditor;
       InventoryView.DataContext = inventoryViewModel;
+      FilePathDisplay.Text = areas.FilePath;
     }
     catch (Exception e)
     {

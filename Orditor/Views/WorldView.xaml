@@ -49,6 +49,5 @@
         </ControlTemplate>
       </CheckBox.Template>
     </CheckBox>
-    <TextBlock Text="{Binding FilePath}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4" Foreground="Gray" />
   </Grid>
 </UserControl>

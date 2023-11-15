@@ -6,27 +6,30 @@
         xmlns:v="clr-namespace:Orditor.Views"
         mc:Ignorable="d"
         x:ClassModifier="internal"
-        Title="Orditor" 
+        Title="Orditor"
         WindowState="Maximized"
-        Height="800" 
+        Height="800"
         Width="1200"
         MinHeight="600"
         MinWidth="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="6*" MinWidth="10"/>
-            <ColumnDefinition Width="4"/>
-            <ColumnDefinition Width="3*" MinWidth="10"/>
-        </Grid.ColumnDefinitions>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="6*" MinWidth="10" />
+      <ColumnDefinition Width="4" />
+      <ColumnDefinition Width="3*" MinWidth="10" />
+    </Grid.ColumnDefinitions>
 
-        <v:WorldView x:Name="WorldView" Grid.Column="0"/>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4"/>
-        <v:AreasEditorView x:Name="AreasEditorView" Grid.Column="2"/>
-
-        <v:InventoryView x:Name="InventoryView" 
-                         Grid.Column="0" 
-                         Width="200" 
-                         VerticalAlignment="Top" 
-                         HorizontalAlignment="Left"/>
+    <Grid Grid.Column="0">
+      <v:WorldView x:Name="WorldView" />
+      <TextBlock x:Name="FilePathDisplay" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4" Foreground="Gray" />
     </Grid>
+    <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4" />
+    <v:AreasEditorView x:Name="AreasEditorView" Grid.Column="2" />
+
+    <v:InventoryView x:Name="InventoryView"
+                     Grid.Column="0"
+                     Width="200"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Left" />
+  </Grid>
 </Window>
