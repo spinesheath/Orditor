@@ -38,36 +38,51 @@ internal partial class MainWindow : IInventoryListener
         return;
       }
 
-      var parser = new PickupGraphParser();
-
-      var messenger = new Messenger();
-      var areas = new AreasOri(file, messenger);
-      var areasEditor = new AreasEditorViewModel(areas, messenger);
-
-      var inventory = LoadInventory();
-      var origin = LoadOrigin();
-
-      var graph = new RestrictedGraph(areas, parser, messenger, inventory, origin);
-      var world = new WorldViewModel(graph, messenger, areas);
-      var originSelector = new OriginSelectorViewModel(graph, origin);
-      var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
-
-      messenger.Listen(areasEditor);
-      messenger.Listen((IAreasListener)graph);
-      messenger.Listen((IInventoryListener)graph);
-      messenger.Listen((ISelectionListener)originSelector);
-      messenger.Listen((IRestrictedGraphListener)originSelector);
-      messenger.Listen(this);
-
-      WorldView.DataContext = world;
-      AreasEditorView.DataContext = areasEditor;
-      InventoryView.DataContext = inventoryViewModel;
-      FilePathDisplay.Text = areas.FilePath;
+      LoadFromFile(file);
+      ReloadButton.Click += OnReload;
     }
     catch (Exception e)
     {
       Logger.Fatal(e);
       throw;
+    }
+  }
+
+  private void LoadFromFile(FileManager file)
+  {
+    var parser = new PickupGraphParser();
+
+    var messenger = new Messenger();
+    var areas = new AreasOri(file, messenger);
+    var areasEditor = new AreasEditorViewModel(areas, messenger);
+
+    var inventory = LoadInventory();
+    var origin = LoadOrigin();
+
+    var graph = new RestrictedGraph(areas, parser, messenger, inventory, origin);
+    var world = new WorldViewModel(graph, messenger, areas);
+    var originSelector = new OriginSelectorViewModel(graph, origin);
+    var inventoryViewModel = new InventoryViewModel(inventory, messenger, originSelector);
+
+    messenger.Listen(areasEditor);
+    messenger.Listen((IAreasListener)graph);
+    messenger.Listen((IInventoryListener)graph);
+    messenger.Listen((ISelectionListener)originSelector);
+    messenger.Listen((IRestrictedGraphListener)originSelector);
+    messenger.Listen(this);
+
+    WorldView.DataContext = world;
+    AreasEditorView.DataContext = areasEditor;
+    InventoryView.DataContext = inventoryViewModel;
+    FilePathDisplay.Text = areas.FilePath;
+  }
+
+  private void OnReload(object sender, RoutedEventArgs e)
+  {
+    var file = new FileManager(Settings.Default, true);
+    if (file.Valid)
+    {
+      LoadFromFile(file);
     }
   }
 

@@ -8,27 +8,30 @@ namespace Orditor.Orchestration;
 
 internal class FileManager
 {
-  public FileManager(Settings settings)
+  public FileManager(Settings settings, bool forceDialog = false)
   {
     _settings = settings;
-    var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    if (directoryName != null)
+    if (!forceDialog)
     {
-      var localAreasPath = Path.Combine(directoryName, "areas.ori");
-      if (File.Exists(localAreasPath))
+      var directoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+      if (directoryName != null)
       {
-        _areasOriPath = localAreasPath;
+        var localAreasPath = Path.Combine(directoryName, "areas.ori");
+        if (File.Exists(localAreasPath))
+        {
+          _areasOriPath = localAreasPath;
+          Valid = true;
+          Logger.Info("Attempting to load local file {0}", _areasOriPath);
+          return;
+        }
+      }
+
+      if (File.Exists(settings.AreasOriPath))
+      {
         Valid = true;
-        Logger.Info("Attempting to load local file {0}", _areasOriPath);
+        Logger.Info("Attempting to load from setting {0}", settings.AreasOriPath);
         return;
       }
-    }
-
-    if (File.Exists(settings.AreasOriPath))
-    {
-      Valid = true;
-      Logger.Info("Attempting to load from setting {0}", settings.AreasOriPath);
-      return;
     }
 
     var dialog = new OpenFileDialog();

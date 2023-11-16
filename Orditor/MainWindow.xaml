@@ -21,7 +21,10 @@
 
     <Grid Grid.Column="0">
       <v:WorldView x:Name="WorldView" />
-      <TextBlock x:Name="FilePathDisplay" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="4" Foreground="Gray" />
+      <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <Button x:Name="ReloadButton" DockPanel.Dock="Left" Margin="4" Padding="2,0">⭯</Button>
+        <TextBlock x:Name="FilePathDisplay" Foreground="Gray" VerticalAlignment="Center" />
+      </DockPanel>
     </Grid>
     <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Width="4" />
     <v:AreasEditorView x:Name="AreasEditorView" Grid.Column="2" />
