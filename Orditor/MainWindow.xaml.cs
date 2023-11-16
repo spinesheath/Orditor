@@ -1,7 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Navigation;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -13,8 +21,16 @@ using Orditor.ViewModels;
 
 namespace Orditor;
 
+// ReSharper disable once UnusedMember.Global
 internal partial class MainWindow : IInventoryListener
 {
+  static MainWindow()
+  {
+    HttpClient = new HttpClient();
+    HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    HttpClient.DefaultRequestHeaders.UserAgent.TryParseAdd("request");
+  }
+
   public MainWindow()
   {
     if (Settings.Default.UpgradeSettings)
@@ -27,6 +43,8 @@ internal partial class MainWindow : IInventoryListener
     InitializeComponent();
 
     SetupLogging();
+
+    CheckForUpdateAsync();
 
     try
     {
@@ -46,6 +64,54 @@ internal partial class MainWindow : IInventoryListener
       Logger.Fatal(e);
       throw;
     }
+  }
+
+  void IInventoryListener.Changed(Inventory inventory, string origin)
+  {
+    Settings.Default.Inventory = JsonSerializer.Serialize(inventory);
+    Settings.Default.Origin = origin;
+    Settings.Default.Save();
+  }
+
+  private const string LatestReleaseUrl = "https://api.github.com/repos/spinesheath/Orditor/releases/latest";
+  private static readonly HttpClient HttpClient;
+  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+  private static readonly Regex VersionRegex = new(@"(\d+)(?:\.(\d+))?(?:\.(\d+))?(?:\.(\d+))?");
+
+  private async void CheckForUpdateAsync()
+  {
+    try
+    {
+      var version = Assembly.GetEntryAssembly()?.GetName().Version;
+      if (version == null)
+      {
+        return;
+      }
+
+      var response = await HttpClient.GetAsync(LatestReleaseUrl);
+      response.EnsureSuccessStatusCode();
+      var release = await response.Content.ReadFromJsonAsync<LatestReleaseResult>();
+      if (release == null)
+      {
+        return;
+      }
+
+      if (CanUpdate(release, version))
+      {
+        LatestReleaseHyperlink.NavigateUri = new Uri(release.HtmlUrl);
+        LatestReleaseTextBlock.Visibility = Visibility.Visible;
+      }
+    }
+    catch
+    {
+      Logger.Info("Update check failed");
+    }
+  }
+
+  private static bool CanUpdate(LatestReleaseResult release, Version version)
+  {
+    var match = VersionRegex.Match(release.TagName);
+    return match.Success && Version.TryParse(match.Value, out var latestVersion) && latestVersion > version;
   }
 
   private void LoadFromFile(FileManager file)
@@ -86,15 +152,6 @@ internal partial class MainWindow : IInventoryListener
     }
   }
 
-  void IInventoryListener.Changed(Inventory inventory, string origin)
-  {
-    Settings.Default.Inventory = JsonSerializer.Serialize(inventory);
-    Settings.Default.Origin = origin;
-    Settings.Default.Save();
-  }
-
-  private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
   protected override void OnClosing(CancelEventArgs e)
   {
     Logger.Info("Shutting down");
@@ -130,5 +187,35 @@ internal partial class MainWindow : IInventoryListener
     }
 
     return inventory ?? Inventory.Default();
+  }
+
+  private void OnNavigateToLatestRelease(object sender, RequestNavigateEventArgs e)
+  {
+    try
+    {
+      var processStartInfo = new ProcessStartInfo(e.Uri.AbsoluteUri)
+      {
+        UseShellExecute = true,
+        Verb = "open"
+      };
+      Process.Start(processStartInfo);
+      e.Handled = true;
+    }
+    catch
+    {
+      Logger.Warn("Failed to navigate to release");
+    }
+  }
+
+  // ReSharper disable once ClassNeverInstantiated.Local
+  private class LatestReleaseResult
+  {
+    [JsonPropertyName("html_url")]
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+    public string HtmlUrl { get; set; } = "";
+
+    [JsonPropertyName("tag_name")]
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+    public string TagName { get; set; } = "";
   }
 }

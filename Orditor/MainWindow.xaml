@@ -22,6 +22,11 @@
     <Grid Grid.Column="0">
       <v:WorldView x:Name="WorldView" />
       <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <TextBlock x:Name="LatestReleaseTextBlock" DockPanel.Dock="Top" Foreground="Red" Margin="4" Visibility="Collapsed">
+          <Hyperlink x:Name="LatestReleaseHyperlink" RequestNavigate="OnNavigateToLatestRelease">
+            New version available
+          </Hyperlink>
+        </TextBlock>
         <Button x:Name="ReloadButton" DockPanel.Dock="Left" Margin="4" Padding="2,0">⭯</Button>
         <TextBlock x:Name="FilePathDisplay" Foreground="Gray" VerticalAlignment="Center" />
       </DockPanel>
