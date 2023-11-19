@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Orditor.Model;
@@ -12,7 +11,7 @@ internal class PickupGraphParser
 
   public PickupGraph Parse(string text)
   {
-    var lines = SplitToLines(text).Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
+    var lines = text.SplitToLines().Select(RemoveCommentAndTrim).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
     var graph = ReadGraph(lines);
     if (!graph.Homes.Any())
     {
@@ -20,15 +19,6 @@ internal class PickupGraphParser
     }
 
     return graph;
-  }
-
-  private static IEnumerable<string> SplitToLines(string text)
-  {
-    using var reader = new StringReader(text);
-    while (reader.ReadLine() is { } line)
-    {
-      yield return line;
-    }
   }
 
   private static string RemoveCommentAndTrim(string line)

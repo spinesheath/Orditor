@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,22 +33,25 @@ internal class Validator
         MessageBox.Show("Could not generate a valid seed.", "Invalid", MessageBoxButton.OK, MessageBoxImage.Error);
       }
     }
-    catch (Exception e)
+    catch
     {
-      Logger.Error(e);
+      MessageBox.Show("Could not generate a valid seed.", "Invalid", MessageBoxButton.OK, MessageBoxImage.Error);
     }
     
     _button.IsEnabled = true;
   }
 
-  private bool SeedValid(string seed)
+  private static bool SeedValid(string seed)
   {
-    return seed.Length > 0;
+    var lines = seed.SplitToLines().ToList();
+    return lines.Count == 257 && 
+           lines[0].StartsWith("Standard,Clues,ForceTrees,Competitive,balanced") && 
+           lines.All(line => !string.IsNullOrEmpty(line));
   }
 
-  private bool SpoilerValid(string spoiler)
+  private static bool SpoilerValid(string spoiler)
   {
-    return spoiler.Length > 0;
+    return spoiler.StartsWith("Standard,Clues,ForceTrees,Competitive,balanced");
   }
 
   private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
