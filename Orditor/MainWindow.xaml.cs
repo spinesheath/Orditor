@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 using NLog;
 using NLog.Config;
@@ -57,7 +58,6 @@ internal partial class MainWindow : IInventoryListener
       }
 
       LoadFromFile(file);
-      ReloadButton.Click += OnReload;
     }
     catch (Exception e)
     {
@@ -205,6 +205,11 @@ internal partial class MainWindow : IInventoryListener
     {
       Logger.Warn("Failed to navigate to release");
     }
+  }
+
+  private async void OnValidate(object sender, RoutedEventArgs e)
+  {
+    await new Validator((Button)sender, Settings.Default).RunAsync();
   }
 
   // ReSharper disable once ClassNeverInstantiated.Local

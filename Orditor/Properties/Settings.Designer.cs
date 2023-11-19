@@ -70,5 +70,29 @@ namespace Orditor.Properties {
                 this["UpgradeSettings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PythonPath {
+            get {
+                return ((string)(this["PythonPath"]));
+            }
+            set {
+                this["PythonPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SeedgenPath {
+            get {
+                return ((string)(this["SeedgenPath"]));
+            }
+            set {
+                this["SeedgenPath"] = value;
+            }
+        }
     }
 }

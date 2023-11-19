@@ -27,7 +27,8 @@
             New version available
           </Hyperlink>
         </TextBlock>
-        <Button x:Name="ReloadButton" DockPanel.Dock="Left" Margin="4" Padding="2,0">⭯</Button>
+        <Button DockPanel.Dock="Top" Margin="4" Padding="2,0" Click="OnValidate" HorizontalAlignment="Left">Validate</Button>
+        <Button DockPanel.Dock="Left" Margin="4" Padding="2,0" Click="OnReload">⭯</Button>
         <TextBlock x:Name="FilePathDisplay" Foreground="Gray" VerticalAlignment="Center" />
       </DockPanel>
     </Grid>
